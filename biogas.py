@@ -25,6 +25,29 @@ def biofertilizer(kilos):
     
     return pdy
     
-#def ghg(g_in):
-    #gas composition rate: CH4 60%, CO2 38%, NOX & SOX 1% each
+def ghg(cattle, swine, poultry, g_in):
+    #GHG release by manure type (unit: kg/head/yr)
+    #CH4: cattle 39.5; swine 18; poultry 0.157
+    #CO2: cattle 12; swine 5.47; poultry 0.048
+    #NOx: cattle 0.02; swine 0.02; poultry 0.005
+    #SOx: 0
+    #unit conversion to g/tonne -> need the weight of manure by types
+    
+    ch4_r = cattle*39.5 + swine*18 + poultry*0.157
+    co2_r = cattle*12 + swine*5.47 + poultry*0.048
+    nox_r = cattle*0.02 + swine*0.02 + poultry*0.005
+    sox_r = 0 #value is minimal
+    
+    ghg_r = [ch4_r,co2_r,nox_r,sox_r]
+    
+    #GHG captured during the biogas post-treatment process
+    #tentatively measured based on the result from biomethane & biogas composition rate
+    #gas composition rate: CH4 60%; CO2 38% (recovery rate 90%); NOX & SOX 1% each
+    ch4_c = biomethane(g_in)
+    co2_c = ch4_c*0.38*0.9
+    nox_c = sox_c = ch4_c*0.01
+    
+    ghg_c = [ch4_c,co2_c,nox_c,sox_c]
+    
+    return ghg_r, ghg_c;
     
