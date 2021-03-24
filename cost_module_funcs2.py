@@ -5,18 +5,18 @@ Created on Sun Mar 21 19:38:02 2021
 @author: Ricardo Hopker
 """
 #inputs from other modules, my initial guesses
-V_d = 50
-# d = 50
-V_day = 500000/330
-e_p = 5000000
-f_p =50000
-#V_f = 1000000
-V_g = 600000
-W_a = 1000000
-typ = 0 #type of digestor [0] --> upflow [1]--> covered lagoon 
-distance_total = 1388888/330 #km
-h_needed = 10000
-W_out = 10000
+# V_d = 50
+# # d = 50
+# V_day = 500000/330
+# e_p = 5000000
+# f_p =50000
+# #V_f = 1000000
+# V_g = 600000
+# W_a = 1000000
+# typ = 0 #type of digestor [1] --> upflow [0]--> covered lagoon 
+# distance_total = 1388888/330 #km
+# h_needed = 10000
+# W_out = 10000
 
 nox_lf = 1
 sox_lf = 1 
