@@ -72,9 +72,9 @@ print("Released gas (g/tonne): ", ghg_r)
 print("Captured gas (g/tonne): ", ghg_c)
 
 #issues for discussion
-#1. released gas - amount for how many days?
+#1. released gas - amount for how many days? put per day for now.
 #2. G_in - is this already purified? methane's rate is already 0.9665, which meets the biomethane requirement
 #          in general composition of biogas, methane is expected around 0.6
-#3. digOut - digestate amount is 18.7. expected around 90% of kilos (7963)
+#3. digOut - digestate amount is 18.7. expected around 80%-90% of kilos (7963)
 
 print(farmer_npv(V_d,typ,distance,f_p,H_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf))
