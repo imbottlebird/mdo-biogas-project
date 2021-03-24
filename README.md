@@ -1,2 +1,2 @@
 # mdo-biogas-project
-MDO project on designing a feasible biogas production model in Brazil
+MDO project on designing a feasible anaerobic digestion production model in Brazil
