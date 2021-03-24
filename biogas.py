@@ -1,51 +1,49 @@
-def biomethane(g_in):
+def biomethane(G_in, G_comp):
+    #G_comp=[ch4Out, co2Out, noxOut, soxOut]
     #constants
-    ch4_comp = 0.6   #ch4 composition rate
-    ch4_pur = 0.965  #ch4 density of biomethane
-    v_bm = g_in * (ch4_comp / ch4_pur)  #biomethane produced
-    
-    print("Daily amount of effleunt gas: ",g_in, "scm/d")
-    print("CH4 composition rate: ", ch4_comp)
-    print("CH4 purity rate: ", ch4_pur)
-    print("------------------------")
-    print("Amount of Bio-methane produced: ", v_bm,"scm/d")
+    ch4_pur = 0.965  #ch4 density of biomethane in Brazil
+    v_bm = G_in * (G_comp[0] / ch4_pur)  #biomethane produced
     
     return v_bm
+
+def scm_to_m3(scm):
+    #biomethane storage temperature = 60C (scielo.br)
+    #source: https://checalc.com/solved/volconv.html
+    K = 273 #temp conversion to Kelvin
+    P1 = P2 = 1 #pressure
+    T1 = 15 #scm temp
+    T2 = 60 #biomethane temp
+    m3 = scm * (P1/P2) * ((T2+K)/(T1+K))
+    return m3
 
 def biofertilizer(kilos):
     vs_r = 0.43   #rate of volatile solid in the total manure
     vs = kilos * vs_r  #amount of volatile solid
-    
     pdy = (kilos - vs) + (vs * 0.4)  #(non-volatile solid) + (remnants of volatile solid)
-    
-    print("Total manure processed per day: ", kilos, "kg/d")
-    print("Amount of volatile solid: ", vs)
-    print("------------------------")
-    print("Amount of biofertilizer produced: ", pdy, 'kg/d')
     
     return pdy
     
-def ghg(cattle, swine, poultry, g_in):
-    #GHG release by manure type (unit: kg/head/yr)
+def ghg(kilos, wComp, G_in, G_comp):
+    #GHG release by manure type (unit: kg/head/yr) -> g/tonne  (kilos kg/day)
     #CH4: cattle 39.5; swine 18; poultry 0.157
     #CO2: cattle 12; swine 5.47; poultry 0.048
     #NOx: cattle 0.02; swine 0.02; poultry 0.005
     #SOx: 0
     #unit conversion to g/tonne -> need the weight of manure by types
-    
-    ch4_r = cattle*39.5 + swine*18 + poultry*0.157
-    co2_r = cattle*12 + swine*5.47 + poultry*0.048
-    nox_r = cattle*0.02 + swine*0.02 + poultry*0.005
+    tonne_conv = kilos * 0.001
+    ch4_r = tonne_conv * (wComp[0] * (39.5/365) + wComp[1]* (18/365) + wComp[2] * (0.157/365))
+    co2_r = tonne_conv * (wComp[0] * (12/365) + wComp[1] * (5.47/365) + wComp[2] * (0.048/365))
+    nox_r = tonne_conv * (wComp[0] * (0.02/365) + wComp[1] * (0.02/365) + wComp[2] * (0.005/365))
     sox_r = 0 #value is minimal
     
     ghg_r = [ch4_r,co2_r,nox_r,sox_r]
     
     #GHG captured during the biogas post-treatment process
     #tentatively measured based on the result from biomethane & biogas composition rate
-    #gas composition rate: CH4 60%; CO2 38% (recovery rate 90%); NOX & SOX 1% each
-    ch4_c = biomethane(g_in)
-    co2_c = ch4_c*0.38*0.9
-    nox_c = sox_c = ch4_c*0.01
+    ch4_c = tonne_conv * biomethane(G_in, G_comp)
+    co2_c = tonne_conv * G_in * G_comp[1] * 0.9 #CO2 recovery rate 90%
+    nox_c = tonne_conv * G_in * G_comp[2]
+    sox_c = tonne_conv * G_in * G_comp[3]
     
     ghg_c = [ch4_c,co2_c,nox_c,sox_c]
     

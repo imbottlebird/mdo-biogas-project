@@ -13,6 +13,7 @@ from constants import *
 from cost_module_funcs2 import *
 from digesterModule import digester
 import Transport as T
+import biogas as B
 
 #Optimal latitude and longitude for Digestor
 Digest_lat = T.location_optimal(Farm1_lat, Farm2_lat, Farm3_lat, Farm4_lat, Farm5_lat)
@@ -41,6 +42,8 @@ total_pigs_perc = T.vol_breakdown(man1, exp_1["Farm 1 pigs"], man2, exp_1["Farm 
 total_chicks_perc = T.vol_breakdown(man1, exp_1["Farm 1 chicks"], man2, exp_1["Farm 2 chicks"], \
     man3, exp_1["Farm 3 chicks"], man4, exp_1["Farm 4 chicks"], man5, exp_1["Farm 5 chicks"] )
 
+#Weighted average % of chicken manure of all the material supplied
+
 wComp = [total_cattle_perc, total_pigs_perc, total_chicks_perc]
 kilos = T.total_kg(wIn, vol_to_mass_conv)
 #up to and including V_g are inputs
@@ -57,7 +60,21 @@ print('----')
 Tdig = 30
 [W_a, typ, V_d, G_in, G_comp, digOut, digOut_comp, W_out, H_needed] = digester(wIn,wComp,Tdig)
 print('----')
-# variables needed from biogas module:
-f_p = 50000
-V_g = 600000
+
+#biogas module
+V_g = B.scm_to_m3(B.biomethane(G_in, G_comp)) #biomethane
+f_p = B.biofertilizer(kilos) 
+ghg_r, ghg_c = B.ghg(kilos, wComp, G_in, G_comp) #ghg_r: released gas, ghg_c: captured gas
+
+print("Produced biomethane: ", V_g)
+print("Produced biofertilizer: ",f_p)
+print("Released gas (g/tonne): ", ghg_r)
+print("Captured gas (g/tonne): ", ghg_c)
+
+#issues for discussion
+#1. released gas - amount for how many days?
+#2. G_in - is this already purified? methane's rate is already 0.9665, which meets the biomethane requirement
+#          in general composition of biogas, methane is expected around 0.6
+#3. digOut - digestate amount is 18.7. expected around 90% of kilos (7963)
+
 print(farmer_npv(V_d,typ,distance,f_p,H_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf))
