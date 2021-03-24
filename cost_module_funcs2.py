@@ -31,7 +31,7 @@ co2_tech = 0.5
 all_gas_list = [[10,2,5,3,5],[10,6,3,1,3]]
 #Optimizable
 n_g = 1 #natural number, # of generators
-V_gburn = V_g*.2
+V_gburn = 6000000*.2
 
 
 
@@ -112,7 +112,7 @@ def w_l(f_p,f_used):
 def e_p(V_gburn):
     return V_gburn*e_densitygas*g_eff
 def e_s(V_gburn,e_c,h_needed,W_out):
-    return e_p(V_gburn)-e_c-(h_needed+g*h_water*W_out/eff_pump)*working_days
+    return e_p(V_gburn)-e_c-(-h_needed+g*h_water*W_out/eff_pump)*working_days
 
 
 def r(V_gburn,e_c,h_needed,W_out,f_p,f_used,V_g):
@@ -188,17 +188,17 @@ def farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_price
 def system_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf,all_gas_list):
     f_npv = farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf)
     return f_npv +c_p(all_gas_list)
-farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf)
-def check_constraints():
-    fnpv = farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf)
-    print('farmer NPV >0? --> %.2f' % (fnpv))
-    snpv = system_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf,all_gas_list)
-    print('system NPV >0? --> %.2f' % (snpv))
-    print('V_gburn %.2f < V_g %.2f?' % (V_gburn,V_g))
-    e_process = (h_needed+g*h_water*W_out/eff_pump)*working_days
-    print('e_p %.2f > e_c (%.2f) +e_process (%.2f) = (%.2f)?' % (e_p(V_gburn),e_c,e_process,e_c+e_process))
-    capacity = n_g*g_power*working_days*working_hours
-    print('system power production capacity %.2f > e_p? --> %.2f' % (capacity,e_p(V_gburn)))
+# farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf)
+# def check_constraints():
+#     fnpv = farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf)
+#     print('farmer NPV >0? --> %.2f' % (fnpv))
+#     snpv = system_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf,all_gas_list)
+#     print('system NPV >0? --> %.2f' % (snpv))
+#     print('V_gburn %.2f < V_g %.2f?' % (V_gburn,V_g))
+#     e_process = (h_needed+g*h_water*W_out/eff_pump)*working_days
+#     print('e_p %.2f > e_c (%.2f) +e_process (%.2f) = (%.2f)?' % (e_p(V_gburn),e_c,e_process,e_c+e_process))
+#     capacity = n_g*g_power*working_days*working_hours
+#     print('system power production capacity %.2f > e_p? --> %.2f' % (capacity,e_p(V_gburn)))
     
   
     
