@@ -26,6 +26,8 @@ from scipy.integrate import odeint
 import numpy as np
 import matplotlib.pyplot as plt
 
+from constants import *
+
 
 # # TEST inputs
 # w1 = 1
@@ -89,6 +91,7 @@ def digester(wFR, wComp, Tdig):
     plt.plot(t,sH2,'b--',linewidth=2,label='H2')
     plt.plot(t,sCH4,'g:',linewidth=2,label='CH4')
     plt.plot(t,sum(sPM),'k-',linewidth=2,label='particulate matter')
+    plt.legend(loc='center right')
     plt.xlabel('time (days)')
     plt.ylabel('kg BOD/m^3')
     plt.title('Reaction Kinetics in Digester')
