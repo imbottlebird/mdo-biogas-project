@@ -1,0 +1,16 @@
+﻿ID,Dairy Cattle,Swine,Herd Comments,Cattle Manure,Swine Manure,Biogas Production,Biogas Internal Consumption,Digester Type,Digester Volume,Cost,Digester comments
+1,80,,"dairy cattle; the herd of cows is quite variable, as they use them in commercial transactions",0.176,0,8.9,20,Upflow System,40,26431.68,
+2,,680,grow-finish,0,3.128,49,-,Covered lagoon,360,32961.6,high density polyethylene cover
+3,20,,"dairy cattle; the herd of cows is quite variable, as they use them in commercial transactions",0.044,0,9.6,20,Upflow System,20,19635.42,
+4,,2400,nursery,0,11.04,65,-,Covered lagoon,180,21545.1,high density polyethylene cover
+5,20,,"dairy cattle; the herd of cows is quite variable, as they use them in commercial transactions",0.044,0,63,20,Covered lagoon,270,24766.2,high density polyethylene cover
+6,20,,"dairy cattle; the herd of cows is quite variable, as they use them in commercial transactions",0.044,0,5.7,20,Upflow System,20,19635.42,
+7,,650,grow-finish,0,2.99,75,20,Covered lagoon,360,32961.6,high density polyethylene cover
+8,9,,"dairy cattle; the herd of cows is quite variable, as they use them in commercial transactions",0.0198,0,5.5,20,Upflow System,80,52863.36,2 x 40m3 digesters
+9,27,,"dairy cattle; the herd of cows is quite variable, as they use them in commercial transactions",0.0594,0,6.8,20,Upflow System,10,16425.63,
+10,8,,"dairy cattle; the herd of cows is quite variable, as they use them in commercial transactions",0.0176,0,3.8,20,Upflow System,5,13215.84,
+11,59,,"dairy cattle; the herd of cows is quite variable, as they use them in commercial transactions",0.1298,0,10,20,Upflow System,5,13215.84,
+12,,40,grow-finish,0,0.184,5.7,20,Upflow System,20,19635.42,
+13,40,4,"dairy cattle and grow-finish; the herd of cows is quite variable, as they use them in commercial transactions",0.088,0.0184,15,20,Upflow System,40,26431.68,
+14,,560,grow-finish,0,2.576,75,-,Covered lagoon,360,32961.6,high density polyethylene cover
+15,44,,"dairy cattle; the herd of cows is quite variable, as they use them in commercial transactions",0.0968,0,7,60,Upflow System,10,16425.63,
