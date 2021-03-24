@@ -19,7 +19,7 @@ Digest_lat = T.location_optimal(Farm1_lat, Farm2_lat, Farm3_lat, Farm4_lat, Farm
 Digest_lon = T.location_optimal(Farm1_lon, Farm2_lon, Farm3_lon, Farm4_lon, Farm5_lon)
 
 #Total distance travelled per day in kms to deliver manure at digestor
-distance = T.total_distance(Farm1_lat, Farm1_lon, Farm2_lat, Farm2_lon, Farm3_lat, \
+distance = T.total_distance(Farm1_lat, Farm1_lon, Farm2_lat, Farm2_lon, Farm3_lat, 
     Farm3_lon, Farm4_lat, Farm4_lon, Farm5_lat, Farm5_lon, Digest_lat, Digest_lon) 
 
 #Total volumes of manure (m3) per day transported to digestor
@@ -47,11 +47,17 @@ kilos = T.total_kg(wIn, vol_to_mass_conv)
 #print(farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf))
 
 print("Optimal location for DIGESTOR is latitude: "+str(Digest_lat)+" and longitude: "+str(Digest_lon))
-print("Total daily distance from farms to digestor travelled is "+str(distance_total)+" km")
+print("Total daily distance from farms to digestor travelled is "+str(distance)+" km")
 print("Total VOLUME manure supplied per day is "+str(wIn)+" m3")
 print("Weighted average solids percentage of the manure supplied is "+str(total_solids_perc*100)+" %")
 print("Manure composition is CATTLE-PIGS-CHICKS is "+str(wComp))
+print('----')
 
 #output from digester -- will return 9 values & print to console
 Tdig = 30
 [W_a, typ, V_d, G_in, G_comp, digOut, digOut_comp, W_out, H_needed] = digester(wIn,wComp,Tdig)
+print('----')
+# variables needed from biogas module:
+f_p = 50000
+V_g = 600000
+print(farmer_npv(V_d,typ,distance,f_p,H_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf))
