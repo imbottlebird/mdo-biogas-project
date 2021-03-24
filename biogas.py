@@ -12,7 +12,7 @@ def scm_to_m3(scm):
     K = 273 #temp conversion to Kelvin
     P1 = P2 = 1 #pressure
     T1 = 15 #scm temp
-    T2 = 60 #biomethane temp
+    T2 = 50 #biomethane temp
     m3 = scm * (P1/P2) * ((T2+K)/(T1+K))
     return m3
 
