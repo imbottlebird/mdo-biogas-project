@@ -53,4 +53,5 @@ print("Weighted average solids percentage of the manure supplied is "+str(total_
 print("Manure composition is CATTLE-PIGS-CHICKS is "+str(wComp))
 
 #output from digester -- will return 9 values & print to console
-digester(wIn,wComp,30)
+Tdig = 30
+[W_a, typ, V_d, G_in, G_comp, digOut, digOut_comp, W_out, H_needed] = digester(wIn,wComp,Tdig)
