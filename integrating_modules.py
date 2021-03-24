@@ -42,7 +42,7 @@ total_chicks_perc = T.vol_breakdown(man1, exp_1["Farm 1 chicks"], man2, exp_1["F
     man3, exp_1["Farm 3 chicks"], man4, exp_1["Farm 4 chicks"], man5, exp_1["Farm 5 chicks"] )
 
 wComp = [total_cattle_perc, total_pigs_perc, total_chicks_perc]
-
+kilos = T.total_kg(wIn, vol_to_mass_conv)
 #up to and including V_g are inputs
 #print(farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf))
 
