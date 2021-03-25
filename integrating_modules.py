@@ -59,6 +59,7 @@ print('----')
 #output from digester -- will return 9 values & print to console
 Tdig = 30
 [W_a, typ, V_d, G_in, G_comp, digOut, digOut_comp, W_out, H_needed] = digester(wIn,wComp,Tdig)
+H_needed = JtokWh(H_needed*1000)
 print('----')
 
 #biogas module
