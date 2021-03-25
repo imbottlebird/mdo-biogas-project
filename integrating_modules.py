@@ -87,7 +87,10 @@ list_ghg = []
 for gas in ['CH4','CO2','NOX','SOX']:
     list_ghg.append(ghg[ghg['gas']==gas].values.flatten().tolist())
 list_ghg = do_all_list_cp(W_a,distance,list_ghg)
+
+n_g = 1
+V_gburn = V_g
 print('----')
-farmer_npv(V_d,typ,distance,f_p,H_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf)
+farmer_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,e_c,e_priceB,f_used,p_bf)
 print('----')
-system_npv(V_d,typ,distance,f_p,H_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf,list_ghg)
+system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,e_c,e_priceB,f_used,p_bf,list_ghg)

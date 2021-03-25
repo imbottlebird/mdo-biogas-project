@@ -30,9 +30,8 @@ Created on Sun Mar 21 19:38:02 2021
 # co2_tech = 0.5
 # all_gas_list = [[10,2,5,3,5],[10,6,3,1,3]]
 #Optimizable
-n_g = 1 #natural number, # of generators
-V_gburn = 1000
-
+# n_g = 1 #natural number, # of generators
+# V_gburn = 1000
 
 
 # #Constants
@@ -96,13 +95,13 @@ def D(distance_total):
 def c_t(distance_total): #total cost of travel
     return total_npv(c_rskm*D(distance_total))
 
-def i(V_d,typ): #investment cost
+def i(V_d,typ,n_g): #investment cost
     global a_d,b_d,g_d
     return a_d[typ]*V_d+b_d[typ]+n_g*g_d
-def i_m(V_d,typ):
+def i_m(V_d,typ,n_g):
     return [n_g*g_m+i_main_cost*(a_d[typ]*V_d+b_d[typ])]
-def c_m(V_d,typ):
-    return total_npv(i_m(V_d=V_d,typ=typ))
+def c_m(V_d,typ,n_g):
+    return total_npv(i_m(V_d,typ,n_g))
 def c_e(e_c,e_priceB):
     return total_npv([e_c*e_priceB])
 def f_s(f_used,p_bf):
@@ -179,10 +178,10 @@ def co2_ff(distance_total):
     global CF
     return 4*CF*D(distance_total)/1000
 
-def farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf):
-    i_r = i(V_d,typ)
+def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,e_c,e_priceB,f_used,p_bf):
+    i_r = i(V_d,typ,n_g)
     c_t_r = c_t(distance_total)
-    c_m_r = c_m(V_d,typ)
+    c_m_r = c_m(V_d,typ,n_g)
     c_e_r= c_e(e_c,e_priceB)
     f_s_r = f_s(f_used,p_bf)
     r_r = r(V_gburn,e_c,h_needed,W_out,f_p,f_used,V_g)
@@ -209,8 +208,8 @@ def farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_price
     
     
     return r_r-i_r-c_m_r-c_t_r+c_e_r+f_s_r
-def system_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf,all_gas_list):
-    f_npv = farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf)
+def system_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,e_c,e_priceB,f_used,p_bf,all_gas_list):
+    f_npv = farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,e_c,e_priceB,f_used,p_bf)
     print('System NPV R$ %.2f' % (c_p(all_gas_list)))
     print('Total ghg emissions saved R$ %.2f' % (c_p(all_gas_list)))
     return f_npv +c_p(all_gas_list)
