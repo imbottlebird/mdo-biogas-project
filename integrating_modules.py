@@ -73,10 +73,10 @@ print("Released gas (g/tonne): ", ghg_r)
 print("Captured gas (g/tonne): ", ghg_c)
 
 #issues for discussion
-#1. released gas - amount for how many days? put per day for now.
+#1. released gas - amount for how many days? put per day for now. --> thats fine I just multiplied in the next line by working days
 #2. G_in - is this already purified? methane's rate is already 0.9665, which meets the biomethane requirement
 #          in general composition of biogas, methane is expected around 0.6
-#3. digOut - digestate amount is 18.7. expected around 80%-90% of kilos (7963)
+#3. digOut - digestate amount is 18.7. expected around 80%-90% of kilos (7963) --> how about 18.7 kg/day *330 days/year ~6200
 
 V_g =V_g*working_days
 ghg = pd.DataFrame()
@@ -89,7 +89,7 @@ for gas in ['CH4','CO2','NOX','SOX']:
 list_ghg = do_all_list_cp(W_a,distance,list_ghg)
 
 n_g = 1
-V_gburn = V_g
+V_gburn = 1*V_g
 print('----')
 farmer_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,e_c,e_priceB,f_used,p_bf)
 print('----')
