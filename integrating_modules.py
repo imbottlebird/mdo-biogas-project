@@ -19,11 +19,11 @@ import biogas as B
 farm=[]
 system=[]
 
-vector1 = [n_g,V_g,V_gburnP] #design variables
+vector1 = [n_g,V_gburnP] #design variables
 DOE = [vector1,vector2] #all design vectors for DOE
 for v in DOE:
     n_g = v[0]
-    V_gburn = v[1]*v[2]
+    V_gburn = v[1]*V_g
     
 #Optimal latitude and longitude for Digestor
 Digest_lat = T.location_optimal(Farm1_lat, Farm2_lat, Farm3_lat, Farm4_lat, Farm5_lat)
@@ -98,8 +98,8 @@ for gas in ['CH4','CO2','NOX','SOX']:
     list_ghg.append(ghg[ghg['gas']==gas].values.flatten().tolist())
 list_ghg = do_all_list_cp(W_a,distance,list_ghg)
 
-n_g = 1
-V_gburn = 1*V_g
+# n_g = 1
+# V_gburn = 1*V_g
 print('----')
 farm.append(farmer_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,e_c,e_priceB,f_used,p_bf))
 print('----')
