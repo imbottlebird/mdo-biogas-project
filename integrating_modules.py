@@ -77,4 +77,16 @@ print("Captured gas (g/tonne): ", ghg_c)
 #          in general composition of biogas, methane is expected around 0.6
 #3. digOut - digestate amount is 18.7. expected around 80%-90% of kilos (7963)
 
+V_g =V_g*working_days
+ghg = pd.DataFrame()
+ghg['ghg_lf']=ghg_r
+ghg['ghg_tech']=ghg_c
+ghg['gas']= ['CH4','CO2','NOX','SOX']
+list_ghg = []
+for gas in ['CH4','CO2','NOX','SOX']:
+    list_ghg.append(ghg[ghg['gas']==gas].values.flatten().tolist())
+list_ghg = do_all_list_cp(W_a,distance,list_ghg)
+print('----')
 print(farmer_npv(V_d,typ,distance,f_p,H_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf))
+print('----')
+print(system_npv(V_d,typ,distance,f_p,H_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf,list_ghg))

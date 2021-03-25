@@ -18,20 +18,20 @@ Created on Sun Mar 21 19:38:02 2021
 # h_needed = 10000
 # W_out = 10000
 
-nox_lf = 1
-sox_lf = 1 
-pm_lf = 1 
-ch4_lf = 1 
-co2_lf = 1 
-nox_tech = 0.5
-sox_tech = 0.5
-pm_tech = 0.5 
-ch4_tech = 0.5 
-co2_tech = 0.5
-all_gas_list = [[10,2,5,3,5],[10,6,3,1,3]]
+# nox_lf = 1
+# sox_lf = 1 
+# pm_lf = 1 
+# ch4_lf = 1 
+# co2_lf = 1 
+# nox_tech = 0.5
+# sox_tech = 0.5
+# pm_tech = 0.5 
+# ch4_tech = 0.5 
+# co2_tech = 0.5
+# all_gas_list = [[10,2,5,3,5],[10,6,3,1,3]]
 #Optimizable
 n_g = 1 #natural number, # of generators
-V_gburn = 6000000*.2
+V_gburn = 1000
 
 
 
@@ -111,8 +111,10 @@ def w_l(f_p,f_used):
     return f_p-f_used
 def e_p(V_gburn):
     return V_gburn*e_densitygas*g_eff
+def JtokWh(J):
+    return J/3600000
 def e_s(V_gburn,e_c,h_needed,W_out):
-    return e_p(V_gburn)-e_c-(-h_needed+g*h_water*W_out/eff_pump)*working_days
+    return e_p(V_gburn)-e_c-(-h_needed+JtokWh(g*h_water*W_out/eff_pump))*working_days
 
 
 def r(V_gburn,e_c,h_needed,W_out,f_p,f_used,V_g):
@@ -125,7 +127,7 @@ def polution_avoided_specific(list_in):
     #equation (7)
     #Nox here is an example can be used for SOx,PM,CH4,CO2,
     #[W,NOX_lf,NOX_tech,NOX_ff,P_nox]
-    W = list_in[0]
+    W = list_in[0]/1000
     NOX_lf = list_in[1]
     NOX_tech = list_in[2]
     NOX_ff = list_in[3]
@@ -163,19 +165,19 @@ def do_all_list_cp(W,distance_total,list_in):
     
 def nox_ff(distance_total):
     global CF
-    return 0.46*CF*D(distance_total)
+    return 0.46*CF*D(distance_total)/1000
 def sox_ff(distance_total):
     global CF
-    return 0.0*CF*D(distance_total)
+    return 0.0*CF*D(distance_total)/1000
 def pm_ff(distance_total):
     global CF
-    return 0.01*CF*D(distance_total)
+    return 0.01*CF*D(distance_total)/1000
 def ch4_ff(distance_total):
     global CF
-    return 0.5*CF*D(distance_total)
+    return 0.5*CF*D(distance_total)/1000
 def co2_ff(distance_total):
     global CF
-    return 4*CF*D(distance_total)
+    return 4*CF*D(distance_total)/1000
 
 def farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf):
     i_r = i(V_d,typ)
@@ -184,8 +186,30 @@ def farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_price
     c_e_r= c_e(e_c,e_priceB)
     f_s_r = f_s(f_used,p_bf)
     r_r = r(V_gburn,e_c,h_needed,W_out,f_p,f_used,V_g)
+    
+    capacity = n_g*g_power*working_days*working_hours
+    print('Energy produced kWh/year = %.2f' % (e_p(V_gburn)))
+    print('Energy required to pump water kWh/year = %.2f' % (JtokWh(g*h_water*W_out/eff_pump)*working_days))
+    print('System power production capacity kWh/year = %.2f' % (capacity))
+    print('Energy Sold kWh/year = %.2f' % (e_s(V_gburn,e_c,h_needed,W_out)))
+    print('Digester heat needed kWh/year = %.2f' % (h_needed*working_days))
+    print('Total revenue generated R$ %.2f' % (r_r))
+    print('Total investment R$ %.2f' % (i_r))
+    print('Total cost of transport R$ %.2f' % (c_t_r))
+    print('Total cost of maintenance R$ %.2f' % (c_m_r))
+    print('Total cost saved in electrical energy R$ %.2f' % (c_e_r))
+    print('Total cost saved in fertilizer R$ %.2f' % (f_s_r))
+    print('Total amount of biomethane sold m^3 %.2f /year' % (V_g-V_gburn))
+    print('Total amount of electrical energy sold kWh %.2f /year' % (e_s(V_gburn,e_c,h_needed,W_out)))
+    print('Total amount of fertilizer sold kg %.2f /year' % (w_l(f_p,f_used)))
+    
+    
+    
+    
+    
     return r_r-i_r-c_m_r-c_t_r+c_e_r+f_s_r
 def system_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf,all_gas_list):
+    print('Total ghg emissions saved R$ %.2f' % (c_p(all_gas_list)))
     f_npv = farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf)
     return f_npv +c_p(all_gas_list)
 # farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf)
