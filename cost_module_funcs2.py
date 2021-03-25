@@ -188,6 +188,7 @@ def farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_price
     r_r = r(V_gburn,e_c,h_needed,W_out,f_p,f_used,V_g)
     
     capacity = n_g*g_power*working_days*working_hours
+    print('Farmer NPV R$ = %.2f' % (r_r-i_r-c_m_r-c_t_r+c_e_r+f_s_r))
     print('Energy produced kWh/year = %.2f' % (e_p(V_gburn)))
     print('Energy required to pump water kWh/year = %.2f' % (JtokWh(g*h_water*W_out/eff_pump)*working_days))
     print('System power production capacity kWh/year = %.2f' % (capacity))
@@ -209,8 +210,9 @@ def farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_price
     
     return r_r-i_r-c_m_r-c_t_r+c_e_r+f_s_r
 def system_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf,all_gas_list):
-    print('Total ghg emissions saved R$ %.2f' % (c_p(all_gas_list)))
     f_npv = farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf)
+    print('System NPV R$ %.2f' % (c_p(all_gas_list)))
+    print('Total ghg emissions saved R$ %.2f' % (c_p(all_gas_list)))
     return f_npv +c_p(all_gas_list)
 # farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf)
 # def check_constraints():
