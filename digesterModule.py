@@ -144,6 +144,7 @@ def digester(wFR, wComp, Tdig):
     # enthOut = enthWout - enthWin / 1000
     h2oOut = abs(enthOut) * 1000 / cpH2O(Tdig) / (Tdig - Tw) # kg/day
     
+    print("Waste entering reactor in m3/day", wFR)
     print("Waste entering reactor in kg/day: ", wIn)
     rxName = ["Covered Lagoon", "Upflow System"]
     print("Reactor type is: ", rxName[upflowFlag])
