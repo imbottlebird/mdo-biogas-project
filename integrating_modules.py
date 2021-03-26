@@ -19,6 +19,9 @@ import biogas as B
 farm=[]
 system=[]
 
+url=r'C:\Users\Ricardo Hopker\Massachusetts Institute of Technology\EM.428 MDO Biogas spring 2021 - General\Assignment A2'
+DOE = pd.read_csv(url+'\\DOE.csv')
+
 vector1 = [n_g,V_gburnP] #design variables
 DOE = [vector1,vector2] #all design vectors for DOE
 for v in DOE:
