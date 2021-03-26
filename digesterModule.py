@@ -87,6 +87,7 @@ def digester(wFR, wComp, Tdig):
     sPM = [z[:,1], z[:,2], z[:,3]] # all unreacted particulate matter
     
     # check that reaction is to plan
+    plt.figure()
     plt.plot(t,sI,'r-',linewidth=2,label='inert')
     plt.plot(t,sH2,'b--',linewidth=2,label='H2')
     plt.plot(t,sCH4,'g:',linewidth=2,label='CH4')
