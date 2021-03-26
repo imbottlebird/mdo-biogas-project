@@ -113,7 +113,7 @@ def e_p(V_gburn):
 def JtokWh(J):
     return J/3600000
 def e_s(V_gburn,e_c,h_needed,W_out):
-    return e_p(V_gburn)-e_c-(-h_needed+JtokWh(g*h_water*W_out/eff_pump))*working_days
+    return e_p(V_gburn)-e_c-(0*h_needed+JtokWh(g*h_water*W_out/eff_pump))*working_days
 
 
 def r(V_gburn,e_c,h_needed,W_out,f_p,f_used,V_g):
