@@ -20,8 +20,9 @@ farm=[]
 system=[]
 
 
-url=r'C:\Users\Ricardo Hopker\Massachusetts Institute of Technology\EM.428 MDO Biogas spring 2021 - General\Assignment A2'
-DOE = pd.read_csv(url+'\\DOE.csv')
+# url=r'C:\Users\Ricardo Hopker\Massachusetts Institute of Technology\EM.428 MDO Biogas spring 2021 - General\Assignment A2'
+# DOE = pd.read_csv(url+'\\DOE.csv')
+DOE = pd.read_csv('DOE.csv')
 
 
 # vector1 = [n_g,V_gburnP] #design variables
@@ -33,7 +34,7 @@ for i in range(0,9):
 DOE_n = 0
 for vector in DOE_vector:
     DOE_n = DOE_n+1
-    print('Design of experimenet # = %.0f' % (DOE_n))
+    print('Design of experiment #%.0f' % (DOE_n))
     #Optimal latitude and longitude for Digestor
     Digest_lat = T.location_optimal(Farm1_lat, Farm2_lat, Farm3_lat, Farm4_lat, Farm5_lat)
     Digest_lon = T.location_optimal(Farm1_lon, Farm2_lon, Farm3_lon, Farm4_lon, Farm5_lon)
@@ -83,7 +84,7 @@ for vector in DOE_vector:
     print('----')
     
     #biogas module
-    V_g = B.scm_to_m3(B.biomethane(G_in, G_comp)) #biomethane
+    V_g = B.biomethane(G_in, G_comp) #biomethane
     f_p = B.biofertilizer(kilos) 
     ghg_r, ghg_c = B.ghg(kilos, wComp, G_in, G_comp) #ghg_r: released gas, ghg_c: captured gas
     
