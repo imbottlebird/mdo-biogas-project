@@ -7,7 +7,7 @@ def biomethane(G_in, G_comp):
     return v_bm
 
 def scm_to_m3(scm):
-    #biomethane storage temperature = 60C (scielo.br)
+    #biomethane storage temperature = 50C
     #source: https://checalc.com/solved/volconv.html
     K = 273 #temp conversion to Kelvin
     P1 = P2 = 1 #pressure
