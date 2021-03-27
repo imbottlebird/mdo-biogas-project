@@ -34,7 +34,7 @@ for i in range(0,9):
 DOE_n = 0
 for vector in DOE_vector:
     DOE_n = DOE_n+1
-    print('Design of experimenet # = %.0f' % (DOE_n))
+    print('Design of experiment #%.0f' % (DOE_n))
     #Optimal latitude and longitude for Digestor
     Digest_lat = T.location_optimal(Farm1_lat, Farm2_lat, Farm3_lat, Farm4_lat, Farm5_lat)
     Digest_lon = T.location_optimal(Farm1_lon, Farm2_lon, Farm3_lon, Farm4_lon, Farm5_lon)
