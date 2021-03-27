@@ -83,7 +83,7 @@ for vector in DOE_vector:
     print('----')
     
     #biogas module
-    V_g = B.scm_to_m3(B.biomethane(G_in, G_comp)) #biomethane
+    V_g = B.biomethane(G_in, G_comp) #biomethane
     f_p = B.biofertilizer(kilos) 
     ghg_r, ghg_c = B.ghg(kilos, wComp, G_in, G_comp) #ghg_r: released gas, ghg_c: captured gas
     
