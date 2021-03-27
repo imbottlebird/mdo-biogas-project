@@ -76,7 +76,7 @@ def digester(wFR, wComp, Tdig):
     Tdig = Tdig + 273 # temp in Kelvin
     
     mixBOD = wasteData['BOD'].dot(wComp) * wIn / rxVol# kg BOD / m3
-    z0 = [0,0,0,0,0,0,mixBOD,0,0,0.001,0.001,0.001,0.001] # initial condition
+    z0 = [0,0,0,0,0,0,0,mixBOD,0,0,0.001,0.001,0.001,0.001] # initial condition
     # t = np.linspace(0,10)
     z = odeint(rxns, z0, t, args=(Tdig,))
     
@@ -84,6 +84,7 @@ def digester(wFR, wComp, Tdig):
     sI = z[:,0] # soluble inerts = N2, H2S in kg BOD / m3
     sH2 = z[:,4] # H2
     sCH4 = z[:,5] # methane
+    sCO2 = z[:,6] # co2
     sPM = [z[:,1], z[:,2], z[:,3]] # all unreacted particulate matter
     
     # check that reaction is to plan
@@ -91,6 +92,7 @@ def digester(wFR, wComp, Tdig):
     plt.plot(t,sI,'r-',linewidth=2,label='inert')
     plt.plot(t,sH2,'b--',linewidth=2,label='H2')
     plt.plot(t,sCH4,'g:',linewidth=2,label='CH4')
+    plt.plot(t,sCO2,'y-.',linewidth=2,label='CO2')
     plt.plot(t,sum(sPM),'k-',linewidth=2,label='particulate matter')
     plt.legend(loc='center right')
     plt.xlabel('time (days)')
@@ -101,14 +103,15 @@ def digester(wFR, wComp, Tdig):
     sI = sI[-1]
     sH2 = sH2[-1]
     sCH4 = sCH4[-1]
+    sCO2 = sCO2[-1]
     sPM = [i[-1] for i in sPM]
     
     # determine flow rate & composition of effluent gas
     mixN2 = wasteData['N'].dot(wComp)
     noxOut = sI * mixN2 / 32 * 0.5 * 46 * wFR # kg NO2 / day ; o2 demand to no2
     soxOut = sI * (1 - mixN2) / 32 * 2/3 * 64 * wFR # kg SO2 / day; o2 demand to so2
-    co2Out = sH2 / 32 * 2 / 4 * 44 * wFR # kg CO2 / day; o2 demand to h2 to co2
     ch4Out = sCH4 / 32 * 0.5 * 16 * wFR # kg CH4 / day; o2 demand to ch4
+    co2Out = sCO2 / 32 * (1/3) * 44 * wFR # kg CO2 / day; from h2, ch4
     gasInKg = [ch4Out, co2Out, noxOut*0.99, soxOut*0.99] # 99% nox, sox in vapor
     
     gasIn = [ch4Out/0.55, co2Out/1.53, gasInKg[2]/3.3, gasInKg[3]/2.619] # m3/day
@@ -165,13 +168,14 @@ def rxns(z,t,T):
     sAC = z[3]
     sH2 = z[4]
     sCH4 = z[5]
-    xC = z[6] # bacteria concentrations in kg COD / m3
-    xS = z[7]
-    xI = z[8]
-    xAcid = z[9]
-    xAcet = z[10]
-    xMetaAC = z[11]
-    xMetaH2 = z[12]
+    sCO2 = z[6]
+    xC = z[7] # bacteria concentrations in kg COD / m3
+    xS = z[8]
+    xI = z[9]
+    xAcid = z[10]
+    xAcet = z[11]
+    xMetaAC = z[12]
+    xMetaH2 = z[13]
     
     kDis = 1e10 * np.log(6.07e4/8.314/T) # 1/day rates
     kHyd = 1e15 * np.log(8.84e4/8.314/T)
@@ -202,6 +206,7 @@ def rxns(z,t,T):
               (vMetaH2 * sH2 * xMetaH2) / (kMetaH2 + sH2))
     dsCH4dt = ((1 - 0.05) * (vMetaAC * sAC * xMetaAC) / (kMetaAC + sAC) +
                (1 - 0.06) * (vMetaH2 * sH2 * xMetaH2) / (kMetaH2 + sH2))
+    dsCO2dt = dsCH4dt - (1/4)*dsH2dt
     
     # bacteria growth & decay
     dxCdt = (-kDis * xC + kdAcid * xAcid + kdAcet * xAcet +
@@ -214,7 +219,7 @@ def rxns(z,t,T):
     dxMetaH2dt = 0.06 * (vMetaH2 * sH2 * xMetaH2) / (kMetaH2 + sH2) - kdMetaH2 * xMetaH2
     
     
-    return [dsIdt, dsSOdt, dsOAdt, dsACdt, dsH2dt, dsCH4dt, dxCdt, dxSdt,
+    return [dsIdt, dsSOdt, dsOAdt, dsACdt, dsH2dt, dsCH4dt, dsCO2dt, dxCdt, dxSdt,
             dxIdt, dxAciddt, dxAcetdt, dxMetaACdt, dxMetaH2dt]
     
 def cpCO2(T):
