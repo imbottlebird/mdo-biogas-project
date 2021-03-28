@@ -28,7 +28,7 @@ DOE = pd.read_csv('DOE.csv')
 # vector1 = [n_g,V_gburnP] #design variables
 # DOE_vector = [vector1,vector2] #all design vectors for DOE
 DOE_vector=[]
-for i in range(0,9):
+for i in range(0,18):
     vector =  DOE.loc[i].values.flatten().tolist()
     DOE_vector.append(vector)
 DOE_n = 0
@@ -66,7 +66,8 @@ for vector in DOE_vector:
     #Weighted average % of chicken manure of all the material supplied
     
     wComp = [total_cattle_perc, total_pigs_perc, total_chicks_perc]
-    kilos = T.total_kg(wIn, vol_to_mass_conv)
+    #kilos = T.total_kg(wIn, vol_to_mass_conv)
+    kilos = vector[5]
     #up to and including V_g are inputs
     #print(farmer_npv(V_d,typ,distance_total,f_p,h_needed,W_out,V_gburn,V_g,e_c,e_priceB,f_used,p_bf))
     
