@@ -5,6 +5,12 @@ import cvxpy as cp
 from math import sin, cos, sqrt, atan2, radians, pi
 from constants import *
 
+#Total volumes (m3) are the daily volumes of all the farms per day
+def total_vol(m1, m2, m3, m4, m5):
+    return (m1+m2+m3+m4+m5)
+
+volume = total_vol(man1, man2, man3, man4, man5)
+
 def location_optimal(l1, l2, l3, l4, l5):
     return (l1+l2+l3+l4+l5)/5
 
@@ -15,6 +21,13 @@ def distance(Farm_lat, dlat, dlon):
 
 Digest_lat = location_optimal(Farm1_lat, Farm2_lat, Farm3_lat, Farm4_lat, Farm5_lat)
 Digest_lon = location_optimal(Farm1_lon, Farm2_lon, Farm3_lon, Farm4_lon, Farm5_lon)
+
+print("Location of FARM1 in radians is latitude: "+str(Farm1_lat)+" and longitude: "+str(Farm2_lon))
+print("Location of FARM2 in radians is latitude: "+str(Farm2_lat)+" and longitude: "+str(Farm2_lon))
+print("Location of FARM3 in radians is latitude: "+str(Farm3_lat)+" and longitude: "+str(Farm3_lon))
+print("Location of FARM4 in radians is latitude: "+str(Farm4_lat)+" and longitude: "+str(Farm4_lon))
+print("Location of FARM5 in radians is latitude: "+str(Farm5_lat)+" and longitude: "+str(Farm5_lon))
+
 
 #Total distance is the travelled distance from all 5 farms per day in km's
 def total_distance(lat1, lon1, lat2, lon2, lat3, lon3, lat4, lon4, lat5, lon5, dlat, dlon):
@@ -41,11 +54,7 @@ def total_distance(lat1, lon1, lat2, lon2, lat3, lon3, lat4, lon4, lat5, lon5, d
 distance_total = total_distance(Farm1_lat, Farm1_lon, Farm2_lat, Farm2_lon, Farm3_lat, \
     Farm3_lon, Farm4_lat, Farm4_lon, Farm5_lat, Farm5_lon, Digest_lat, Digest_lon)
 
-#Total volumes (m3) are the daily volumes of all the farms per day
-def total_vol(m1, m2, m3, m4, m5):
-    return (m1+m2+m3+m4+m5)
 
-volume = total_vol(man1, man2, man3, man4, man5)
 
 #Total kilograms are the daily volumes supplied (m3) converted into mass (kg)
 def total_kg(vol,conv):
@@ -77,7 +86,13 @@ total_chicks_perc = vol_breakdown(man1, exp_1["Farm 1 chicks"], man2, exp_1["Far
 
 manure_comp = [total_cattle_perc, total_pigs_perc, total_chicks_perc]
 
-#print("Optimal location for DIGESTOR is latitude: "+str(Digest_lat)+" and longitude: "+str(Digest_lon))
+print("Optimal location in radians for DIGESTOR is latitude: "+str(Digest_lat)+" and longitude: "+str(Digest_lon))
+print("Total daily distance from farms to digestor travelled is "+str(distance_total)+" km")
+print("Total VOLUME manure supplied per day is "+str(volume)+" m3")
+print("Weighted average solids percentage of the manure supplied is "+str(total_solids_perc*100)+" %")
+print("Manure composition is CATTLE-PIGS-CHICKS is "+str(manure_comp))
+
+
 #print("Total daily distance from farms to digestor travelled is "+str(distance_total)+" km")
 #print("Total VOLUME manure supplied per day is "+str(volume)+" m3")
 #print("Total MASS manure supplied per day is "+str(kilos)+" kg")
