@@ -99,7 +99,7 @@ def i(V_d,typ,n_g): #investment cost
     global a_d,b_d,g_d
     return a_d[typ]*V_d+b_d[typ]+n_g*g_d
 def i_m(V_d,typ,n_g):
-    return [n_g*g_m+i_main_cost*(a_d[typ]*V_d+b_d[typ])]
+    return n_g*g_m+i_main_cost*(a_d[typ]*V_d+b_d[typ])
 def c_m(V_d,typ,n_g):
     return total_npv(i_m(V_d,typ,n_g))
 def c_e(e_c,e_priceB):
