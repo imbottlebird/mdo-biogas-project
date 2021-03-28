@@ -17,6 +17,14 @@ def tests(func,var,expected_value,err=0.01):
 all_tests = []
 #test for NPV
 all_tests.append([npv,[10,2,0.1],8.26])
-tests(*all_tests[-1])
+all_tests.append([npv,[10,1,0],10])
+all_tests.append([npv,[10,2,0],10])
+all_tests.append([npv,[20,3],15.88])
+all_tests.append([total_npv,[10],39.9])
+result =[]
+for test in all_tests:
+    result.append(tests(*test))
 
+df = pd.DataFrame(all_tests,columns=['function name','variables in','expected resuts'])
+df['results'] = result
 # test_vector = [tests(npv,[P,n],10),
