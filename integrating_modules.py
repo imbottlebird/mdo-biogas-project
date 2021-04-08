@@ -86,9 +86,12 @@ for vector in DOE_vector:
     
     #biogas module
     V_g = B.biomethane(G_in, G_comp) #biomethane
-    f_p = B.biofertilizer(kilos) 
+    #bg = B.biomethane_validation(kilos, wComp)
+    f_p = B.biofertilizer(digOut) 
     ghg_r, ghg_c = B.ghg(kilos, wComp, G_in, G_comp) #ghg_r: released gas, ghg_c: captured gas
+    bgm_total = B.bgm_cost(G_comp, G_in, digOut)
     
+    #print('Module biogas: ', G_in, 'Expected biogas: ', bg)
     print("Produced biomethane: ", V_g)
     print("Produced biofertilizer: ",f_p)
     print("Released gas (g/tonne): ", ghg_r)
