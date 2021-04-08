@@ -29,7 +29,7 @@ print("Location of FARM4 in radians is latitude: "+str(Farm4_lat)+" and longitud
 print("Location of FARM5 in radians is latitude: "+str(Farm5_lat)+" and longitude: "+str(Farm5_lon))
 
 
-#Total distance is the travelled distance from all 5 farms per day in km's
+#Total distance is the travelled distance from all 5 farms per day in km's - ENSURE CAPACITY OF TRUCKS IS ADDRESSED IN THIS CALC
 def total_distance(lat1, lon1, lat2, lon2, lat3, lon3, lat4, lon4, lat5, lon5, dlat, dlon):
     dlon1 = lon1 - dlon
     dlat1 = lat1 - dlat
