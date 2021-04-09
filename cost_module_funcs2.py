@@ -199,7 +199,7 @@ def g3(n_g,ep):
     global g_power,working_hours
     capacity = n_g*g_power*working_days*working_hours
     return ep-capacity
-def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt=False):
+def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt=False,pen=True):
     global tax, kd, ke,g_power,working_hours
     k = WACC(debt_level,tax,kd,ke)
     i_r = i(V_d,typ,n_g)
@@ -213,7 +213,7 @@ def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_le
     p2 = max(g2(e_p(V_gburn),e_c,e_process(h_needed,W_out)),0)**2
     p3 = max(g3(n_g,e_p(V_gburn)),0)**2
     ro = 10
-    penalty = ro*(10*p0+100*p1+2*p2+100*p3)
+    penalty = pen*ro*(10*p0+100*p1+2*p2+100*p3)
     
     capacity = n_g*g_power*working_days*working_hours
     if printt:
@@ -238,8 +238,8 @@ def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_le
     
     
     return r_r-i_r-c_m_r-c_t_r+c_e_r+f_s_r-penalty
-def system_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,all_gas_list,printt=False):
-    f_npv = farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt)
+def system_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,all_gas_list,printt=False,pen=True):
+    f_npv = farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt,pen)
     global tax, kd, ke
     k = WACC(debt_level,tax,kd,ke)
     if printt:

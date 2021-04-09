@@ -33,7 +33,9 @@ for i in range(0,18):
     vector =  DOE.loc[i].values.flatten().tolist()
     DOE_vector.append(vector[1:])
 DOE_n = 0
-def biodigestor(vector,printt=False):
+def biodigestor(vector,printt=False,pen=True):
+    #Use printt to print the text within your modules, when running the optimization it should be set to False
+    #Use pen to penalize the function contraints being violated, when running the optimization it should be set to True
     # DOE_n = DOE_n+1
     # print('Design of experiment #%.0f' % (DOE_n))
     #Optimal latitude and longitude for Digestor
@@ -122,7 +124,7 @@ def biodigestor(vector,printt=False):
     # print('----')
     # system.append(system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,list_ghg))
     # print('----')
-    return -system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,list_ghg,printt)
+    return -system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,list_ghg,printt,pen)
 # for vector in DOE_vector:
 #     vector.extend([0.7])
 #     system.append(biodigestor(vector))
