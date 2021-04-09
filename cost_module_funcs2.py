@@ -118,9 +118,12 @@ def e_p(V_gburn):
     return V_gburn*e_densitygas*g_eff
 def JtokWh(J):
     return J/3600000
+def e_process(h_needed,W_out):
+    global g,h_water,eff_pump,working_days
+    return (0*h_needed+JtokWh(g*h_water*W_out/eff_pump))*working_days
 def e_s(V_gburn,e_c,h_needed,W_out):
     global g,h_water,eff_pump
-    return e_p(V_gburn)-e_c-(0*h_needed+JtokWh(g*h_water*W_out/eff_pump))*working_days
+    return e_p(V_gburn)-e_c-e_process(h_needed,W_out)
 
 
 def r(V_gburn,e_c,h_needed,W_out,f_p,f_used,V_g,k):
@@ -186,7 +189,16 @@ def ch4_ff(distance_total):
 def co2_ff(distance_total):
     global CF
     return 4*CF*D(distance_total)/1000
-
+def g0(fused,fp):
+    return fused-fp
+def g1(Vgburn,Vg):
+    return Vgburn-Vg
+def g2(ep,ec,eprocess):
+    return ec+eprocess*ep
+def g3(n_g,ep):
+    global g_power,working_hours
+    capacity = n_g*g_power*working_days*working_hours
+    return ep-capacity
 def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt=False):
     global tax, kd, ke,g_power,working_hours
     k = WACC(debt_level,tax,kd,ke)
@@ -196,6 +208,12 @@ def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_le
     c_e_r= c_e(e_c,e_priceB,k)
     f_s_r = f_s(f_used,p_bf,k)
     r_r = r(V_gburn,e_c,h_needed,W_out,f_p,f_used,V_g,k)
+    p0 = max(g0(f_used,f_p),0)**2
+    p1 = max(g1(V_gburn,V_g),0)**2
+    p2 = max(g2(e_p(V_gburn),e_c,e_process(h_needed,W_out)),0)**2
+    p3 = max(g3(n_g,e_p(V_gburn)),0)**2
+    ro = 10
+    penalty = ro*(10*p0+100*p1+2*p2+100*p3)
     
     capacity = n_g*g_power*working_days*working_hours
     if printt:
@@ -219,9 +237,9 @@ def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_le
     
     
     
-    return r_r-i_r-c_m_r-c_t_r+c_e_r+f_s_r
+    return r_r-i_r-c_m_r-c_t_r+c_e_r+f_s_r-penalty
 def system_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,all_gas_list,printt=False):
-    f_npv = farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf)
+    f_npv = farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt)
     global tax, kd, ke
     k = WACC(debt_level,tax,kd,ke)
     if printt:

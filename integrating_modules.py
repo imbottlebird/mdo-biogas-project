@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from sko.GA import GA
 
 from constants import *
-from cost_module_funcs2 import do_all_list_cp,system_npv,JtokWh #,farmer_npv
+from cost_module_funcs2 import do_all_list_cp,system_npv,JtokWh ,farmer_npv
 from digesterModule import digester
 import Transport as T
 import biogas as B
@@ -33,7 +33,7 @@ for i in range(0,18):
     vector =  DOE.loc[i].values.flatten().tolist()
     DOE_vector.append(vector[1:])
 DOE_n = 0
-def biodigestor(vector):
+def biodigestor(vector,printt=False):
     # DOE_n = DOE_n+1
     # print('Design of experiment #%.0f' % (DOE_n))
     #Optimal latitude and longitude for Digestor
@@ -122,10 +122,11 @@ def biodigestor(vector):
     # print('----')
     # system.append(system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,list_ghg))
     # print('----')
-    return -system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,list_ghg)
+    return -system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,list_ghg,printt)
 # for vector in DOE_vector:
 #     vector.extend([0.7])
 #     system.append(biodigestor(vector))
+
 # constraint_eq = []
 # constraint_ueq = []
 # ga = GA(func=biodigestor,n_dim=len(vector),size_pop=100,max_iter=50,lb=[0,1,20,0,0,0],ub=[1,3,30,10000,10000,0.8],precision=1)
@@ -136,21 +137,27 @@ def biodigestor(vector):
 # best_x, best_y = ga.run()
 from geneticalgorithm import geneticalgorithm as ga # https://pypi.org/project/geneticalgorithm/
 import timeit
-algorithm_param = {'max_num_iteration': 500,\
-                'population_size':100,\
-                'mutation_probability':.5,\
-                'elit_ratio': .01,\
-                'crossover_probability': .2,\
-                'parents_portion': .3,\
-                'crossover_type':'uniform',\
-                'max_iteration_without_improv':200}
-varbound =np.array([[0,1],[1,3],[20,30],[0,10000],[0,10000],[0,0.8]])
-start = timeit.default_timer()  
-var_type = np.array([['real'],['int'],['real'],['real'],['real'],['real']])   
-model2=ga(function=biodigestor,\
-        dimension=len(vector),\
-        variable_type_mixed=var_type,\
-        variable_boundaries=varbound,\
-        algorithm_parameters=algorithm_param)
-model2.run()
-stop = timeit.default_timer()
+def runGA():
+    algorithm_param = {'max_num_iteration': 500,\
+                    'population_size':100,\
+                    'mutation_probability':.5,\
+                    'elit_ratio': .01,\
+                    'crossover_probability': .2,\
+                    'parents_portion': .3,\
+                    'crossover_type':'uniform',\
+                    'max_iteration_without_improv':200}
+    varbound =np.array([[0,1],[1,3],[20,30],[0,10000],[0,10000],[0,0.8]])
+    start = timeit.default_timer()  
+    var_type = np.array([['real'],['int'],['real'],['real'],['real'],['real']])   
+    model2=ga(function=biodigestor,\
+            dimension=len(vector),\
+            variable_type_mixed=var_type,\
+            variable_boundaries=varbound,\
+            algorithm_parameters=algorithm_param)
+    model2.run()
+    stop = timeit.default_timer()
+    print(stop-start)
+    return model2
+best = [6.26087460e-02, 1.00000000e+00, 2.80062435e+01, 9.99810434e+03,
+       9.98127312e+03, 7.99307199e-01]
+biodigestor(best,True)
