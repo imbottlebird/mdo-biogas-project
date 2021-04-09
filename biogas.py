@@ -83,10 +83,10 @@ def bgm_cost(G_comp, G_in, digOut):
     #Direct labour cost based on 8h/day; 15$/h
     lc = 8 * 15
 
-    print("Cost of biogas upgrading:", tc_bg)
-    print("Cost of digesate treatment:",tc_bf)
-    print("Cost of labour:", lc)
-    print("Total operating cost of Biogas Module:", tc_bg + tc_bf + lc)
+    # print("Cost of biogas upgrading:", tc_bg)
+    # print("Cost of digesate treatment:",tc_bf)
+    # print("Cost of labour:", lc)
+    # print("Total operating cost of Biogas Module:", tc_bg + tc_bf + lc)
 
     return tc_bg + tc_bf + lc
 

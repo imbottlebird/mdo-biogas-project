@@ -88,16 +88,16 @@ def digester(wFR, wComp, Tdig):
     sPM = [z[:,1], z[:,2], z[:,3]] # all unreacted particulate matter
     
     # check that reaction is to plan
-    plt.figure()
-    plt.plot(t,sI,'r-',linewidth=2,label='inert')
-    plt.plot(t,sH2,'b--',linewidth=2,label='H2')
-    plt.plot(t,sCH4,'g:',linewidth=2,label='CH4')
-    plt.plot(t,sCO2,'y-.',linewidth=2,label='CO2')
-    plt.plot(t,sum(sPM),'k-',linewidth=2,label='particulate matter')
-    plt.legend(loc='center right')
-    plt.xlabel('time (days)')
-    plt.ylabel('kg BOD/m^3')
-    plt.title('Reaction Kinetics in Digester')
+    # plt.figure()
+    # plt.plot(t,sI,'r-',linewidth=2,label='inert')
+    # plt.plot(t,sH2,'b--',linewidth=2,label='H2')
+    # plt.plot(t,sCH4,'g:',linewidth=2,label='CH4')
+    # plt.plot(t,sCO2,'y-.',linewidth=2,label='CO2')
+    # plt.plot(t,sum(sPM),'k-',linewidth=2,label='particulate matter')
+    # plt.legend(loc='center right')
+    # plt.xlabel('time (days)')
+    # plt.ylabel('kg BOD/m^3')
+    # plt.title('Reaction Kinetics in Digester')
     
     # just take the last time-step concentrations
     sI = sI[-1]
@@ -148,16 +148,16 @@ def digester(wFR, wComp, Tdig):
     # enthOut = enthWout - enthWin / 1000
     h2oOut = abs(enthOut) * 1000 / cpH2O(Tdig) / (Tdig - Tw) # kg/day
     
-    print("Waste entering reactor in kg/day: ", wIn)
-    rxName = ["Covered Lagoon", "Upflow System"]
-    print("Reactor type is: ", rxName[upflowFlag])
-    print("Reactor volume in m^3: ", rxVol)
-    print("Effluent gas leaving reactor in m^3/day is: ", gasIn)
-    print("Effluent gas composition by CH4, CO2, NO2, SO2 is: ", gasComp)
-    print("Digestate leaving reactor in m^3/day is: ", digOut)
-    print("Digestate composition by PM, NO2, SO2, inert, water is: ", digComp)
-    print("Total water needed for reactor in kg/day is: ", h2oOut)
-    print("Total heat needed for reactor in kJ/day is: ", enthOut)
+    # print("Waste entering reactor in kg/day: ", wIn)
+    # rxName = ["Covered Lagoon", "Upflow System"]
+    # print("Reactor type is: ", rxName[upflowFlag])
+    # print("Reactor volume in m^3: ", rxVol)
+    # print("Effluent gas leaving reactor in m^3/day is: ", gasIn)
+    # print("Effluent gas composition by CH4, CO2, NO2, SO2 is: ", gasComp)
+    # print("Digestate leaving reactor in m^3/day is: ", digOut)
+    # print("Digestate composition by PM, NO2, SO2, inert, water is: ", digComp)
+    # print("Total water needed for reactor in kg/day is: ", h2oOut)
+    # print("Total heat needed for reactor in kJ/day is: ", enthOut)
     
     return [wIn,upflowFlag,rxVol,gasIn,gasComp,digOut,digComp,h2oOut,enthOut]
 
