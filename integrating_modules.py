@@ -162,4 +162,4 @@ def runGA():
     return model2
 best = [6.26087460e-02, 1.00000000e+00, 2.80062435e+01, 9.99810434e+03,
        9.98127312e+03, 7.99307199e-01]
-biodigestor(best,True)
+biodigestor(best,True,False)

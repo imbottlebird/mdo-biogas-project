@@ -196,11 +196,11 @@ def g1(Vgburn,Vg):
 def g2(ep,ec,eprocess):
     return ec+eprocess*ep
 def g3(n_g,ep):
-    global g_power,working_hours
-    capacity = n_g*g_power*working_days*working_hours
+    global g_power,working_hours,g_eff
+    capacity = n_g*g_power*working_days*working_hours*g_eff
     return ep-capacity
 def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt=False,pen=True):
-    global tax, kd, ke,g_power,working_hours
+    global tax, kd, ke,g_power,working_hours,g_eff
     k = WACC(debt_level,tax,kd,ke)
     i_r = i(V_d,typ,n_g)
     c_t_r = c_t(distance_total,k)
@@ -208,14 +208,16 @@ def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_le
     c_e_r= c_e(e_c,e_priceB,k)
     f_s_r = f_s(f_used,p_bf,k)
     r_r = r(V_gburn,e_c,h_needed,W_out,f_p,f_used,V_g,k)
-    p0 = max(g0(f_used,f_p),0)**2
-    p1 = max(g1(V_gburn,V_g),0)**2
-    p2 = max(g2(e_p(V_gburn),e_c,e_process(h_needed,W_out)),0)**2
-    p3 = max(g3(n_g,e_p(V_gburn)),0)**2
-    ro = 10
-    penalty = pen*ro*(10*p0+100*p1+2*p2+100*p3)
+    penalty = 0
+    if pen:
+        p0 = max(g0(f_used,f_p),0)**2
+        p1 = max(g1(V_gburn,V_g),0)**2
+        p2 = max(g2(e_p(V_gburn),e_c,e_process(h_needed,W_out)),0)**2
+        p3 = max(g3(n_g,e_p(V_gburn)),0)**2
+        ro = 10
+        penalty = pen*ro*(10*p0+100*p1+2*p2+100*p3)
     
-    capacity = n_g*g_power*working_days*working_hours
+    capacity = n_g*g_power*working_days*working_hours*g_eff
     if printt:
         print('Farmer NPV R$ = %.2f' % (r_r-i_r-c_m_r-c_t_r+c_e_r+f_s_r))
         print('Energy produced kWh/year = %.2f' % (e_p(V_gburn)))
