@@ -9,6 +9,7 @@ from constants import *
 #Run "pip install scikit-opt" to get the Simulated Annealing program @ https://scikit-opt.github.io/scikit-opt/#/en/README?id=install
 from sko.SA import SA_TSP
 
+
 file_name = 'location_data.csv'
 transport_data = np.loadtxt(file_name, delimiter=',')
 points_coordinate = np.zeros((len(transport_data),2))
@@ -17,6 +18,7 @@ solids = np.zeros((len(transport_data)))
 cattle = np.zeros((len(transport_data)))
 pigs = np.zeros((len(transport_data)))
 chicken = np.zeros((len(transport_data)))
+truck_vol = 18 #truck has capacity of 18m3 
 
 for n in range(0,len(transport_data)):
     points_coordinate[n][0:2]=transport_data[n][0:2]
@@ -30,22 +32,35 @@ print(points_coordinate)
 print(volume)
 print(solids)
 
+max_vol = np.argmax(volume, axis=0)
+digestor_loc = [points_coordinate[max_vol]]
+
 num_points = points_coordinate.shape[0]
+
 distance_matrix = spatial.distance.cdist(points_coordinate, points_coordinate, metric='euclidean')
 distance_matrix = distance_matrix * 111 # 1 degree of lat/lon ~ = 111km
-print(distance_matrix)
 
-max_vol = np.argmax(volume, axis=0)
-digestor_loc = points_coordinate[max_vol]
-print(digestor_loc)
+
+distance_home = spatial.distance.cdist(points_coordinate, digestor_loc,  metric='euclidean')*111
+print("Distance home is "+str(distance_home))
 
 def cal_total_distance(routine):
     '''The objective function. input routine, return total distance.
     cal_total_distance(np.arange(num_points))
     '''
     num_points, = routine.shape
-    #print("_________")
-    return sum([distance_matrix[routine[i % num_points], routine[(i + 1) % num_points]] for i in range(num_points)])
+    trip_vol = 0
+    dist = 0
+    for i in range(num_points):
+        trip_vol = trip_vol + volume[routine[i % num_points]]
+        trips = 0
+        dist_home = 0
+        if trip_vol>truck_vol:
+            trips = trip_vol // truck_vol
+            trip_vol = trip_vol % truck_vol
+            dist_home = dist_home + int(distance_home[routine[i % num_points]])
+        dist += distance_matrix[routine[i % num_points], routine[(i + 1) % num_points]] + 2*dist_home
+    return dist
 
 sa_tsp = SA_TSP(func=cal_total_distance, x0=range(num_points), T_max=100, T_min=1, L=10 * num_points)
 
@@ -67,7 +82,7 @@ total_pig_perc = vol_breakdown(volume, pigs)
 total_chicken_perc = vol_breakdown(volume, chicken)
 manure_comp = [total_cattle_perc, total_pig_perc, total_chicken_perc]
 
-print("Optimal location in radians for DIGESTOR is latitude: "+str(digestor_loc[0])+" and longitude: "+str(digestor_loc[1]))
+print("Optimal location in radians for DIGESTOR is latitude: "+str(digestor_loc[0][0])+" and longitude: "+str(digestor_loc[0][1]))
 print("Total daily distance from farms to digestor travelled is "+str(best_distance)+" km")
 print("Total VOLUME manure supplied per day is "+str(total_volume)+" m3")
 print("Weighted average solids percentage of the manure supplied is "+str(total_solids_perc*100)+" %")
