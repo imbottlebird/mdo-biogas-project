@@ -28,10 +28,6 @@ for n in range(0,len(transport_data)):
     pigs[n]       = transport_data[n][5]
     chicken[n]    = transport_data[n][6]
 
-print(points_coordinate)
-print(volume)
-print(solids)
-
 max_vol = np.argmax(volume, axis=0)
 digestor_loc = [points_coordinate[max_vol]]
 
@@ -42,7 +38,6 @@ distance_matrix = distance_matrix * 111 # 1 degree of lat/lon ~ = 111km
 
 
 distance_home = spatial.distance.cdist(points_coordinate, digestor_loc,  metric='euclidean')*111
-print("Distance home is "+str(distance_home))
 
 def cal_total_distance(routine):
     '''The objective function. input routine, return total distance.
@@ -65,7 +60,7 @@ def cal_total_distance(routine):
 sa_tsp = SA_TSP(func=cal_total_distance, x0=range(num_points), T_max=100, T_min=1, L=10 * num_points)
 
 best_points, best_distance = sa_tsp.run()
-print(best_points, best_distance, cal_total_distance(best_points))
+
 
 #Total volumes (m3) are the daily volumes of all the farms per day
 def total_vol(v):
