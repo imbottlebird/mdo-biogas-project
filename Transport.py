@@ -1,4 +1,3 @@
-#/Users/niekjansenvanrensburg/Documents/MDO/Ass3_code/mdo-biogas-project
 import numpy as np
 from scipy import spatial
 import matplotlib.pyplot as plt
@@ -88,7 +87,7 @@ def best_points_route(best_points):
 
 final_best = best_points_route(best_points)
 
-print("The best route is: "+str(final_best)+" and the distance on this route is "+str(best_distance))
+
 
 #Total volumes (m3) are the daily volumes of all the farms per day
 def total_vol(v):
@@ -105,29 +104,31 @@ total_pig_perc = vol_breakdown(volume, pigs)
 total_chicken_perc = vol_breakdown(volume, chicken)
 manure_comp = [total_cattle_perc, total_pig_perc, total_chicken_perc]
 
+
+
+#from matplotlib.ticker import FormatStrFormatter
+
+
+final_best.append(final_best[0])
+best_points_ = np.array(final_best)
+best_points_coordinate = points_coordinate[best_points_, :]
+
+
+print("The best route is: "+str(final_best)+" and the distance on this route is "+str(best_distance))
 print("Optimal location is area # "+str(max_vol)+" in radians for DIGESTOR is latitude: "+str(digestor_loc[0][0])+" and longitude: "+str(digestor_loc[0][1]))
 print("Total daily distance from farms to digestor travelled is "+str(best_distance)+" km")
 print("Total VOLUME manure supplied per day is "+str(total_volume)+" m3")
 print("Weighted average solids percentage of the manure supplied is "+str(total_solids_perc*100)+" %")
 print("Manure composition is CATTLE-PIGS-CHICKS is "+str(manure_comp))
 
-from matplotlib.ticker import FormatStrFormatter
-
-fig, ax = plt.subplots(1, 2)
-final_best.append(final_best[0])
-best_points_ = np.array(final_best)
-best_points_coordinate = points_coordinate[best_points_, :]
-ax[0].plot(sa_tsp.best_y_history)
-ax[0].set_xlabel("Iteration")
-ax[0].set_ylabel("Distance")
-ax[1].plot(best_points_coordinate[:, 0], best_points_coordinate[:, 1],
-           marker='o', markerfacecolor='b', color='c', linestyle='-')
-ax[1].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
-ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
-ax[1].set_xlabel("Longitude")
-ax[1].set_ylabel("Latitude")
-plt.show()
-
-
-
-
+#fig, ax = plt.subplots(1, 2)
+#ax[0].plot(sa_tsp.best_y_history)
+#ax[0].set_xlabel("Iteration")
+#ax[0].set_ylabel("Distance")
+#ax[1].plot(best_points_coordinate[:, 0], best_points_coordinate[:, 1],
+#           marker='o', markerfacecolor='b', color='c', linestyle='-')
+#ax[1].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+#ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+#ax[1].set_xlabel("Longitude")
+#ax[1].set_ylabel("Latitude")
+#plt.show()
