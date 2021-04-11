@@ -36,7 +36,6 @@ num_points = points_coordinate.shape[0]
 distance_matrix = spatial.distance.cdist(points_coordinate, points_coordinate, metric='euclidean')
 distance_matrix = distance_matrix * 111 # 1 degree of lat/lon ~ = 111km
 
-
 distance_home = spatial.distance.cdist(points_coordinate, digestor_loc,  metric='euclidean')*111
 
 def cal_total_distance(routine):
@@ -61,6 +60,35 @@ sa_tsp = SA_TSP(func=cal_total_distance, x0=range(num_points), T_max=100, T_min=
 
 best_points, best_distance = sa_tsp.run()
 
+def best_points_route(best_points):
+    '''The objective function. input routine, return total distance.
+    cal_total_distance(np.arange(num_points))
+    '''
+    num_points, = best_points.shape
+    new_route = []
+    trip_vol = 0
+    dist = 0
+    for i in range(num_points):
+        trip_vol = trip_vol + volume[best_points[i % num_points]]
+        trips = 0
+        dist_home = 0
+        new_route.append(best_points[i])
+        if best_points[i % num_points]==max_vol:
+            trips = 0
+            trip_vol = 0
+        if (trip_vol>truck_vol) & (best_points[i % num_points]!=max_vol):
+            trips = trip_vol // truck_vol
+            trip_vol = trip_vol % truck_vol
+            dist_home = dist_home + int(distance_home[best_points[i % num_points]])
+            new_route.append(max_vol)
+            new_route.append(best_points[i % num_points])
+            trips = 0
+        dist = dist + distance_matrix[best_points[i % num_points], best_points[(i + 1) % num_points]] + 2*dist_home
+    return new_route
+
+final_best = best_points_route(best_points)
+
+print("The best route is: "+str(final_best)+" and the distance on this route is "+str(best_distance))
 
 #Total volumes (m3) are the daily volumes of all the farms per day
 def total_vol(v):
@@ -77,10 +105,29 @@ total_pig_perc = vol_breakdown(volume, pigs)
 total_chicken_perc = vol_breakdown(volume, chicken)
 manure_comp = [total_cattle_perc, total_pig_perc, total_chicken_perc]
 
-print("Optimal location in radians for DIGESTOR is latitude: "+str(digestor_loc[0][0])+" and longitude: "+str(digestor_loc[0][1]))
+print("Optimal location is area # "+str(max_vol)+" in radians for DIGESTOR is latitude: "+str(digestor_loc[0][0])+" and longitude: "+str(digestor_loc[0][1]))
 print("Total daily distance from farms to digestor travelled is "+str(best_distance)+" km")
 print("Total VOLUME manure supplied per day is "+str(total_volume)+" m3")
 print("Weighted average solids percentage of the manure supplied is "+str(total_solids_perc*100)+" %")
 print("Manure composition is CATTLE-PIGS-CHICKS is "+str(manure_comp))
+
+from matplotlib.ticker import FormatStrFormatter
+
+fig, ax = plt.subplots(1, 2)
+final_best.append(final_best[0])
+best_points_ = np.array(final_best)
+best_points_coordinate = points_coordinate[best_points_, :]
+ax[0].plot(sa_tsp.best_y_history)
+ax[0].set_xlabel("Iteration")
+ax[0].set_ylabel("Distance")
+ax[1].plot(best_points_coordinate[:, 0], best_points_coordinate[:, 1],
+           marker='o', markerfacecolor='b', color='c', linestyle='-')
+ax[1].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+ax[1].set_xlabel("Longitude")
+ax[1].set_ylabel("Latitude")
+plt.show()
+
+
 
 
