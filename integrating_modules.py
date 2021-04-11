@@ -138,3 +138,75 @@ def runGA():
 best = [6.26087460e-02, 1.00000000e+00, 2.80062435e+01, 9.99810434e+03,
        9.98127312e+03, 7.99307199e-01]
 biodigestor(best,True,False)
+import sympy as sp
+Vg_burn,n_G,T_dig,w_in,kilos,debt_l = sp.symbols('Vg_burn n_G T_dig w_in kilos debt_l')
+vec = [Vg_burn,n_G,28,w_in,kilos,debt_l]
+
+out = biodigestor(vec,False,False)
+def jacobian(expr,vec):
+    out = []
+    for exp in expr:
+        outJ = []
+        for var in vec:
+            if type(var) == sp.core.symbol.Symbol:
+                outJ.append(exp.diff(var))
+        out.append(outJ)
+    return out
+def hessian(jacobian,vec):
+    out = []
+    for jac_vect in jacobian:
+            hesM = []
+            for var in vec:
+                if type(var) == sp.core.symbol.Symbol:
+                    outH = []
+                    for exp in jac_vect:
+                        outH.append(exp.diff(var))
+                    hesM.append(outH)
+            out.append(hesM)
+    return out
+def sub_var(expr,var,value):
+    exprR = np.reshape(np.array(expr),(-1))
+    out = []
+    for exp in exprR:
+        out.append(exp.subs(var,value))
+    out=np.array(out)
+    return np.reshape(out,np.array(expr).shape)
+def sub_all_var(expr,vec,value):
+    vec_value = zip(vec,value)
+    out= expr
+    for var,val in vec_value:
+        if type(var) == sp.core.symbol.Symbol:
+            out = sub_var(out,var,val)
+    return out
+def newton_method(expr,x0,vec,it_max=200,err=10**-3):
+    jac = jacobian([expr],vec)
+    hes = hessian(jac,vec)
+    hes = np.array(hes[0])
+    it = 0
+    xi =x0
+    while it<=it_max:
+        Ji = np.array(sub_all_var(expr,vec,xi)).astype(np.float64)
+        jac_xi = np.array(sub_all_var(jac,vec,xi)).astype(np.float64)
+        hes_xi = np.array(sub_all_var(hes,vec,xi)).astype(np.float64)
+        dx = -np.linalg.inv(hes_xi)*jac_xi
+        xi_1 = xi+dx
+        Ji_1 = np.array(sub_all_var(expr,vec,xi_1)).astype(np.float64)
+        if Ji_1-Ji<err:
+            return Ji_1
+        xi = xi_1
+    return Ji_1
+        
+xxx = newton_method(out,best,vec)
+jac = jacobian([out],vec)
+hes = hessian(jac,vec)
+hes = np.array(hes[0])
+hes1 = sub_var(hes,debt_l,0.8)
+hes2 = sub_var(hes1,w_in,100)
+hes3 = sub_var(hes2,kilos,100)
+hes4 = sub_var(hes3,Vg_burn,0.5)
+hes5 = sub_var(hes4,n_G,1)
+eigen = np.linalg.eig(np.array(hes5).astype(np.float64))
+# x,y = sp.symbols('x y')
+# jacb = jacobian([x**2+x*y+y**2,x**4+y**2*x],[x,y])
+# hessian(jacb,[x,y])
+        

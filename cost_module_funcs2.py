@@ -71,7 +71,7 @@ from constants import *
 def WACC(D,tax,kd,ke):
     return D*kd*(1-tax)+(1-D)*ke
 def npv(P,n,i):
-    return P/(1+i)**n
+    return P/((1+i)**n)
 def total_npv(x,k):
     global L, n_start
     s = 0
@@ -142,7 +142,7 @@ def polution_avoided_specific(list_in):
     NOX_tech = list_in[2]
     NOX_ff = list_in[3]
     P_nox = list_in[4]
-    return W*(NOX_lf-NOX_tech)*P_nox + W*(NOX_ff-NOX_tech)*P_nox
+    return W*(NOX_lf-NOX_tech)*P_nox + 0*W*(NOX_ff-NOX_tech)*P_nox
 def c_p(all_gas_list,k):
     s = 0
     for list_in in all_gas_list:
@@ -194,7 +194,7 @@ def g0(fused,fp):
 def g1(Vgburn,Vg):
     return Vgburn-Vg
 def g2(ep,ec,eprocess):
-    return ec+eprocess*ep
+    return ec+eprocess-ep
 def g3(n_g,ep):
     global g_power,working_hours,g_eff
     capacity = n_g*g_power*working_days*working_hours*g_eff
