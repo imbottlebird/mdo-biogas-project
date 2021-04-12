@@ -218,7 +218,7 @@ def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_le
     r_r = r(V_gburn,e_c,h_needed,W_out,f_p,f_used,V_g,k)
     penalty = 0
     if pen:
-        p0 = max(100*g0(f_used,f_p),0)**2
+        p0 = max(1000*g0(f_used,f_p),0)**2
         p1 = max(10*g1(V_gburn,V_g),0)**2
         p2 = max(100*g2(e_p(V_gburn),e_c,e_process(h_needed,W_out)),0)**2
         p3 = max(10*g3(n_g,e_p(V_gburn)),0)**2

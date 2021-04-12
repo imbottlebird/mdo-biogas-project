@@ -21,7 +21,9 @@ from math import inf
 # Variables we want to keep track in DOE
 farm=[]
 system=[]
-with open('data_transport.p', 'rb') as fp:
+# with open('data_transport.p', 'rb') as fp:
+#     dict_T = pickle.load(fp)
+with open('full_transp.p', 'rb') as fp:
     dict_T = pickle.load(fp)
 
 # url=r'C:\Users\Ricardo Hopker\Massachusetts Institute of Technology\EM.428 MDO Biogas spring 2021 - General\Assignment A2'
@@ -46,24 +48,23 @@ def biodigestor(vector,printt=False,pen=True):
 
     #This loads the respective farms - 1 is active, 0 is inactive. Total farms must be at least 3 active (required by annealing)
     #TOTAL_SOLIDS PERCENTAGE IS NOT USED
-    active_farms= vector[6:13] 
+    active_farms= vector[4:11] 
     active_farms = [0 if num<1 else 1 for num in active_farms ]
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(1,1,1,1,1,1,1)
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
-    if sum(active_farms)>2:
-        if printt:
-            [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
-        else:
-            [distance, wIn, total_solids_perc, wComp] = dict_T[tuple(active_farms)]
+    # if sum(active_farms)>2:
+    if printt:
+        [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
     else:
-        [distance, wIn, total_solids_perc, wComp] = [inf,0,0,[1,0,0]]
+        [distance, wIn, total_solids_perc, wComp] = dict_T[tuple(active_farms)]
+    # else:
+    #     [distance, wIn, total_solids_perc, wComp] = [inf,0,0,[1,0,0]]
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(vector[6],vector[7],vector[8],
     #                                                         vector[9],vector[10],vector[11],vector[12])
 
     
 
     #kilos = T.total_kg(wIn, vol_to_mass_conv)
-    kilos = vector[4]
     #up to and including V_g are inputs
 
     
@@ -77,7 +78,7 @@ def biodigestor(vector,printt=False,pen=True):
     V_g = B.biomethane(G_in, G_comp) #biomethane
     #bg = B.biomethane_validation(kilos, wComp)
     f_p = B.biofertilizer(digOut) 
-    ghg_r, ghg_c = B.ghg(kilos, wComp, G_in, G_comp) #ghg_r: released gas, ghg_c: captured gas
+    ghg_r, ghg_c = B.ghg(W_a, wComp, G_in, G_comp) #ghg_r: released gas, ghg_c: captured gas
     bgm_total = B.bgm_cost(G_comp, G_in, digOut)
     
     #print('Module biogas: ', G_in, 'Expected biogas: ', bg)
@@ -104,7 +105,7 @@ def biodigestor(vector,printt=False,pen=True):
     
     n_g = vector[1]
     V_gburn = vector[0]*V_g
-    debt_level = vector[5]
+    debt_level = vector[3]
     # print('----')
     # farm.append(farmer_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf))
     # print('----')
@@ -149,17 +150,17 @@ def runGA(vector):
     stop = timeit.default_timer()
     print(stop-start)
     return model2
-best = [6.26087460e-02, 1.00000000e+00, 2.80062435e+01, 100,
-       100, 7.99307199e-01,1,1,1,0,1,1,0]
-new_best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 6.09071597e+00,
- 5.84680466e+01, 1.11820675e-03, 1.00000000e+00, 0.00000000e+00,
- 0.00000000e+00, 1.00000000e+00, 0.00000000e+00, 1.00000000e+00,
- 0.00000000e+00]
-biodigestor(best,True,False)
+best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 
+            1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
+            1.00000000e+00, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
+# biodigestor(best,True,False)
 # mod = runGA(best)
 import scipy.optimize as op
-xopt = op.fmin(func=biodigestor,x0=new_best)
-
+xopt = op.fmin(func=biodigestor,x0=best)
+# xopt = [ 1, 1,  2.48427792e+01,  0,
+#         1, 0, 0,  1,
+#         0,  1,  0]
+biodigestor(xopt,True,False)
 # out = biodigestor(vec,False,False)
 # def jacobian(expr,vec):
 #     out = []
