@@ -43,7 +43,7 @@ def biodigestor(vector,printt=False,pen=True):
 
     #This loads the respective farms - 1 is active, 0 is inactive. Total farms must be at least 3 active (required by annealing)
     #TOTAL_SOLIDS PERCENTAGE IS NOT USED
-    [distance, wIn, total_solids_perc, wComp] = T.load_data(1,0,0,1,0,0,1)
+    [distance, wIn, total_solids_perc, wComp] = T.load_data(1,1,1,1,1,1,1)
 
     
 
