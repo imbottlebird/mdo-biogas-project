@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Mar 22 20:42:13 2021
+Last updated on Mon Apr 12 2021
 
 Digester Module for Spring 2021 MDO Project
 
@@ -75,10 +76,14 @@ def digester(wFR, wComp, Tdig):
     # run reactor
     Tdig = Tdig + 273 # temp in Kelvin
     
-    mixBOD = wasteData['BOD'].dot(wComp) * wIn / rxVol# kg BOD / m3
-    z0 = [0,0,0,0,0,0,0,mixBOD,0,0,0.001,0.001,0.001,0.001] # initial condition
+    # mixMC = wasteData['MC'].dot(wComp) * wIn * 1000 # L water / day
+    hM_in = 10**(-7) * 4 * 32 * 1000 # neutral pH in kg BOD / m3
+    
+    mixBOD = wasteData['BOD'].dot(wComp) * wIn / rxVol # kg BOD / m3
+    bacIn = 0.001 # kg BOD / m3 of incoming bacteria
+    z0 = [0,0,0,0,hM_in,0,0,mixBOD,0,0,bacIn,bacIn,bacIn,bacIn] # initial condition
     # t = np.linspace(0,10)
-    z = odeint(rxns, z0, t, args=(Tdig,))
+    z = odeint(rxns, z0, t, args=(Tdig,mixBOD,bacIn,hM_in,rxVol/1.3,wFR,))
     
     # retrieve reaction products
     sI = z[:,0] # soluble inerts = N2, H2S in kg BOD / m3
@@ -161,7 +166,7 @@ def digester(wFR, wComp, Tdig):
     
     return [wIn,upflowFlag,rxVol,gasIn,gasComp,digOut,digComp,h2oOut,enthOut]
 
-def rxns(z,t,T):
+def rxns(z,t,T,BODin,bacIn,hIn,rVol,volFR):
     sI = z[0] # particulate concentrations in kg BOD / m3
     sSO = z[1]
     sOA = z[2]
@@ -177,13 +182,15 @@ def rxns(z,t,T):
     xMetaAC = z[12]
     xMetaH2 = z[13]
     
+    pH = sH2 / 4 / 32 / 1000
+    
     kDis = 1e10 * np.log(6.07e4/8.314/T) # 1/day rates
     kHyd = 1e15 * np.log(8.84e4/8.314/T)
     
-    vAcid = 30 # 1/day
-    vAcet = 20
-    vMetaAC = 8
-    vMetaH2 = 35
+    vAcid = 150*bac(T,pH) # 1/day, relative to Acet rxn from Calise as baseline
+    vAcet = 100*bac(T,pH)
+    vMetaAC = 40*bac(T,pH)
+    vMetaH2 = 175*bac(T,pH)
     
     kAcid = 0.5 # kg COD/day
     kAcet = 0.2
@@ -195,33 +202,41 @@ def rxns(z,t,T):
     kdMetaAC = 0.02
     kdMetaH2 = 0.02
     
+    # rxns
+    acidRxn = (vAcid * sSO * xAcid) / (kAcid + sSO)
+    acetRxn = (vAcet * sOA * xAcet) / (kAcet + sOA)
+    methACRxn = (vMetaAC * sAC * xMetaAC) / (kMetaAC + sAC)
+    methH2Rxn = (vMetaH2 * sH2 * xMetaH2) / (kMetaH2 + sH2)
+    
     # organic species
-    dsIdt = 0.02 * kDis * xC
-    dsSOdt = kHyd * xS - (vAcid * sSO * xAcid) / (kAcid + sSO)
-    dsOAdt = ((1 - 0.1) * (vAcid * sSO * xAcid) / (kAcid + sSO) -
-              (vAcet * sOA * xAcet) / (kAcet + sOA))
-    dsACdt = (0.72 * (1 - 0.06) * (vAcet * sOA * xAcet) / (kAcet + sOA) -
-              (vMetaAC * sAC * xMetaAC) / (kMetaAC + sAC))
-    dsH2dt = (0.28 * (1 - 0.06) * (vAcet * sOA * xAcet) / (kAcet + sOA) -
-              (vMetaH2 * sH2 * xMetaH2) / (kMetaH2 + sH2))
-    dsCH4dt = ((1 - 0.05) * (vMetaAC * sAC * xMetaAC) / (kMetaAC + sAC) +
-               (1 - 0.06) * (vMetaH2 * sH2 * xMetaH2) / (kMetaH2 + sH2))
-    dsCO2dt = dsCH4dt - (1/4)*dsH2dt
+    dsIdt = 0.02*kDis*xC - sI*volFR/rVol
+    dsSOdt = kHyd*xS - acidRxn - sSO*volFR/rVol
+    dsOAdt = (1 - 0.1)*acidRxn - acetRxn - sOA*volFR/rVol
+    dsACdt = 0.72*(1 - 0.06)*acetRxn - methACRxn - sAC*volFR/rVol
+    dsH2dt = 0.28*(1 - 0.06)*acetRxn - methH2Rxn + hIn*volFR/rVol - sH2*volFR/rVol
+    dsCH4dt = (1 - 0.05)*methACRxn + (1 - 0.06)*methH2Rxn
+    dsCO2dt = dsCH4dt - (1/4)*dsH2dt # gain CO2 from AC to CH4, use from H2
     
     # bacteria growth & decay
-    dxCdt = (-kDis * xC + kdAcid * xAcid + kdAcet * xAcet +
-                 kdMetaAC * xMetaAC + kdMetaH2 * xMetaH2)
-    dxSdt = 0.8 * kDis * xC - kHyd * xS
-    dxIdt = 0.15 * kDis * xC
-    dxAciddt = 0.1 * (vAcid * sSO * xAcid) / (kAcid + sSO) - kdAcid * xAcid
-    dxAcetdt = 0.06 * (vAcet * sOA * xAcet) / (kAcet + sOA) - kdAcet * xAcet
-    dxMetaACdt = 0.05 * (vMetaAC * sAC * xMetaAC) / (kMetaAC + sAC) - kdMetaAC * xMetaAC
-    dxMetaH2dt = 0.06 * (vMetaH2 * sH2 * xMetaH2) / (kMetaH2 + sH2) - kdMetaH2 * xMetaH2
+    dxCdt = (-kDis*xC + kdAcid*xAcid + kdAcet*xAcet + kdMetaAC*xMetaAC + 
+             kdMetaH2*xMetaH2 + BODin*volFR/rVol - xC*volFR/rVol)
+    dxSdt = 0.8*kDis*xC - kHyd*xS - xS*volFR/rVol
+    dxIdt = 0.15*kDis*xC - xI*volFR/rVol
+    dxAciddt = 0.1*acidRxn - kdAcid*xAcid + bacIn*volFR/rVol - xAcid*volFR/rVol
+    dxAcetdt = 0.06*acetRxn - kdAcet*xAcet + bacIn*volFR/rVol - xAcet*volFR/rVol
+    dxMetaACdt = 0.05*methACRxn - kdMetaAC*xMetaAC + bacIn*volFR/rVol - xMetaAC*volFR/rVol
+    dxMetaH2dt = 0.06*methH2Rxn - kdMetaH2*xMetaH2 + bacIn*volFR/rVol - xMetaH2*volFR/rVol
     
     
     return [dsIdt, dsSOdt, dsOAdt, dsACdt, dsH2dt, dsCH4dt, dsCO2dt, dxCdt, dxSdt,
             dxIdt, dxAciddt, dxAcetdt, dxMetaACdt, dxMetaH2dt]
     
+def bac(T,pH): # bacteria model from Esener 1981 - Klebsiella pneumoniae
+    # only 10% b/c it's very fast compared to mesophiles in Demirel (2008)
+    uMax = 0.1 * 5.69e14 * np.exp(-86.4e3/8.314/T) / (1 + 1.38e48 * np.exp(-287.78e3/8.314/T))
+    return uMax # don't currently do anything with pH, gotta find constants
+    
+
 def cpCO2(T):
     T = T / 1000
     return 24.997 + 55.187*T - 33.691*T**2 + 7.948*T**3 - 0.137/T**2
