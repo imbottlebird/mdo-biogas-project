@@ -8,6 +8,7 @@ Created on Mon Apr 12 01:04:06 2021
 import Transport as T
 import itertools
 from constants import *
+import pandas as pd
 x =[[0,1]]*7
 allx = list(itertools.product(*x))
 allx=allx[1:]

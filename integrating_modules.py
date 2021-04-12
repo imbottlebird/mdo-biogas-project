@@ -14,13 +14,14 @@ from constants import *
 from cost_module_funcs2 import do_all_list_cp,system_npv,JtokWh ,farmer_npv
 from digesterModule import digester
 import Transport as T
-from all_best_path_transport import dict_T
 import biogas as B
+import pickle
 
 # Variables we want to keep track in DOE
 farm=[]
 system=[]
-
+with open('data_transport.p', 'rb') as fp:
+    dict_T = pickle.load(fp)
 
 # url=r'C:\Users\Ricardo Hopker\Massachusetts Institute of Technology\EM.428 MDO Biogas spring 2021 - General\Assignment A2'
 # DOE = pd.read_csv(url+'\\DOE.csv')
@@ -47,7 +48,7 @@ def biodigestor(vector,printt=False,pen=True):
     active_farms= vector[6:13] 
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(1,1,1,1,1,1,1)
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
-    [distance, wIn, total_solids_perc, wComp] = dict_T(*active_farms)
+    [distance, wIn, total_solids_perc, wComp] = dict_T[tuple(active_farms)]
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(vector[6],vector[7],vector[8],
     #                                                         vector[9],vector[10],vector[11],vector[12])
 
@@ -126,7 +127,7 @@ def runGA(vector):
                     'parents_portion': .3,\
                     'crossover_type':'uniform',\
                     'max_iteration_without_improv':200}
-    varbound =np.array([[0,1],[1,3],[20,30],[0,100],[0,100],[0,0.8],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
+    varbound =np.array([[0,1],[1,3],[20,30],[0,100],[0,100],[0,0.8],[1,1],[0,1],[0,1],[1,1],[0,1],[1,1],[0,1]])
     start = timeit.default_timer()  
     var_type = np.array([['real'],['int'],['real'],['real'],['real'],['real'],
                          ['int'],['int'],['int'],['int'],['int'],['int'],['int']])   
@@ -143,7 +144,7 @@ def runGA(vector):
 best = [6.26087460e-02, 1.00000000e+00, 2.80062435e+01, 100,
        100, 7.99307199e-01,1,1,1,0,1,1,0]
 biodigestor(best,True,False)
-# mod = runGA(best)
+mod = runGA(best)
 import scipy.optimize as op
 # xopt = op.fmin(func=biodigestor,x0=best)
 
