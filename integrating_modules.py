@@ -16,6 +16,7 @@ from digesterModule import digester
 import Transport as T
 import biogas as B
 import pickle
+from math import inf
 
 # Variables we want to keep track in DOE
 farm=[]
@@ -46,9 +47,16 @@ def biodigestor(vector,printt=False,pen=True):
     #This loads the respective farms - 1 is active, 0 is inactive. Total farms must be at least 3 active (required by annealing)
     #TOTAL_SOLIDS PERCENTAGE IS NOT USED
     active_farms= vector[6:13] 
+    active_farms = [0 if num<1 else 1 for num in active_farms ]
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(1,1,1,1,1,1,1)
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
-    [distance, wIn, total_solids_perc, wComp] = dict_T[tuple(active_farms)]
+    if sum(active_farms)>2:
+        if printt:
+            [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
+        else:
+            [distance, wIn, total_solids_perc, wComp] = dict_T[tuple(active_farms)]
+    else:
+        [distance, wIn, total_solids_perc, wComp] = [inf,0,0,[1,0,0]]
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(vector[6],vector[7],vector[8],
     #                                                         vector[9],vector[10],vector[11],vector[12])
 
@@ -148,9 +156,9 @@ new_best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 6.09071597e+00,
  0.00000000e+00, 1.00000000e+00, 0.00000000e+00, 1.00000000e+00,
  0.00000000e+00]
 biodigestor(best,True,False)
-mod = runGA(best)
+# mod = runGA(best)
 import scipy.optimize as op
-# xopt = op.fmin(func=biodigestor,x0=best)
+xopt = op.fmin(func=biodigestor,x0=new_best)
 
 # out = biodigestor(vec,False,False)
 # def jacobian(expr,vec):

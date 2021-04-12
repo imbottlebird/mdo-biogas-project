@@ -46,6 +46,7 @@ tax = 0.08
 g_d = 25000 # R$/Generator (36kVa)
 g_m = g_d*0.1 #R$/year (10% of maintenance cost)
 # CF = 4.17 #kWh/km
+max_debt = 0.8
 p_nox = 4369 # $/ton (mean) [min, max] -> [345,14915]
 p_sox = 3140 # $/ton (mean) [min, max] -> [1208,7379]
 p_pm = 6751 # $/ton (mean) [min, max] -> [1491,25434]
@@ -68,6 +69,7 @@ h_water = 131.1 #m
 eff_pump=0.80 #%
 R = 6373.0 #earth radius factor
 vol_to_mass_conv = 400 #10m3 is equal to 400kg - wwww.epa.gov 
+
 
 
 #Fixing units

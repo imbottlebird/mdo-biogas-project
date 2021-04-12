@@ -69,6 +69,11 @@ Created on Sun Mar 21 19:38:02 2021
 from constants import *
 #Functions
 def WACC(D,tax,kd,ke):
+    global max_debt
+    if D<0:
+        D=0
+    if D>max_debt:
+        D = max_debt
     return D*kd*(1-tax)+(1-D)*ke
 def npv(P,n,i):
     return P/((1+i)**n)
@@ -202,6 +207,9 @@ def g3(n_g,ep):
 def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt=False,pen=True):
     global tax, kd, ke,g_power,working_hours,g_eff
     k = WACC(debt_level,tax,kd,ke)
+    n_g = int(round(n_g,0))
+    if n_g<1:
+        n_g=1
     i_r = i(V_d,typ,n_g)
     c_t_r = c_t(distance_total,k)
     c_m_r = c_m(V_d,typ,n_g,k)
@@ -210,10 +218,10 @@ def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_le
     r_r = r(V_gburn,e_c,h_needed,W_out,f_p,f_used,V_g,k)
     penalty = 0
     if pen:
-        p0 = max(g0(f_used,f_p),0)**2
-        p1 = max(g1(V_gburn,V_g),0)**2
-        p2 = max(g2(e_p(V_gburn),e_c,e_process(h_needed,W_out)),0)**2
-        p3 = max(g3(n_g,e_p(V_gburn)),0)**2
+        p0 = max(100*g0(f_used,f_p),0)**2
+        p1 = max(10*g1(V_gburn,V_g),0)**2
+        p2 = max(100*g2(e_p(V_gburn),e_c,e_process(h_needed,W_out)),0)**2
+        p3 = max(10*g3(n_g,e_p(V_gburn)),0)**2
         ro = 10
         penalty = pen*ro*(10*p0+100*p1+2*p2+100*p3)
     
