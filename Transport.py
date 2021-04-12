@@ -15,7 +15,7 @@ def total_vol(v):
 def vol_breakdown(volume, per):
     return sum(volume*per)/sum(volume)
 
-def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1):
+def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,printt=False):
     file_name = 'location_data.csv'
     data = np.loadtxt(file_name, delimiter=',')
     transport_data = []
@@ -123,12 +123,13 @@ def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1):
     final_best.append(final_best[0])
     best_points_ = np.array(final_best)
     best_points_coordinate = points_coordinate[best_points_, :]
-    print("The best route is: "+str(final_best)+" and the distance on this route is "+str(best_distance))
-    print("Optimal location is area # "+str(max_vol)+" in radians for DIGESTOR is latitude: "+str(digestor_loc[0][0])+" and longitude: "+str(digestor_loc[0][1]))
-    print("Total daily distance from farms to digestor travelled is "+str(best_distance)+" km")
-    print("Total VOLUME manure supplied per day is "+str(total_volume)+" m3")
-    print("Weighted average solids percentage of the manure supplied is "+str(total_solids_perc*100)+" %")
-    print("Manure composition is CATTLE-PIGS-CHICKS is "+str(manure_comp))
+    if printt:
+        print("The best route is: "+str(final_best)+" and the distance on this route is "+str(best_distance))
+        print("Optimal location is area # "+str(max_vol)+" in radians for DIGESTOR is latitude: "+str(digestor_loc[0][0])+" and longitude: "+str(digestor_loc[0][1]))
+        print("Total daily distance from farms to digestor travelled is "+str(best_distance)+" km")
+        print("Total VOLUME manure supplied per day is "+str(total_volume)+" m3")
+        print("Weighted average solids percentage of the manure supplied is "+str(total_solids_perc*100)+" %")
+        print("Manure composition is CATTLE-PIGS-CHICKS is "+str(manure_comp))
 
     return [best_distance, total_volume, total_solids_perc, manure_comp]
 
