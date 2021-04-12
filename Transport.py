@@ -77,10 +77,12 @@ def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,printt=False):
                 dist_home = dist_home + int(distance_home[routine[i % num_points]])
             dist += distance_matrix[routine[i % num_points], routine[(i + 1) % num_points]] + 2*dist_home
         return dist
-
     sa_tsp = SA_TSP(func=cal_total_distance, x0=range(num_points), T_max=100, T_min=1, L=10 * num_points)
 
     best_points, best_distance = sa_tsp.run()
+
+        
+        
 
     def best_points_route(best_points):
         '''The objective function. input routine, return total distance.

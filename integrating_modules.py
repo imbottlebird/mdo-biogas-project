@@ -14,6 +14,7 @@ from constants import *
 from cost_module_funcs2 import do_all_list_cp,system_npv,JtokWh ,farmer_npv
 from digesterModule import digester
 import Transport as T
+from all_best_path_transport import dict_T
 import biogas as B
 
 # Variables we want to keep track in DOE
@@ -46,6 +47,7 @@ def biodigestor(vector,printt=False,pen=True):
     active_farms= vector[6:13] 
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(1,1,1,1,1,1,1)
     [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
+    [distance, wIn, total_solids_perc, wComp] = dict_T(*active_farms)
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(vector[6],vector[7],vector[8],
     #                                                         vector[9],vector[10],vector[11],vector[12])
 
