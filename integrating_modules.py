@@ -24,7 +24,7 @@ system=[]
 # url=r'C:\Users\Ricardo Hopker\Massachusetts Institute of Technology\EM.428 MDO Biogas spring 2021 - General\Assignment A2'
 # DOE = pd.read_csv(url+'\\DOE.csv')
 DOE = pd.read_csv('DOE.csv')
-
+ #Variables below are which farms should be activated
 
 # vector1 = [n_g,V_gburnP] #design variables
 # DOE_vector = [vector1,vector2] #all design vectors for DOE
@@ -40,15 +40,11 @@ def biodigestor(vector,printt=False,pen=True):
     # print('Design of experiment #%.0f' % (DOE_n))
     #Optimal latitude and longitude for Digestor
     #Digest_location = T.digestor_loc
-    
-    #Total distance travelled per day in kms to deliver manure at digestor
-    distance = T.best_distance
-    
-    #Total volumes of manure (m3) per day transported to digestor
-    # wIn = T.total_vol(man1, man2, man3, man4, man5)
-    wIn = T.total_volume 
-    total_solids_perc = T.total_solids_perc 
-    wComp = T.manure_comp
+
+    #This loads the respective farms - 1 is active, 0 is inactive. Total farms must be at least 3 active (required by annealing)
+    #TOTAL_SOLIDS PERCENTAGE IS NOT USED
+    [distance, wIn, total_solids_perc, wComp] = T.load_data(1,0,0,1,0,0,1)
+
     
 
     #kilos = T.total_kg(wIn, vol_to_mass_conv)
@@ -143,70 +139,3 @@ Vg_burn,n_G,T_dig,w_in,kilos,debt_l = sp.symbols('Vg_burn n_G T_dig w_in kilos d
 vec = [Vg_burn,n_G,28,w_in,kilos,debt_l]
 
 out = biodigestor(vec,False,False)
-def jacobian(expr,vec):
-    out = []
-    for exp in expr:
-        outJ = []
-        for var in vec:
-            if type(var) == sp.core.symbol.Symbol:
-                outJ.append(exp.diff(var))
-        out.append(outJ)
-    return out
-def hessian(jacobian,vec):
-    out = []
-    for jac_vect in jacobian:
-            hesM = []
-            for var in vec:
-                if type(var) == sp.core.symbol.Symbol:
-                    outH = []
-                    for exp in jac_vect:
-                        outH.append(exp.diff(var))
-                    hesM.append(outH)
-            out.append(hesM)
-    return out
-def sub_var(expr,var,value):
-    exprR = np.reshape(np.array(expr),(-1))
-    out = []
-    for exp in exprR:
-        out.append(exp.subs(var,value))
-    out=np.array(out)
-    return np.reshape(out,np.array(expr).shape)
-def sub_all_var(expr,vec,value):
-    vec_value = zip(vec,value)
-    out= expr
-    for var,val in vec_value:
-        if type(var) == sp.core.symbol.Symbol:
-            out = sub_var(out,var,val)
-    return out
-def newton_method(expr,x0,vec,it_max=200,err=10**-3):
-    jac = jacobian([expr],vec)
-    hes = hessian(jac,vec)
-    hes = np.array(hes[0])
-    it = 0
-    xi =x0
-    while it<=it_max:
-        Ji = np.array(sub_all_var(expr,vec,xi)).astype(np.float64)
-        jac_xi = np.array(sub_all_var(jac,vec,xi)).astype(np.float64)
-        hes_xi = np.array(sub_all_var(hes,vec,xi)).astype(np.float64)
-        dx = -np.linalg.inv(hes_xi)*jac_xi
-        xi_1 = xi+dx
-        Ji_1 = np.array(sub_all_var(expr,vec,xi_1)).astype(np.float64)
-        if Ji_1-Ji<err:
-            return Ji_1
-        xi = xi_1
-    return Ji_1
-        
-xxx = newton_method(out,best,vec)
-jac = jacobian([out],vec)
-hes = hessian(jac,vec)
-hes = np.array(hes[0])
-hes1 = sub_var(hes,debt_l,0.8)
-hes2 = sub_var(hes1,w_in,100)
-hes3 = sub_var(hes2,kilos,100)
-hes4 = sub_var(hes3,Vg_burn,0.5)
-hes5 = sub_var(hes4,n_G,1)
-eigen = np.linalg.eig(np.array(hes5).astype(np.float64))
-# x,y = sp.symbols('x y')
-# jacb = jacobian([x**2+x*y+y**2,x**4+y**2*x],[x,y])
-# hessian(jacb,[x,y])
-        
