@@ -43,7 +43,9 @@ def biodigestor(vector,printt=False,pen=True):
 
     #This loads the respective farms - 1 is active, 0 is inactive. Total farms must be at least 3 active (required by annealing)
     #TOTAL_SOLIDS PERCENTAGE IS NOT USED
-    [distance, wIn, total_solids_perc, wComp] = T.load_data(1,1,1,1,1,1,1)
+    active_farms= vector[6:14] 
+    # [distance, wIn, total_solids_perc, wComp] = T.load_data(1,1,1,1,1,1,1)
+    [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms)
 
     
 
@@ -120,9 +122,10 @@ def runGA():
                     'parents_portion': .3,\
                     'crossover_type':'uniform',\
                     'max_iteration_without_improv':200}
-    varbound =np.array([[0,1],[1,3],[20,30],[0,100],[0,100],[0,0.8]])
+    varbound =np.array([[0,1],[1,3],[20,30],[0,100],[0,100],[0,0.8],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
     start = timeit.default_timer()  
-    var_type = np.array([['real'],['int'],['real'],['real'],['real'],['real']])   
+    var_type = np.array([['real'],['int'],['real'],['real'],['real'],['real'],
+                         ['int'],['int'],['int'],['int'],['int'],['int'],['int']])   
     model2=ga(function=biodigestor,\
             dimension=len(vector),\
             variable_type_mixed=var_type,\
@@ -133,14 +136,11 @@ def runGA():
     print(stop-start)
     return model2
 best = [6.26087460e-02, 1.00000000e+00, 2.80062435e+01, 100,
-       100, 7.99307199e-01]
+       100, 7.99307199e-01,1,1,1,1,1,1,1]
 biodigestor(best,True,False)
 import scipy.optimize as op
 xopt = op.fmin(func=biodigestor,x0=best)
 
-<<<<<<< HEAD
-out = biodigestor(vec,False,False)
-||||||| merged common ancestors
 out = biodigestor(vec,False,False)
 def jacobian(expr,vec):
     out = []
@@ -209,7 +209,6 @@ eigen = np.linalg.eig(np.array(hes5).astype(np.float64))
 # jacb = jacobian([x**2+x*y+y**2,x**4+y**2*x],[x,y])
 # hessian(jacb,[x,y])
         
-=======
 # import sympy as sp
 # Vg_burn,n_G,T_dig,w_in,kilos,debt_l = sp.symbols('Vg_burn n_G T_dig w_in kilos debt_l')
 # vec = [Vg_burn,n_G,28,w_in,kilos,debt_l]
@@ -282,4 +281,3 @@ eigen = np.linalg.eig(np.array(hes5).astype(np.float64))
 # jacb = jacobian([x**2+x*y+y**2,x**4+y**2*x],[x,y])
 # hessian(jacb,[x,y])
         
->>>>>>> 93c2913b0952e9a1cdfea1646937283d03c8c88a
