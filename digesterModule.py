@@ -16,8 +16,6 @@ outputs: waste flow rate (kg/day) into reactor in kg
          effluent composition (%) leaving rx (CH4, CO2, NO2, SO2)
          digestate leaving rx (m3/day)
          digestate composition (%) leaving rx (PM, NO2, SO2, inert, H2O)
-         water (kg/day) leaving reactor
-         heat input (kJ/day) necessary to keep temperature constant
 
 @author: Jacqueline Baidoo
 """
@@ -137,21 +135,23 @@ def digester(wFR, wComp, Tdig):
     digComp = [i/sum(digOut) for i in digOut] # fraction
     digOut = sum(digOut) # m3/day, one number
     
-    # calculate temp requirement
-    enthEff = (gasInKg[0]*cpCH4(Tdig)*Tdig/16 + gasInKg[1]*cpCO2(Tdig)*Tdig/44 +
-                  gasInKg[2]*cpNO2(Tdig)*Tdig/46 + gasInKg[3]*cpSO2(Tdig)*Tdig)/64
-    enthDig= (sPM[0]*196*Tdig/153 + sPM[1]*178*Tdig/88 + sPM[2]*125*Tdig/60 +
-                  digOutKg[1]*cpNO2(Tdig)*Tdig/46 + digOutKg[2]*cpSO2(Tdig)*Tdig/64
-                  + inertKg*cpInert(Tdig))*Tdig
-    # enthWout = wIn*196*Tamb
-    enthWin = wIn*196*Tamb
+    # assume heat leaves reactor and maybe gets used to warm up animals
+    #
+    # # calculate temp requirement
+    # enthEff = (gasInKg[0]*cpCH4(Tdig)*Tdig/16 + gasInKg[1]*cpCO2(Tdig)*Tdig/44 +
+    #               gasInKg[2]*cpNO2(Tdig)*Tdig/46 + gasInKg[3]*cpSO2(Tdig)*Tdig)/64
+    # enthDig= (sPM[0]*196*Tdig/153 + sPM[1]*178*Tdig/88 + sPM[2]*125*Tdig/60 +
+    #               digOutKg[1]*cpNO2(Tdig)*Tdig/46 + digOutKg[2]*cpSO2(Tdig)*Tdig/64
+    #               + inertKg*cpInert(Tdig))*Tdig
+    # # enthWout = wIn*196*Tamb
+    # enthWin = wIn*196*Tamb
     
-    enthOut = (enthEff + enthDig - enthWin) / 1000 # kJ/day
-    # print("enthalpy from effluent is: ", enthEff / 1000)
-    # print("enthalpy from digestate is: ", enthDig / 1000)
-    # print("enthalpy from waste in is: ", enthWin / 1000)
-    # enthOut = enthWout - enthWin / 1000
-    h2oOut = abs(enthOut) * 1000 / cpH2O(Tdig) / (Tdig - Tw) # kg/day
+    # enthOut = (enthEff + enthDig - enthWin) / 1000 # kJ/day
+    # # print("enthalpy from effluent is: ", enthEff / 1000)
+    # # print("enthalpy from digestate is: ", enthDig / 1000)
+    # # print("enthalpy from waste in is: ", enthWin / 1000)
+    # # enthOut = enthWout - enthWin / 1000
+    # h2oOut = abs(enthOut) * 1000 / cpH2O(Tdig) / (Tdig - Tw) # kg/day
     
     # print("Waste entering reactor in kg/day: ", wIn)
     # rxName = ["Covered Lagoon", "Upflow System"]
@@ -164,7 +164,7 @@ def digester(wFR, wComp, Tdig):
     # print("Total water needed for reactor in kg/day is: ", h2oOut)
     # print("Total heat needed for reactor in kJ/day is: ", enthOut)
     
-    return [wIn,upflowFlag,rxVol,gasIn,gasComp,digOut,digComp,h2oOut,enthOut]
+    return [wIn,upflowFlag,rxVol,gasIn,gasComp,digOut,digComp]
 
 def rxns(z,t,T,BODin,bacIn,hIn,rVol,volFR):
     sI = z[0] # particulate concentrations in kg BOD / m3
