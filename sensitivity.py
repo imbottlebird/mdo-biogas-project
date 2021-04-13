@@ -94,7 +94,7 @@ def biodigestor(DV2_ng,printt=False,pen=True):
     list_ghg = do_all_list_cp(W_a,distance,list_ghg)
     
     n_g = DV2_ng
-    #print("n_g",n_g)
+    #print("n_g",n_g) #DV1
     V_gburn = vector[0]*V_g
     #print('vector[0]',vector[0])
     debt_level = vector[3]
