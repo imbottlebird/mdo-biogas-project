@@ -114,10 +114,13 @@ def c_m(V_d,typ,n_g,k):
     return total_npv(i_m(V_d,typ,n_g),k)
 def c_e(e_c,e_priceB,k):
     return total_npv([e_c*e_priceB],k)
-def f_s(f_used,p_bf,k):
-    return total_npv([f_used*p_bf],k)
+def f_s(f_p,f_used,p_bf,k):
+    if f_p>f_used:
+        f = f_used
+    else: f = f_p
+    return total_npv([f*p_bf],k)
 def w_l(f_p,f_used):
-    return f_p-f_used
+    return max(f_p-f_used,0)
 def e_p(V_gburn):
     global e_densitygas, g_eff
     return V_gburn*e_densitygas*g_eff
@@ -128,7 +131,7 @@ def e_process(h_needed,W_out):
     return (0*h_needed+JtokWh(g*h_water*W_out/eff_pump))*working_days
 def e_s(V_gburn,e_c,h_needed,W_out):
     global g,h_water,eff_pump
-    return e_p(V_gburn)-e_c-e_process(h_needed,W_out)
+    return max(e_p(V_gburn)-e_c-e_process(h_needed,W_out),0)
 
 
 def r(V_gburn,e_c,h_needed,W_out,f_p,f_used,V_g,k):
@@ -214,12 +217,12 @@ def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_le
     c_t_r = c_t(distance_total,k)
     c_m_r = c_m(V_d,typ,n_g,k)
     c_e_r= c_e(e_c,e_priceB,k)
-    f_s_r = f_s(f_used,p_bf,k)
+    f_s_r = f_s(f_p,f_used,p_bf,k)
     r_r = r(V_gburn,e_c,h_needed,W_out,f_p,f_used,V_g,k)
     penalty = 0
     if pen:
-        p0 = max(1000*g0(f_used,f_p),0)**2
-        p1 = max(10*g1(V_gburn,V_g),0)**2
+        p0 = max(10*g0(f_used,f_p),0)**2
+        p1 = max(1000*g1(V_gburn,V_g),0)**2
         p2 = max(100*g2(e_p(V_gburn),e_c,e_process(h_needed,W_out)),0)**2
         p3 = max(10*g3(n_g,e_p(V_gburn)),0)**2
         ro = 10

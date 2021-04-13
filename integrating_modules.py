@@ -136,7 +136,7 @@ def runGA(vector):
                     'parents_portion': .3,\
                     'crossover_type':'uniform',\
                     'max_iteration_without_improv':200}
-    varbound =np.array([[0,1],[1,3],[20,30],[0,100],[0,100],[0,0.8],[1,1],[0,1],[0,1],[1,1],[0,1],[1,1],[0,1]])
+    varbound =np.array([[0,1],[1,3],[20,30],[0,100],[0,100],[0,0.8],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
     start = timeit.default_timer()  
     var_type = np.array([['real'],['int'],['real'],['real'],['real'],['real'],
                          ['int'],['int'],['int'],['int'],['int'],['int'],['int']])   
@@ -156,10 +156,13 @@ best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01,
 # biodigestor(best,True,False)
 # mod = runGA(best)
 import scipy.optimize as op
-xopt = op.fmin(func=biodigestor,x0=best)
+# xopt = op.fmin(func=biodigestor,x0=best)
 # xopt = [ 1, 1,  2.48427792e+01,  0,
 #         1, 0, 0,  1,
 #         0,  1,  0]
+xopt = [ 5.13617781e-01,  1,  3.70900619e+01, 0,
+        1,  0,  0,  0,
+        0, 0, 0]
 biodigestor(xopt,True,False)
 # out = biodigestor(vec,False,False)
 # def jacobian(expr,vec):
