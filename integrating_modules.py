@@ -112,7 +112,7 @@ def biodigestor(vector,printt=False,pen=True):
     # system.append(system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,list_ghg))
     # print('----')
     # return -system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,list_ghg,printt,pen)
-    return -farmer_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt,pen)
+    return -farmer_npv(n_g,V_gburn,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt,pen)
 # for vector in DOE_vector:
 #     vector.extend([0.7])
 #     system.append(biodigestor(vector))
@@ -156,13 +156,13 @@ best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01,
 # biodigestor(best,True,False)
 # mod = runGA(best)
 import scipy.optimize as op
-# xopt = op.fmin(func=biodigestor,x0=best)
+xopt = op.fmin(func=biodigestor,x0=best)
 # xopt = [ 1, 1,  2.48427792e+01,  0,
 #         1, 0, 0,  1,
 #         0,  1,  0]
-xopt = [ 5.13617781e-01,  1,  3.70900619e+01, 0,
-        1,  0,  0,  0,
-        0, 0, 0]
+# xopt = [ 5.13617781e-01,  1,  3.70900619e+01, 0,
+        # 1,  0,  0,  0,
+        # 0, 0, 0]
 biodigestor(xopt,True,False)
 # out = biodigestor(vec,False,False)
 # def jacobian(expr,vec):
