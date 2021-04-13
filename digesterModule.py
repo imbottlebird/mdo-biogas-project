@@ -135,7 +135,7 @@ def digester(wFR, wComp, Tdig):
     digComp = [i/sum(digOut) for i in digOut] # fraction
     digOut = sum(digOut) # m3/day, one number
     
-    # assume heat leaves reactor and maybe gets used to warm up animals
+    # assume heat leaves reactor (easy wicking) and maybe gets used to warm up animals
     #
     # # calculate temp requirement
     # enthEff = (gasInKg[0]*cpCH4(Tdig)*Tdig/16 + gasInKg[1]*cpCO2(Tdig)*Tdig/44 +
