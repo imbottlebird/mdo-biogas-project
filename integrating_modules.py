@@ -38,7 +38,7 @@ for i in range(0,18):
     vector =  DOE.loc[i].values.flatten().tolist()
     DOE_vector.append(vector[1:])
 DOE_n = 0
-def biodigestor(vector,printt=False,pen=True):
+def biodigestor(vector,printt=False,pen=False):
     #Use printt to print the text within your modules, when running the optimization it should be set to False
     #Use pen to penalize the function contraints being violated, when running the optimization it should be set to True
     # DOE_n = DOE_n+1
@@ -49,7 +49,7 @@ def biodigestor(vector,printt=False,pen=True):
     #This loads the respective farms - 1 is active, 0 is inactive. Total farms must be at least 3 active (required by annealing)
     #TOTAL_SOLIDS PERCENTAGE IS NOT USED
     active_farms= vector[4:11] 
-    active_farms = [0 if num<1 else 1 for num in active_farms ]
+    active_farms = [0 if num<1 or num==False  else 1 for num in active_farms ]
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(1,1,1,1,1,1,1)
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
     # if sum(active_farms)>2:
@@ -125,37 +125,37 @@ def biodigestor(vector,printt=False,pen=True):
 #     register(operator_name='crossover', operator=crossover.crossover_2point). \
 #     register(operator_name='mutation', operator=mutation.mutation)  
 # best_x, best_y = ga.run()
-# from geneticalgorithm import geneticalgorithm as ga # https://pypi.org/project/geneticalgorithm/
-# import timeit
-# def runGA(vector):
-#     algorithm_param = {'max_num_iteration': 500,\
-#                     'population_size':100,\
-#                     'mutation_probability':.5,\
-#                     'elit_ratio': .01,\
-#                     'crossover_probability': .2,\
-#                     'parents_portion': .3,\
-#                     'crossover_type':'uniform',\
-#                     'max_iteration_without_improv':200}
-#     varbound =np.array([[0,1],[1,3],[20,30],[0,0.8],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
-#     start = timeit.default_timer()  
-#     var_type = np.array([['real'],['int'],['real'],['real'],
-#                          ['int'],['int'],['int'],['int'],['int'],['int'],['int']])   
-#     model2=ga(function=biodigestor,\
-#             dimension=len(vector),\
-#             variable_type_mixed=var_type,\
-#             variable_boundaries=varbound,\
-#             function_timeout =600,\
-#             algorithm_parameters=algorithm_param)
-#     model2.run()
-#     stop = timeit.default_timer()
-#     print(stop-start)
-#     return model2
+from geneticalgorithm import geneticalgorithm as ga # https://pypi.org/project/geneticalgorithm/
+import timeit
+def runGA(vector):
+    algorithm_param = {'max_num_iteration': 10,\
+                    'population_size':100,\
+                    'mutation_probability':.5,\
+                    'elit_ratio': .01,\
+                    'crossover_probability': .2,\
+                    'parents_portion': .3,\
+                    'crossover_type':'uniform',\
+                    'max_iteration_without_improv':200}
+    varbound =np.array([[0,1],[1,2],[20,40],[0,0.8],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
+    start = timeit.default_timer()  
+    var_type = np.array([['real'],['int'],['real'],['real'],
+                          ['int'],['int'],['int'],['int'],['int'],['int'],['int']])   
+    model2=ga(function=biodigestor,\
+            dimension=len(vector),\
+            variable_type_mixed=var_type,\
+            variable_boundaries=varbound,\
+            function_timeout =600,\
+            algorithm_parameters=algorithm_param)
+    model2.run()
+    stop = timeit.default_timer()
+    print(stop-start)
+    return model2
 best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 
             1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
             1.00000000e+00, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
 # biodigestor(best,True,False)
 mod = runGA(best)
-biodigestor(best,True,False)
+biodigestor(mod.best_variable,True,False)
 import scipy.optimize as op
 # xopt = op.fmin(func=biodigestor,x0=best)
 # xopt = [ 1, 1,  2.48427792e+01,  0,
@@ -164,7 +164,7 @@ import scipy.optimize as op
 # xopt = [ 5.13617781e-01,  1,  3.70900619e+01, 0,
         # 1,  0,  0,  0,
         # 0, 0, 0]
-biodigestor(xopt,True,False)
+# biodigestor(xopt,True,False)
 # out = biodigestor(vec,False,False)
 # def jacobian(expr,vec):
 #     out = []
