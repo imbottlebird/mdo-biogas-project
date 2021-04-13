@@ -136,9 +136,9 @@ def runGA(vector):
                     'parents_portion': .3,\
                     'crossover_type':'uniform',\
                     'max_iteration_without_improv':200}
-    varbound =np.array([[0,1],[1,3],[20,30],[0,100],[0,100],[0,0.8],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
+    varbound =np.array([[0,1],[1,3],[20,30],[0,0.8],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
     start = timeit.default_timer()  
-    var_type = np.array([['real'],['int'],['real'],['real'],['real'],['real'],
+    var_type = np.array([['real'],['int'],['real'],['real'],
                          ['int'],['int'],['int'],['int'],['int'],['int'],['int']])   
     model2=ga(function=biodigestor,\
             dimension=len(vector),\
