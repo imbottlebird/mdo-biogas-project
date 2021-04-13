@@ -128,7 +128,7 @@ def biodigestor(vector,printt=False,pen=False):
 from geneticalgorithm import geneticalgorithm as ga # https://pypi.org/project/geneticalgorithm/
 import timeit
 def runGA(vector):
-    algorithm_param = {'max_num_iteration': 10,\
+    algorithm_param = {'max_num_iteration': 500,\
                     'population_size':100,\
                     'mutation_probability':.5,\
                     'elit_ratio': .01,\
@@ -148,7 +148,7 @@ def runGA(vector):
             algorithm_parameters=algorithm_param)
     model2.run()
     stop = timeit.default_timer()
-    print(stop-start)
+    print('Run time: '+str(stop-start)+' second')
     return model2
 best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 
             1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
