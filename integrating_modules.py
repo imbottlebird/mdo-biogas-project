@@ -156,6 +156,9 @@ best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01,
 # biodigestor(best,True,False)
 mod = runGA(best)
 biodigestor(mod.best_variable,True,False)
+# mod_best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
+#        1.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,
+#        0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
 import scipy.optimize as op
 # xopt = op.fmin(func=biodigestor,x0=best)
 # xopt = [ 1, 1,  2.48427792e+01,  0,
