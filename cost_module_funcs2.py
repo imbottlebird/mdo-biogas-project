@@ -126,17 +126,20 @@ def e_p(V_gburn):
     return V_gburn*e_densitygas*g_eff
 def JtokWh(J):
     return J/3600000
-def e_process(h_needed,W_out):
-    global g,h_water,eff_pump,working_days
-    return (0*h_needed+JtokWh(g*h_water*W_out/eff_pump))*working_days
-def e_s(V_gburn,e_c,h_needed,W_out):
+# def e_process(h_needed,W_out):
+#     global g,h_water,eff_pump,working_days
+#     return (0*h_needed+JtokWh(g*h_water*W_out/eff_pump))*working_days
+# def e_s(V_gburn,e_c,h_needed,W_out):
+#     global g,h_water,eff_pump
+#     return max(e_p(V_gburn)-e_c-e_process(h_needed,W_out),0)
+def e_s(V_gburn,e_c):
     global g,h_water,eff_pump
-    return max(e_p(V_gburn)-e_c-e_process(h_needed,W_out),0)
+    return max(e_p(V_gburn)-e_c,0)
 
 
-def r(V_gburn,e_c,h_needed,W_out,f_p,f_used,V_g,k):
+def r(V_gburn,e_c,f_p,f_used,V_g,k):
     global e_priceS,p_g,p_l
-    r_e = total_npv([e_s(V_gburn,e_c,h_needed,W_out)*e_priceS],k)
+    r_e = total_npv([e_s(V_gburn,e_c)*e_priceS],k)
     r_g = total_npv([(V_g-V_gburn)*p_g],k)
     r_l = total_npv([w_l(f_p,f_used)*p_l],k)
     return r_e+r_g+r_l
@@ -201,13 +204,15 @@ def g0(fused,fp):
     return fused-fp
 def g1(Vgburn,Vg):
     return Vgburn-Vg
-def g2(ep,ec,eprocess):
-    return ec+eprocess-ep
+# def g2(ep,ec,eprocess):
+#     return ec+eprocess-ep
+def g2(ep,ec):
+    return ec-ep
 def g3(n_g,ep):
     global g_power,working_hours,g_eff
     capacity = n_g*g_power*working_days*working_hours*g_eff
     return ep-capacity
-def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt=False,pen=True):
+def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt=False,pen=True):
     global tax, kd, ke,g_power,working_hours,g_eff
     k = WACC(debt_level,tax,kd,ke)
     n_g = int(round(n_g,0))
@@ -218,12 +223,12 @@ def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_le
     c_m_r = c_m(V_d,typ,n_g,k)
     c_e_r= c_e(e_c,e_priceB,k)
     f_s_r = f_s(f_p,f_used,p_bf,k)
-    r_r = r(V_gburn,e_c,h_needed,W_out,f_p,f_used,V_g,k)
+    r_r = r(V_gburn,e_c,f_p,f_used,V_g,k)
     penalty = 0
     if pen:
         p0 = max(10*g0(f_used,f_p),0)**2
         p1 = max(1000*g1(V_gburn,V_g),0)**2
-        p2 = max(100*g2(e_p(V_gburn),e_c,e_process(h_needed,W_out)),0)**2
+        p2 = max(100*g2(e_p(V_gburn),e_c),0)**2
         p3 = max(10*g3(n_g,e_p(V_gburn)),0)**2
         ro = 10
         penalty = pen*ro*(10*p0+100*p1+2*p2+100*p3)
@@ -232,10 +237,10 @@ def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_le
     if printt:
         print('Farmer NPV R$ = %.2f' % (r_r-i_r-c_m_r-c_t_r+c_e_r+f_s_r))
         print('Energy produced kWh/year = %.2f' % (e_p(V_gburn)))
-        print('Energy required to pump water kWh/year = %.2f' % (JtokWh(g*h_water*W_out/eff_pump)*working_days))
+        # print('Energy required to pump water kWh/year = %.2f' % (JtokWh(g*h_water*W_out/eff_pump)*working_days))
         print('System power production capacity kWh/year = %.2f' % (capacity))
-        print('Energy Sold kWh/year = %.2f' % (e_s(V_gburn,e_c,h_needed,W_out)))
-        print('Digester heat needed kWh/year = %.2f' % (h_needed*working_days))
+        print('Energy Sold kWh/year = %.2f' % (e_s(V_gburn,e_c)))
+        # print('Digester heat needed kWh/year = %.2f' % (h_needed*working_days))
         print('Total revenue generated R$ %.2f' % (r_r))
         print('Total investment R$ %.2f' % (i_r))
         print('Total cost of transport R$ %.2f' % (c_t_r))
@@ -243,7 +248,7 @@ def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_le
         print('Total cost saved in electrical energy R$ %.2f' % (c_e_r))
         print('Total cost saved in fertilizer R$ %.2f' % (f_s_r))
         print('Total amount of biomethane sold m^3 %.2f /year' % (V_g-V_gburn))
-        print('Total amount of electrical energy sold kWh %.2f /year' % (e_s(V_gburn,e_c,h_needed,W_out)))
+        print('Total amount of electrical energy sold kWh %.2f /year' % (e_s(V_gburn,e_c)))
         print('Total amount of fertilizer sold kg %.2f /year' % (w_l(f_p,f_used)))
     
     
@@ -251,8 +256,8 @@ def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_le
     
     
     return r_r-i_r-c_m_r-c_t_r+c_e_r+f_s_r-penalty
-def system_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,all_gas_list,printt=False,pen=True):
-    f_npv = farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt,pen)
+def system_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,all_gas_list,printt=False,pen=True):
+    f_npv = farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt,pen)
     global tax, kd, ke
     k = WACC(debt_level,tax,kd,ke)
     if printt:
