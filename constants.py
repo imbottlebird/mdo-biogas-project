@@ -95,6 +95,7 @@ wasteData = { # moisture content, total solids, volatile solids, etc by mass
 wasteData = pd.DataFrame(wasteData, index=["Cattle", "Swine", "Poultry"])
 
 hrtRx = pd.Series([5, 60], index=['Upflow', 'Lagoon'], name='HRT')
+rxVCap = 0.3 # reactor volume capacity increase (maybe range from 10% - 50%)
 
 Tamb = 25 + 273 # K
 Tw = 0 # K water temperature around reactor

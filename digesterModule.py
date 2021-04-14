@@ -64,11 +64,12 @@ def digester(wFR, wComp, Tdig):
         upflowFlag = False
         
     # determine reactor volume and time steps
+    rxVUp = 1 + rxVCap
     if upflowFlag:
-        rxVol = hrtRx['Upflow'] * wFR * 1.3 # 30% bigger than flow rate
+        rxVol = hrtRx['Upflow'] * wFR * rxVUp # some% bigger than flow rate
         t = np.linspace(0,hrtRx['Lagoon'])
     else:
-        rxVol = hrtRx['Lagoon'] * wFR * 1.3
+        rxVol = hrtRx['Lagoon'] * wFR * rxVUp
         t = np.linspace(0,hrtRx['Lagoon'])
     
     # run reactor
@@ -81,7 +82,7 @@ def digester(wFR, wComp, Tdig):
     bacIn = 0.001 # kg BOD / m3 of incoming bacteria
     z0 = [0,0,0,0,hM_in,0,0,mixBOD,0,0,bacIn,bacIn,bacIn,bacIn] # initial condition
     # t = np.linspace(0,10)
-    z = odeint(rxns, z0, t, args=(Tdig,mixBOD,bacIn,hM_in,rxVol/1.3,wFR,))
+    z = odeint(rxns, z0, t, args=(Tdig,mixBOD,bacIn,hM_in,rxVol/rxVUp,wFR,))
     
     # retrieve reaction products
     sI = z[:,0] # soluble inerts = N2, H2S in kg BOD / m3

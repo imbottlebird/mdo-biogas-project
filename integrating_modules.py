@@ -150,12 +150,12 @@ def runGA(vector):
     stop = timeit.default_timer()
     print('Run time: '+str(stop-start)+' second')
     return model2
-best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 
+best = [4.83662871e-01, 1.00000000e+00, 3.62359775e+01, 
             1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
-            1.00000000e+00, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
+            0, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
 # biodigestor(best,True,False)
-mod = runGA(best)
-biodigestor(mod.best_variable,True,False)
+# mod = runGA(best)
+# biodigestor(mod.best_variable,True,False)
 # mod_best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
 #        1.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,
 #        0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
