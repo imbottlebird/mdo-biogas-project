@@ -24,6 +24,7 @@ with open('full_transp.p', 'rb') as fp:
 import matplotlib.pyplot as plt
 import autograd.numpy as np
 
+#Optimal solution
 vector = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 
         1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
         1.00000000e+00, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
@@ -34,12 +35,11 @@ def biodigestor(dv_n,dv_in,printt=False,pen=True):
     global vector
     
     ##DESIGN VARIABLES##
-
     V_grate = vector[0] #burned gas rate
     n_g = vector[1] #number of reactor
     Tdig = vector[2] #operating temperature
     debt_level = vector[3] #Portion of total capex required funded with debt
-    active_farms = vector[4:11]
+    active_farms = vector[4:11] #actived farms
     
     #Switcher for DV change
     if dv_n==1: #Vgburn
@@ -79,11 +79,6 @@ def biodigestor(dv_n,dv_in,printt=False,pen=True):
         # print('farm7',dv_in)
         # print(active_farms)
         
-    
-
-#     active_farms= vector[4:11] 
-#     active_farms = [0 if num<1 else 1 for num in active_farms ]
-
     if printt:
         [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
     else:
@@ -116,15 +111,12 @@ def biodigestor(dv_n,dv_in,printt=False,pen=True):
 
 
 
-## Sensitivity Analysis - DV Configuration
-import numpy as np
-
+## DESIGN VARIABLE CONFIGURATION
 print('based on:',vector)
 print()
 
-
 #burned gas rate
-bgrs = np.linspace(0, 10,11)/100
+bgrs = np.linspace(0, 10,11)/100 #set range (start, stop, number of points)
 returned_dv0 = []
 for bgr in bgrs:
     returned_dv0.append(biodigestor(2,bgr))
@@ -229,8 +221,8 @@ axs[3, 2].plot(farm7, returned_dv10, 'tab:grey')
 axs[3, 2].set_title('N7_farm')
 fig.tight_layout()
 
-for ax in axs.flat:
-    ax.set(xlabel='Design variables', ylabel='NPV')
+# for ax in axs.flat:
+#     ax.set(xlabel='Design variables', ylabel='NPV')
 
 #tornado graph (based on the change of design variables)
 #parameters
