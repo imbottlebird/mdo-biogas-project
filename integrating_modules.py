@@ -130,10 +130,10 @@ import timeit
 def runGA(vector):
     algorithm_param = {'max_num_iteration': 500,\
                     'population_size':100,\
-                    'mutation_probability':.5,\
-                    'elit_ratio': .01,\
-                    'crossover_probability': .2,\
-                    'parents_portion': .3,\
+                    'mutation_probability':.6,\
+                    'elit_ratio': .05,\
+                    'crossover_probability': .1,\
+                    'parents_portion': .4,\
                     'crossover_type':'uniform',\
                     'max_iteration_without_improv':200}
     varbound =np.array([[0,1],[1,2],[20,40],[0,0.8],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
