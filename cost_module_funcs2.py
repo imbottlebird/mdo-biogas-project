@@ -226,12 +226,12 @@ def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_price
     r_r = r(V_gburn,e_c,f_p,f_used,V_g,k)
     penalty = 0
     if pen:
-        p0 = max(10*g0(f_used,f_p),0)**2
-        p1 = max(1000*g1(V_gburn,V_g),0)**2
-        p2 = max(100*g2(e_p(V_gburn),e_c),0)**2
-        p3 = max(10*g3(n_g,e_p(V_gburn)),0)**2
-        ro = 10
-        penalty = pen*ro*(10*p0+100*p1+2*p2+100*p3)
+        # p0 = max(w_l(f_p,f_used),0)**2
+        p1 = max(g1(V_gburn,V_g),0)**2
+        # p2 = max(g2(e_p(V_gburn),e_c),0)**2
+        p3 = max(g3(n_g,e_p(V_gburn)),0)**2
+        ro = 1
+        penalty = pen*ro*(100*p1+100*p3)
     
     capacity = n_g*g_power*working_days*working_hours*g_eff
     if printt:

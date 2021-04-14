@@ -138,10 +138,10 @@ def runGA(vector):
     stop = timeit.default_timer()
     print('Run time: '+str(stop-start)+' second')
     return model2
-best = [4.83662871e-01, 1.00000000e+00, 3.62359775e+01, 
-            1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
+best = [0.05, 1.00000000e+00, 3.69047e+01, 
+            0, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
             0, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
-# biodigestor(best,True,False)
+biodigestor(best,True,True)
 # mod = runGA(best)
 # biodigestor(mod.best_variable,True,False)
 # mod_best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
@@ -192,6 +192,14 @@ with open('WARN.pkl', 'wb') as file:
       file.write(pickle.dumps(WARN))
 with open('ALLVECT.pkl', 'wb') as file:
       file.write(pickle.dumps(ALLVECT))
+fallVect = []
+for vec in ALLVECT:
+    fvec=[]
+    for xas in vec:
+        fvec.append(biodigestor(vec,False,False))
+    fallVect.append(fvec)
+    plt.plot(fvec)
+df = pd.DataFrame(XOPT) 
 # xopt = [ 1, 1,  2.48427792e+01,  0,
 #         1, 0, 0,  1,
 #         0,  1,  0]
