@@ -216,6 +216,8 @@ def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_price
     global tax, kd, ke,g_power,working_hours,g_eff
     k = WACC(debt_level,tax,kd,ke)
     n_g = int(round(n_g,0))
+    if V_gburn > V_g:
+        V_gburn = V_g
     if n_g<1:
         n_g=1
     i_r = i(V_d,typ,n_g)
@@ -227,7 +229,7 @@ def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_price
     penalty = 0
     if pen:
         # p0 = max(w_l(f_p,f_used),0)**2
-        p1 = max(g1(V_gburn,V_g),0)**2
+        p1 = max(100*g1(V_gburn,V_g),0)**2
         # p2 = max(g2(e_p(V_gburn),e_c),0)**2
         p3 = max(g3(n_g,e_p(V_gburn)),0)**2
         ro = 1

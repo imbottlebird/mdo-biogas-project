@@ -196,10 +196,12 @@ fallVect = []
 for vec in ALLVECT:
     fvec=[]
     for xas in vec:
-        fvec.append(biodigestor(vec,False,False))
+        fvec.append(biodigestor(xas,False,False))
     fallVect.append(fvec)
-    plt.plot(fvec)
 df = pd.DataFrame(XOPT) 
+for i in fallVect:
+    plt.plot(i)
+    plt.show()
 # xopt = [ 1, 1,  2.48427792e+01,  0,
 #         1, 0, 0,  1,
 #         0,  1,  0]
