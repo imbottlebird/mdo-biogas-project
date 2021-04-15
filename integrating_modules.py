@@ -155,17 +155,17 @@ FUNCALLS = []
 WARN = []
 ALLVECT = []
 count = 0
-xDOE=[#[0.05,1,20,0,1,1,1,1,1,1,1],
-      # [.5,1,20,0,1,1,1,1,1,1,1],
-      # [0.05,1,25,0,1,1,1,1,1,1,1],
-      # [0.05,1,20,0.5,1,1,1,1,1,1,1],
-      # [0.05,1,20,0,1,0,1,1,1,1,1],
-       [0.05,1,20,0,1,0,0,1,1,1,1],
-       [0.05,1,20,0,1,0,0,0,1,1,1],
-       [0.05,1,20,0,1,0,0,0,0,1,1],
-       [0.05,1,20,0,1,0,0,0,0,0,1],
-       [0.05,1,20,0,1,0,0,0,0,0,0],
-       [0.05,1,20,0,0,0,0,0,1,0,0]
+xDOE=[[0.05,1,20,0,1,1,1,1,1,1,1],
+      [.5,1,20,0,1,1,1,1,1,1,1],
+       [0.05,1,25,0,1,1,1,1,1,1,1],
+       [0.05,1,20,0.5,1,1,1,1,1,1,1],
+       [0.05,1,20,0,1,0,1,1,1,1,1],
+        [0.05,1,20,0,1,0,0,1,1,1,1],
+        [0.05,1,20,0,1,0,0,0,1,1,1],
+        [0.05,1,20,0,1,0,0,0,0,1,1],
+        [0.05,1,20,0,1,0,0,0,0,0,1],
+        [0.05,1,20,0,1,0,0,0,0,0,0],
+        [0.05,1,20,0,0,0,0,0,1,0,0]
       ]
 for x0 in xDOE:
     start = timeit.default_timer() 
@@ -193,15 +193,21 @@ with open('WARN.pkl', 'wb') as file:
 with open('ALLVECT.pkl', 'wb') as file:
       file.write(pickle.dumps(ALLVECT))
 fallVect = []
+count = 0
 for vec in ALLVECT:
     fvec=[]
+    print(count/len(ALLVECT))
+    count+=1
     for xas in vec:
         fvec.append(biodigestor(xas,False,False))
     fallVect.append(fvec)
 df = pd.DataFrame(XOPT) 
+df=df.transpose()
 for i in fallVect:
     plt.plot(i)
     plt.show()
+with open('FALLVECT.pkl', 'wb') as file:
+      file.write(pickle.dumps(fallVect))
 # xopt = [ 1, 1,  2.48427792e+01,  0,
 #         1, 0, 0,  1,
 #         0,  1,  0]
