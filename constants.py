@@ -31,7 +31,7 @@ man5 = exp_1["Farm 5 manure"]
 #Cost Constants
 a_d = [126.7373687,941.38836117] #R$/m^3 [1] --> upflow [0]--> covered lagoon 
 b_d = [16248.10090549,18897.67690485] #R$ [1] --> upflow [0]--> covered lagoon
-p_f = 3.53 #R$/L
+# p_f = 3.53 #R$/L
 p_g = 3.05 #R$/kg
 p_l = 3 #R$/kg
 e_priceS = 0 #R$/kWh
