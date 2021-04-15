@@ -218,6 +218,8 @@ def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_price
     n_g = int(round(n_g,0))
     if V_gburn > V_g:
         V_gburn = V_g
+    if V_gburn < 0:
+        V_gburn = 0
     if n_g<1:
         n_g=1
     i_r = i(V_d,typ,n_g)
