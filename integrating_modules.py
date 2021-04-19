@@ -28,15 +28,15 @@ with open('full_transp.p', 'rb') as fp:
 
 # url=r'C:\Users\Ricardo Hopker\Massachusetts Institute of Technology\EM.428 MDO Biogas spring 2021 - General\Assignment A2'
 # DOE = pd.read_csv(url+'\\DOE.csv')
-DOE = pd.read_csv('DOE.csv')
- #Variables below are which farms should be activated
+# DOE = pd.read_csv('DOE.csv')
+#  #Variables below are which farms should be activated
 
-# vector1 = [n_g,V_gburnP] #design variables
-# DOE_vector = [vector1,vector2] #all design vectors for DOE
-DOE_vector=[]
-for i in range(0,18):
-    vector =  DOE.loc[i].values.flatten().tolist()
-    DOE_vector.append(vector[1:])
+# # vector1 = [n_g,V_gburnP] #design variables
+# # DOE_vector = [vector1,vector2] #all design vectors for DOE
+# DOE_vector=[]
+# for i in range(0,18):
+#     vector =  DOE.loc[i].values.flatten().tolist()
+#     DOE_vector.append(vector[1:])
 DOE_n = 0
 def biodigestor(vector,printt=False,pen=True):
     #Use printt to print the text within your modules, when running the optimization it should be set to False
@@ -144,70 +144,71 @@ best = [0.05, 1.00000000e+00, 3.69047e+01,
 biodigestor(best,True,True)
 # mod = runGA(best)
 # biodigestor(mod.best_variable,True,False)
-# mod_best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
-#        1.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,
-#        0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
+mod_best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
+        1.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,
+        0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
 import scipy.optimize as op
-XOPT =[]
-FOPT=[]
-ITE =[]
-FUNCALLS = []
-WARN = []
-ALLVECT = []
-count = 0
-xDOE=[[0.05,1,20,0,1,1,1,1,1,1,1],
-      [.5,1,20,0,1,1,1,1,1,1,1],
-       [0.05,1,25,0,1,1,1,1,1,1,1],
-       [0.05,1,20,0.5,1,1,1,1,1,1,1],
-       [0.05,1,20,0,1,0,1,1,1,1,1],
-        [0.05,1,20,0,1,0,0,1,1,1,1],
-        [0.05,1,20,0,1,0,0,0,1,1,1],
-        [0.05,1,20,0,1,0,0,0,0,1,1],
-        [0.05,1,20,0,1,0,0,0,0,0,1],
-        [0.05,1,20,0,1,0,0,0,0,0,0],
-        [0.05,1,20,0,0,0,0,0,1,0,0]
-      ]
-for x0 in xDOE:
-    start = timeit.default_timer() 
-    xopt,fopt,ite,funccalls,warnflag,allvecs = op.fmin(func=biodigestor,x0=x0,full_output=1,disp=True,retall=True)
-    XOPT.append(xopt)
-    FOPT.append(fopt)
-    ITE.append(ite)
-    FUNCALLS.append(funccalls)
-    WARN.append(warnflag)
-    ALLVECT.append(allvecs)
-    count +=1
-    print(count/len(xDOE))
-    stop = timeit.default_timer()
-    print('Run time: '+str(stop-start)+' seconds')
-with open('XOPT.pkl', 'wb') as file:
-      file.write(pickle.dumps(XOPT))
-with open('FOPT.pkl', 'wb') as file:
-      file.write(pickle.dumps(FOPT))
-with open('ITE.pkl', 'wb') as file:
-      file.write(pickle.dumps(ITE))
-with open('FUNCALLS.pkl', 'wb') as file:
-      file.write(pickle.dumps(FUNCALLS))
-with open('WARN.pkl', 'wb') as file:
-      file.write(pickle.dumps(WARN))
-with open('ALLVECT.pkl', 'wb') as file:
-      file.write(pickle.dumps(ALLVECT))
-fallVect = []
-count = 0
-for vec in ALLVECT:
-    fvec=[]
-    print(count/len(ALLVECT))
-    count+=1
-    for xas in vec:
-        fvec.append(biodigestor(xas,False,False))
-    fallVect.append(fvec)
-df = pd.DataFrame(XOPT) 
-df=df.transpose()
-for i in fallVect:
-    plt.plot(i)
-    plt.show()
-with open('FALLVECT.pkl', 'wb') as file:
-      file.write(pickle.dumps(fallVect))
+xopt,fopt,ite,funccalls,warnflag,allvecs = op.fmin(func=biodigestor,x0=mod_best,full_output=1,disp=True,retall=True)
+# XOPT =[]
+# FOPT=[]
+# ITE =[]
+# FUNCALLS = []
+# WARN = []
+# ALLVECT = []
+# count = 0
+# xDOE=[[0.05,1,20,0,1,1,1,1,1,1,1],
+#       [.5,1,20,0,1,1,1,1,1,1,1],
+#        [0.05,1,25,0,1,1,1,1,1,1,1],
+#        [0.05,1,20,0.5,1,1,1,1,1,1,1],
+#        [0.05,1,20,0,1,0,1,1,1,1,1],
+#         [0.05,1,20,0,1,0,0,1,1,1,1],
+#         [0.05,1,20,0,1,0,0,0,1,1,1],
+#         [0.05,1,20,0,1,0,0,0,0,1,1],
+#         [0.05,1,20,0,1,0,0,0,0,0,1],
+#         [0.05,1,20,0,1,0,0,0,0,0,0],
+#         [0.05,1,20,0,0,0,0,0,1,0,0]
+#       ]
+# for x0 in xDOE:
+#     start = timeit.default_timer() 
+#     xopt,fopt,ite,funccalls,warnflag,allvecs = op.fmin(func=biodigestor,x0=x0,full_output=1,disp=True,retall=True)
+#     XOPT.append(xopt)
+#     FOPT.append(fopt)
+#     ITE.append(ite)
+#     FUNCALLS.append(funccalls)
+#     WARN.append(warnflag)
+#     ALLVECT.append(allvecs)
+#     count +=1
+#     print(count/len(xDOE))
+#     stop = timeit.default_timer()
+#     print('Run time: '+str(stop-start)+' seconds')
+# with open('XOPT.pkl', 'wb') as file:
+#       file.write(pickle.dumps(XOPT))
+# with open('FOPT.pkl', 'wb') as file:
+#       file.write(pickle.dumps(FOPT))
+# with open('ITE.pkl', 'wb') as file:
+#       file.write(pickle.dumps(ITE))
+# with open('FUNCALLS.pkl', 'wb') as file:
+#       file.write(pickle.dumps(FUNCALLS))
+# with open('WARN.pkl', 'wb') as file:
+#       file.write(pickle.dumps(WARN))
+# with open('ALLVECT.pkl', 'wb') as file:
+#       file.write(pickle.dumps(ALLVECT))
+# fallVect = []
+# count = 0
+# for vec in ALLVECT:
+#     fvec=[]
+#     print(count/len(ALLVECT))
+#     count+=1
+#     for xas in vec:
+#         fvec.append(biodigestor(xas,False,False))
+#     fallVect.append(fvec)
+# df = pd.DataFrame(XOPT) 
+# df=df.transpose()
+# for i in fallVect:
+#     plt.plot(i)
+#     plt.show()
+# with open('FALLVECT.pkl', 'wb') as file:
+#       file.write(pickle.dumps(fallVect))
 # xopt = [ 1, 1,  2.48427792e+01,  0,
 #         1, 0, 0,  1,
 #         0,  1,  0]
