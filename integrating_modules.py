@@ -48,7 +48,7 @@ def biodigestor(vector,printt=False,pen=True):
 
     #This loads the respective farms - 1 is active, 0 is inactive. Total farms must be at least 3 active (required by annealing)
     #TOTAL_SOLIDS PERCENTAGE IS NOT USED
-    active_farms= vector[4:11] 
+    active_farms= vector[5:12] 
     active_farms = [0 if num<1 or num==False  else 1 for num in active_farms ]
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(1,1,1,1,1,1,1)
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
@@ -100,7 +100,8 @@ def biodigestor(vector,printt=False,pen=True):
     n_g = vector[1]
     V_gburn = vector[0]*V_g
     debt_level = vector[3]
-    return -farmer_npv(n_g,V_gburn,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt,pen)
+    V_cng_p = vector[4]
+    return -farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt,pen)
 # for vector in DOE_vector:
 #     vector.extend([0.7])
 #     system.append(biodigestor(vector))
@@ -124,9 +125,10 @@ def runGA(vector):
                     'parents_portion': .3,\
                     'crossover_type':'uniform',\
                     'max_iteration_without_improv':200}
-    varbound =np.array([[0,1],[1,2],[20,40],[0,0.8],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
+    varbound =np.array([[0,1],[1,2],[20,40],[0,0.8],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
+    #[V_gBurn,ng,Tdig,debt_level,V_cng_p,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
     start = timeit.default_timer()  
-    var_type = np.array([['real'],['int'],['real'],['real'],
+    var_type = np.array([['real'],['int'],['real'],['real'],['real'],
                           ['int'],['int'],['int'],['int'],['int'],['int'],['int']])   
     model2=ga(function=biodigestor,\
             dimension=len(vector),\
@@ -138,17 +140,51 @@ def runGA(vector):
     stop = timeit.default_timer()
     print('Run time: '+str(stop-start)+' second')
     return model2
+def cleanXopt(xopt_in):
+    xopt = xopt_in.copy()
+    if xopt[0]>1: xopt[0]=1
+    elif xopt[0]<0: xopt[0]=0
+    xopt[1] = round(xopt[1],0)
+    if xopt[3]>1: xopt[3]=1
+    elif xopt[3]<0: xopt[3]=0
+    if xopt[4]>1: xopt[4]=1
+    elif xopt[4]<0: xopt[4]=0
+    for i in range(5,12):
+        if xopt[i]>1: xopt[i]=1
+        elif xopt[i]<1: xopt[i]=0
+    return xopt
 best = [0.05, 1.00000000e+00, 3.69047e+01, 
-            0, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
-            0, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
+            0, 0,1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
+            0, 0.00000000e+00, 1.00000000e+00,0.00000000e+00] #[V_gBurn,ng,Tdig,debt_level,V_cng_p,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
 biodigestor(best,True,True)
 # mod = runGA(best)
 # biodigestor(mod.best_variable,True,False)
-mod_best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
-        1.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,
-        0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
+mod_best = np.array([9.98093589e-01, 1.00000000e+00, 3.69458953e+01, 4.70171351e-03,
+        2.12949571e-03, 1.00000000e+00, 0.00000000e+00, 0.00000000e+00,
+        0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00])
 import scipy.optimize as op
-xopt,fopt,ite,funccalls,warnflag,allvecs = op.fmin(func=biodigestor,x0=mod_best,full_output=1,disp=True,retall=True)
+# xopt,fopt,ite,funccalls,warnflag,allvecs = op.fmin(func=biodigestor,x0=mod_best,full_output=1,disp=True,retall=True)
+# xopt = cleanXopt(xopt)
+xopt=np.array([1.00000000e+00, 1.00000000e+00, 3.69039048e+01, 0.00000000e+00,
+       7.24157048e-05, 1.00000000e+00, 0.00000000e+00, 0.00000000e+00,
+       0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00])
+f = biodigestor(xopt,True,True)
+
+def cleanXopt(xopt_in):
+    xopt = xopt_in.copy()
+    if xopt[0]>1: xopt[0]=1
+    elif xopt[0]<0: xopt[0]=0
+    xopt[1] = round(xopt[1],0)
+    if xopt[3]>1: xopt[3]=1
+    elif xopt[3]<0: xopt[3]=0
+    if xopt[4]>1: xopt[4]=1
+    elif xopt[4]<0: xopt[4]=0
+    for i in range(5,12):
+        if xopt[i]>1: xopt[i]=1
+        elif xopt[i]<1: xopt[i]=0
+    return xopt
+    
+
 # XOPT =[]
 # FOPT=[]
 # ITE =[]
