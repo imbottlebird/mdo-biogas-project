@@ -48,8 +48,8 @@ def biodigestor(vector,printt=False,pen=False):
 
     #This loads the respective farms - 1 is active, 0 is inactive. Total farms must be at least 3 active (required by annealing)
     #TOTAL_SOLIDS PERCENTAGE IS NOT USED
-    active_farms= vector[4:11] 
-    active_farms = [0 if num<1 or num==False  else 1 for num in active_farms ]
+    active_farms= vector[5:12] 
+    active_farms = [0 if num<1 or num==False  else 1 for num in active_farms]
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(1,1,1,1,1,1,1)
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
     # if sum(active_farms)>2:
@@ -112,7 +112,8 @@ def biodigestor(vector,printt=False,pen=False):
     # system.append(system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,list_ghg))
     # print('----')
     # return -system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,list_ghg,printt,pen)
-    return -farmer_npv(n_g,V_gburn,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt,pen)
+    V_cng_p = vector[4]
+    return -farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt,pen)
 # for vector in DOE_vector:
 #     vector.extend([0.7])
 #     system.append(biodigestor(vector))
@@ -130,34 +131,50 @@ def biodigestor(vector,printt=False,pen=False):
 
 # GA that we us
 
-# from geneticalgorithm import geneticalgorithm as ga # https://pypi.org/project/geneticalgorithm/
-# import timeit
-# def runGA(vector):
-#     algorithm_param = {'max_num_iteration': 100,\
-#                     'population_size': 500,\
-#                     'mutation_probability': .6,\
-#                     'elit_ratio': .02,\
-#                     'crossover_probability': .1,\
-#                     'parents_portion': .4,\
-#                     'crossover_type':'uniform',\
-#                     'max_iteration_without_improv':50}
-#     varbound =np.array([[0,1],[1,2],[20,40],[0,0.8],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
-#     start = timeit.default_timer()  
-#     var_type = np.array([['real'],['int'],['real'],['real'],
-#                           ['int'],['int'],['int'],['int'],['int'],['int'],['int']])   
-#     model2=ga(function=biodigestor,\
-#             dimension=len(vector),\
-#             variable_type_mixed=var_type,\
-#             variable_boundaries=varbound,\
-#             function_timeout =600,\
-#             algorithm_parameters=algorithm_param)
-#     model2.run()
-#     stop = timeit.default_timer()
-#     print('Run time: '+str(stop-start)+' second')
-#     return model2
-# best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 
-#             1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
-#             1.00000000e+00, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
+from geneticalgorithm import geneticalgorithm as ga # https://pypi.org/project/geneticalgorithm/
+import timeit
+def runGA(vector):
+    algorithm_param = {'max_num_iteration': 100,\
+                    'population_size': 500,\
+                    'mutation_probability': .6,\
+                    'elit_ratio': .02,\
+                    'crossover_probability': .1,\
+                    'parents_portion': .4,\
+                    'crossover_type':'uniform',\
+                    'max_iteration_without_improv':50}
+    varbound =np.array([[0,1],[1,2],[20,40],[0,0.8],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
+    #[V_gBurn,ng,Tdig,debt_level,V_cng_p,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
+    start = timeit.default_timer()  
+    var_type = np.array([['real'],['int'],['real'],['real'],['real'],
+                          ['int'],['int'],['int'],['int'],['int'],['int'],['int']])   
+    model2=ga(function=biodigestor,\
+            dimension=len(vector),\
+            variable_type_mixed=var_type,\
+            variable_boundaries=varbound,\
+            function_timeout =600,\
+            algorithm_parameters=algorithm_param)
+    model2.run()
+    stop = timeit.default_timer()
+    print('Run time: '+str(stop-start)+' second')
+    return model2
+def cleanXopt(xopt_in):
+    xopt = xopt_in.copy()
+    if xopt[0]>1: xopt[0]=1
+    elif xopt[0]<0: xopt[0]=0
+    xopt[1] = round(xopt[1],0)
+    if xopt[3]>1: xopt[3]=1
+    elif xopt[3]<0: xopt[3]=0
+    if xopt[4]>1: xopt[4]=1
+    elif xopt[4]<0: xopt[4]=0
+    for i in range(5,12):
+        if xopt[i]>1: xopt[i]=1
+        elif xopt[i]<1: xopt[i]=0
+    return xopt
+def cleanBiodigestor(x):
+    return biodigestor(cleanXopt(x))
+best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 
+            1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
+            1.00000000e+00, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
 # # biodigestor(best,True,False)
 # mod = runGA(best)
 # biodigestor(mod.best_variable,True,False)
@@ -179,67 +196,5 @@ xopt = op.fmin(func=biodigestor,x0=best)
         # 0, 0, 0]
 # biodigestor(xopt,True,False)
 # out = biodigestor(vec,False,False)
-# def jacobian(expr,vec):
-#     out = []
-#     for exp in expr:
-#         outJ = []
-#         for var in vec:
-#             if type(var) == sp.core.symbol.Symbol:
-#                 outJ.append(exp.diff(var))
-#         out.append(outJ)
-#     return out
-# def hessian(jacobian,vec):
-#     out = []
-#     for jac_vect in jacobian:
-#             hesM = []
-#             for var in vec:
-#                 if type(var) == sp.core.symbol.Symbol:
-#                     outH = []
-#                     for exp in jac_vect:
-#                         outH.append(exp.diff(var))
-#                     hesM.append(outH)
-#             out.append(hesM)
-#     return out
-# def sub_var(expr,var,value):
-#     exprR = np.reshape(np.array(expr),(-1))
-#     out = []
-#     for exp in exprR:
-#         out.append(exp.subs(var,value))
-#     out=np.array(out)
-#     return np.reshape(out,np.array(expr).shape)
-# def sub_all_var(expr,vec,value):
-#     vec_value = zip(vec,value)
-#     out= expr
-#     for var,val in vec_value:
-#         if type(var) == sp.core.symbol.Symbol:
-#             out = sub_var(out,var,val)
-#     return out
-# def newton_method(expr,x0,vec,it_max=200,err=10**-3):
-#     jac = jacobian([expr],vec)
-#     hes = hessian(jac,vec)
-#     hes = np.array(hes[0])
-#     it = 0
-#     xi =x0
-#     while it<=it_max:
-#         Ji = np.array(sub_all_var(expr,vec,xi)).astype(np.float64)
-#         jac_xi = np.array(sub_all_var(jac,vec,xi)).astype(np.float64)
-#         hes_xi = np.array(sub_all_var(hes,vec,xi)).astype(np.float64)
-#         dx = -np.linalg.inv(hes_xi)*jac_xi
-#         xi_1 = xi+dx
-#         Ji_1 = np.array(sub_all_var(expr,vec,xi_1)).astype(np.float64)
-#         if Ji_1-Ji<err:
-#             return Ji_1
-#         xi = xi_1
-#     return Ji_1
-        
-# xxx = newton_method(out,best,vec)
-# jac = jacobian([out],vec)
-# hes = hessian(jac,vec)
-# hes = np.array(hes[0])
-# hes1 = sub_var(hes,debt_l,0.8)
-# hes2 = sub_var(hes1,w_in,100)
-# hes3 = sub_var(hes2,kilos,100)
-# hes4 = sub_var(hes3,Vg_burn,0.5)
-# hes5 = sub_var(hes4,n_G,1)
-# eigen = np.linalg.eig(np.array(hes5).astype(np.float64))
+
 
