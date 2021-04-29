@@ -12,7 +12,7 @@ from sko.GA import GA
 
 from constants import *
 from cost_module_funcs2 import do_all_list_cp,system_npv,JtokWh ,farmer_npv
-from digesterModule import digester
+from digesterModule2 import digester
 import Transport as T
 import biogas as B
 import pickle
