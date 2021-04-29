@@ -89,6 +89,7 @@ wasteData = { # moisture content, total solids, volatile solids, etc by mass
     "TS" : [0.13, 0.1, 0.26],
     "VS" : [0.11, 0.09, 0.19],
     "BOD" : [0.021, 0.034, 0.058],
+    "COD" : [0.066, 0.085, 0.29],
     "N" : [0.0047, 0.0071, 0.013]
     
     }

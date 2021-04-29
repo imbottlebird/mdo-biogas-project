@@ -117,6 +117,8 @@ def biodigestor(vector,printt=False,pen=False):
 #     vector.extend([0.7])
 #     system.append(biodigestor(vector))
 
+# GA from scikit-optimize
+
 # constraint_eq = []
 # constraint_ueq = []
 # ga = GA(func=biodigestor,n_dim=len(vector),size_pop=100,max_iter=50,lb=[0,1,20,0,0,0],ub=[1,3,30,10000,10000,0.8],precision=1)
@@ -125,42 +127,50 @@ def biodigestor(vector,printt=False,pen=False):
 #     register(operator_name='crossover', operator=crossover.crossover_2point). \
 #     register(operator_name='mutation', operator=mutation.mutation)  
 # best_x, best_y = ga.run()
-from geneticalgorithm import geneticalgorithm as ga # https://pypi.org/project/geneticalgorithm/
-import timeit
-def runGA(vector):
-    algorithm_param = {'max_num_iteration': 500,\
-                    'population_size':100,\
-                    'mutation_probability':.5,\
-                    'elit_ratio': .01,\
-                    'crossover_probability': .2,\
-                    'parents_portion': .3,\
-                    'crossover_type':'uniform',\
-                    'max_iteration_without_improv':200}
-    varbound =np.array([[0,1],[1,2],[20,40],[0,0.8],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
-    start = timeit.default_timer()  
-    var_type = np.array([['real'],['int'],['real'],['real'],
-                          ['int'],['int'],['int'],['int'],['int'],['int'],['int']])   
-    model2=ga(function=biodigestor,\
-            dimension=len(vector),\
-            variable_type_mixed=var_type,\
-            variable_boundaries=varbound,\
-            function_timeout =600,\
-            algorithm_parameters=algorithm_param)
-    model2.run()
-    stop = timeit.default_timer()
-    print('Run time: '+str(stop-start)+' second')
-    return model2
-best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 
-            1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
-            1.00000000e+00, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
-# biodigestor(best,True,False)
-mod = runGA(best)
-biodigestor(mod.best_variable,True,False)
-# mod_best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
-#        1.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,
-#        0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
+
+# GA that we us
+
+# from geneticalgorithm import geneticalgorithm as ga # https://pypi.org/project/geneticalgorithm/
+# import timeit
+# def runGA(vector):
+#     algorithm_param = {'max_num_iteration': 100,\
+#                     'population_size': 500,\
+#                     'mutation_probability': .6,\
+#                     'elit_ratio': .02,\
+#                     'crossover_probability': .1,\
+#                     'parents_portion': .4,\
+#                     'crossover_type':'uniform',\
+#                     'max_iteration_without_improv':50}
+#     varbound =np.array([[0,1],[1,2],[20,40],[0,0.8],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
+#     start = timeit.default_timer()  
+#     var_type = np.array([['real'],['int'],['real'],['real'],
+#                           ['int'],['int'],['int'],['int'],['int'],['int'],['int']])   
+#     model2=ga(function=biodigestor,\
+#             dimension=len(vector),\
+#             variable_type_mixed=var_type,\
+#             variable_boundaries=varbound,\
+#             function_timeout =600,\
+#             algorithm_parameters=algorithm_param)
+#     model2.run()
+#     stop = timeit.default_timer()
+#     print('Run time: '+str(stop-start)+' second')
+#     return model2
+# best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 
+#             1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
+#             1.00000000e+00, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
+# # biodigestor(best,True,False)
+# mod = runGA(best)
+# biodigestor(mod.best_variable,True,False)
+mod_best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
+        1.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,
+        0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
+
+# fminsearch but Python
+best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
+        1.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,
+        0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
 import scipy.optimize as op
-# xopt = op.fmin(func=biodigestor,x0=best)
+xopt = op.fmin(func=biodigestor,x0=best)
 # xopt = [ 1, 1,  2.48427792e+01,  0,
 #         1, 0, 0,  1,
 #         0,  1,  0]
