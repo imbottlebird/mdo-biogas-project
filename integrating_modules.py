@@ -28,17 +28,17 @@ with open('full_transp.p', 'rb') as fp:
 
 # url=r'C:\Users\Ricardo Hopker\Massachusetts Institute of Technology\EM.428 MDO Biogas spring 2021 - General\Assignment A2'
 # DOE = pd.read_csv(url+'\\DOE.csv')
-# DOE = pd.read_csv('DOE.csv')
-#  #Variables below are which farms should be activated
+DOE = pd.read_csv('DOE.csv')
+ #Variables below are which farms should be activated
 
-# # vector1 = [n_g,V_gburnP] #design variables
-# # DOE_vector = [vector1,vector2] #all design vectors for DOE
-# DOE_vector=[]
-# for i in range(0,18):
-#     vector =  DOE.loc[i].values.flatten().tolist()
-#     DOE_vector.append(vector[1:])
+# vector1 = [n_g,V_gburnP] #design variables
+# DOE_vector = [vector1,vector2] #all design vectors for DOE
+DOE_vector=[]
+for i in range(0,18):
+    vector =  DOE.loc[i].values.flatten().tolist()
+    DOE_vector.append(vector[1:])
 DOE_n = 0
-def biodigestor(vector,printt=False,pen=True):
+def biodigestor(vector,printt=False,pen=False):
     #Use printt to print the text within your modules, when running the optimization it should be set to False
     #Use pen to penalize the function contraints being violated, when running the optimization it should be set to True
     # DOE_n = DOE_n+1
@@ -48,7 +48,7 @@ def biodigestor(vector,printt=False,pen=True):
 
     #This loads the respective farms - 1 is active, 0 is inactive. Total farms must be at least 3 active (required by annealing)
     #TOTAL_SOLIDS PERCENTAGE IS NOT USED
-    active_farms= vector[5:12] 
+    active_farms= vector[4:11] 
     active_farms = [0 if num<1 or num==False  else 1 for num in active_farms ]
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(1,1,1,1,1,1,1)
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
@@ -62,6 +62,12 @@ def biodigestor(vector,printt=False,pen=True):
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(vector[6],vector[7],vector[8],
     #                                                         vector[9],vector[10],vector[11],vector[12])
 
+    
+
+    #kilos = T.total_kg(wIn, vol_to_mass_conv)
+    #up to and including V_g are inputs
+
+    
     #output from digester -- will return 9 values & print to console
     Tdig = vector[2]
     [W_a, typ, V_d, G_in, G_comp, digOut, digOut_comp] = digester(wIn,wComp,Tdig)
@@ -100,8 +106,13 @@ def biodigestor(vector,printt=False,pen=True):
     n_g = vector[1]
     V_gburn = vector[0]*V_g
     debt_level = vector[3]
-    V_cng_p = vector[4]
-    return -farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt,pen)
+    # print('----')
+    # farm.append(farmer_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf))
+    # print('----')
+    # system.append(system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,list_ghg))
+    # print('----')
+    # return -system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,list_ghg,printt,pen)
+    return -farmer_npv(n_g,V_gburn,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt,pen)
 # for vector in DOE_vector:
 #     vector.extend([0.7])
 #     system.append(biodigestor(vector))
@@ -116,7 +127,6 @@ def biodigestor(vector,printt=False,pen=True):
 #     register(operator_name='crossover', operator=crossover.crossover_2point). \
 #     register(operator_name='mutation', operator=mutation.mutation)  
 # best_x, best_y = ga.run()
-<<<<<<< HEAD
 
 # GA that we us
 
@@ -161,139 +171,6 @@ best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
         0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
 import scipy.optimize as op
 xopt = op.fmin(func=biodigestor,x0=best)
-=======
-from geneticalgorithm import geneticalgorithm as ga # https://pypi.org/project/geneticalgorithm/
-import timeit
-def runGA(vector):
-    algorithm_param = {'max_num_iteration': 500,\
-                    'population_size':100,\
-                    'mutation_probability':.5,\
-                    'elit_ratio': .01,\
-                    'crossover_probability': .2,\
-                    'parents_portion': .3,\
-                    'crossover_type':'uniform',\
-                    'max_iteration_without_improv':200}
-    varbound =np.array([[0,1],[1,2],[20,40],[0,0.8],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
-    #[V_gBurn,ng,Tdig,debt_level,V_cng_p,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
-    start = timeit.default_timer()  
-    var_type = np.array([['real'],['int'],['real'],['real'],['real'],
-                          ['int'],['int'],['int'],['int'],['int'],['int'],['int']])   
-    model2=ga(function=biodigestor,\
-            dimension=len(vector),\
-            variable_type_mixed=var_type,\
-            variable_boundaries=varbound,\
-            function_timeout =600,\
-            algorithm_parameters=algorithm_param)
-    model2.run()
-    stop = timeit.default_timer()
-    print('Run time: '+str(stop-start)+' second')
-    return model2
-def cleanXopt(xopt_in):
-    xopt = xopt_in.copy()
-    if xopt[0]>1: xopt[0]=1
-    elif xopt[0]<0: xopt[0]=0
-    xopt[1] = round(xopt[1],0)
-    if xopt[3]>1: xopt[3]=1
-    elif xopt[3]<0: xopt[3]=0
-    if xopt[4]>1: xopt[4]=1
-    elif xopt[4]<0: xopt[4]=0
-    for i in range(5,12):
-        if xopt[i]>1: xopt[i]=1
-        elif xopt[i]<1: xopt[i]=0
-    return xopt
-best = [0.05, 1.00000000e+00, 3.69047e+01, 
-            0, 0,1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
-            0, 0.00000000e+00, 1.00000000e+00,0.00000000e+00] #[V_gBurn,ng,Tdig,debt_level,V_cng_p,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
-biodigestor(best,True,True)
-# mod = runGA(best)
-# biodigestor(mod.best_variable,True,False)
-mod_best = np.array([9.98093589e-01, 1.00000000e+00, 3.69458953e+01, 4.70171351e-03,
-        2.12949571e-03, 1.00000000e+00, 0.00000000e+00, 0.00000000e+00,
-        0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00])
-import scipy.optimize as op
-# xopt,fopt,ite,funccalls,warnflag,allvecs = op.fmin(func=biodigestor,x0=mod_best,full_output=1,disp=True,retall=True)
-# xopt = cleanXopt(xopt)
-xopt=np.array([1.00000000e+00, 1.00000000e+00, 3.69039048e+01, 0.00000000e+00,
-       7.24157048e-05, 1.00000000e+00, 0.00000000e+00, 0.00000000e+00,
-       0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00])
-f = biodigestor(xopt,True,True)
-
-def cleanXopt(xopt_in):
-    xopt = xopt_in.copy()
-    if xopt[0]>1: xopt[0]=1
-    elif xopt[0]<0: xopt[0]=0
-    xopt[1] = round(xopt[1],0)
-    if xopt[3]>1: xopt[3]=1
-    elif xopt[3]<0: xopt[3]=0
-    if xopt[4]>1: xopt[4]=1
-    elif xopt[4]<0: xopt[4]=0
-    for i in range(5,12):
-        if xopt[i]>1: xopt[i]=1
-        elif xopt[i]<1: xopt[i]=0
-    return xopt
-    
-
-# XOPT =[]
-# FOPT=[]
-# ITE =[]
-# FUNCALLS = []
-# WARN = []
-# ALLVECT = []
-# count = 0
-# xDOE=[[0.05,1,20,0,1,1,1,1,1,1,1],
-#       [.5,1,20,0,1,1,1,1,1,1,1],
-#        [0.05,1,25,0,1,1,1,1,1,1,1],
-#        [0.05,1,20,0.5,1,1,1,1,1,1,1],
-#        [0.05,1,20,0,1,0,1,1,1,1,1],
-#         [0.05,1,20,0,1,0,0,1,1,1,1],
-#         [0.05,1,20,0,1,0,0,0,1,1,1],
-#         [0.05,1,20,0,1,0,0,0,0,1,1],
-#         [0.05,1,20,0,1,0,0,0,0,0,1],
-#         [0.05,1,20,0,1,0,0,0,0,0,0],
-#         [0.05,1,20,0,0,0,0,0,1,0,0]
-#       ]
-# for x0 in xDOE:
-#     start = timeit.default_timer() 
-#     xopt,fopt,ite,funccalls,warnflag,allvecs = op.fmin(func=biodigestor,x0=x0,full_output=1,disp=True,retall=True)
-#     XOPT.append(xopt)
-#     FOPT.append(fopt)
-#     ITE.append(ite)
-#     FUNCALLS.append(funccalls)
-#     WARN.append(warnflag)
-#     ALLVECT.append(allvecs)
-#     count +=1
-#     print(count/len(xDOE))
-#     stop = timeit.default_timer()
-#     print('Run time: '+str(stop-start)+' seconds')
-# with open('XOPT.pkl', 'wb') as file:
-#       file.write(pickle.dumps(XOPT))
-# with open('FOPT.pkl', 'wb') as file:
-#       file.write(pickle.dumps(FOPT))
-# with open('ITE.pkl', 'wb') as file:
-#       file.write(pickle.dumps(ITE))
-# with open('FUNCALLS.pkl', 'wb') as file:
-#       file.write(pickle.dumps(FUNCALLS))
-# with open('WARN.pkl', 'wb') as file:
-#       file.write(pickle.dumps(WARN))
-# with open('ALLVECT.pkl', 'wb') as file:
-#       file.write(pickle.dumps(ALLVECT))
-# fallVect = []
-# count = 0
-# for vec in ALLVECT:
-#     fvec=[]
-#     print(count/len(ALLVECT))
-#     count+=1
-#     for xas in vec:
-#         fvec.append(biodigestor(xas,False,False))
-#     fallVect.append(fvec)
-# df = pd.DataFrame(XOPT) 
-# df=df.transpose()
-# for i in fallVect:
-#     plt.plot(i)
-#     plt.show()
-# with open('FALLVECT.pkl', 'wb') as file:
-#       file.write(pickle.dumps(fallVect))
->>>>>>> 39010abfae0a45ef2b44ab6868c725cff17da69b
 # xopt = [ 1, 1,  2.48427792e+01,  0,
 #         1, 0, 0,  1,
 #         0,  1,  0]
