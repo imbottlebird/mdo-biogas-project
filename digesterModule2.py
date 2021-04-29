@@ -116,7 +116,7 @@ def digester(wFR, wComp, Tdig):
     sPMm3 = (1/3)*sPM/1396 + (1/3)*sPM/960 + (1/3)*sPM/1050
     digOut = [sPMm3, digOutKg[1]/3.3, digOutKg[2]/2.619, inertKg/1524,
               waterKg/997] # m3/day
-    print(digOut)
+    # print(digOut)
     digComp = [i/sum(digOut) for i in digOut] # fraction
     digOut = sum(digOut) # m3/day, one number
     

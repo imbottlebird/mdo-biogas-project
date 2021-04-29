@@ -38,7 +38,7 @@ for i in range(0,18):
     vector =  DOE.loc[i].values.flatten().tolist()
     DOE_vector.append(vector[1:])
 DOE_n = 0
-def biodigestor(vector,printt=False,pen=False):
+def biodigestor(vector,lam = 1,multiJ =False,printt=False,pen=False):
     #Use printt to print the text within your modules, when running the optimization it should be set to False
     #Use pen to penalize the function contraints being violated, when running the optimization it should be set to True
     # DOE_n = DOE_n+1
@@ -99,8 +99,10 @@ def biodigestor(vector,printt=False,pen=False):
     ghg['ghg_tech']=ghg_c
     ghg['gas']= ['CH4','CO2','NOX','SOX']
     list_ghg = []
+    gwpS =0
     for gas in ['CH4','CO2','NOX','SOX']:
         list_ghg.append(ghg[ghg['gas']==gas].values.flatten().tolist())
+        gwpS =+ gwp(ghg[ghg['gas']==gas]['ghg_lf'],gas)
     list_ghg = do_all_list_cp(W_a,distance,list_ghg)
     
     n_g = vector[1]
@@ -113,11 +115,25 @@ def biodigestor(vector,printt=False,pen=False):
     # print('----')
     # return -system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,list_ghg,printt,pen)
     V_cng_p = vector[4]
-    return -farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt,pen)
+    farmerNPV = farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,e_priceS,f_used,p_bf,printt,pen)
+    if multiJ:
+        return [-farmerNPV*lam-(1-lam)*gwpS,farmerNPV,gwpS]
+    else: return -farmerNPV
+    # return -farmerNPV*lam-(1-lam)*gwpS
 # for vector in DOE_vector:
 #     vector.extend([0.7])
 #     system.append(biodigestor(vector))
-
+def gwp(x,gas): # https://www.epa.gov/ghgemissions/understanding-global-warming-potentials
+    if gas == 'CH4':
+        return x*32
+    elif gas == 'CO2':
+        return x
+    elif gas =='NOX':
+        return x*281.5
+    elif gas =='SOX':
+        return x*281.5
+    else:
+        raise NotImplementedError
 # GA from scikit-optimize
 
 # constraint_eq = []
@@ -171,25 +187,92 @@ def cleanXopt(xopt_in):
         elif xopt[i]<1: xopt[i]=0
     return xopt
 def cleanBiodigestor(x):
-    return biodigestor(cleanXopt(x))
-best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 
-            1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
-            1.00000000e+00, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
-# # biodigestor(best,True,False)
+    X = cleanXopt(x)
+    return biodigestor(X)
+# best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 
+#             1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
+#             1.00000000e+00, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
+# biodigestor(best,True,False)
 # mod = runGA(best)
 # biodigestor(mod.best_variable,True,False)
-mod_best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
-        1.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,
-        0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
+# mod_best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
+#         1.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,
+#         0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
 
 # fminsearch but Python
-best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
+best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,0.16,
         1.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,
         0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
 import scipy.optimize as op
 xopt = op.fmin(func=cleanBiodigestor,x0=best)
+
+
+def biodigestorNPV0(vector,printt=False,pen=True):
+    active_farms= vector[6:13] 
+    active_farms = [0 if num<1 or num==False  else 1 for num in active_farms]
+    if printt:
+        [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
+    else:
+        [distance, wIn, total_solids_perc, wComp] = dict_T[tuple(active_farms)]
+
+    Tdig = vector[2]
+    [W_a, typ, V_d, G_in, G_comp, digOut, digOut_comp] = digester(wIn,wComp,Tdig)
+
+    V_g = B.biomethane(G_in, G_comp) #biomethane
+    #bg = B.biomethane_validation(kilos, wComp)
+    f_p = B.biofertilizer(digOut) 
+    ghg_r, ghg_c = B.ghg(W_a, wComp, G_in, G_comp) #ghg_r: released gas, ghg_c: captured gas
+    bgm_total = B.bgm_cost(G_comp, G_in, digOut)
+    
+    V_g =V_g*working_days
+    ghg = pd.DataFrame()
+    ghg['ghg_lf']=ghg_r
+    ghg['ghg_tech']=ghg_c
+    ghg['gas']= ['CH4','CO2','NOX','SOX']
+    list_ghg = []
+    for gas in ['CH4','CO2','NOX','SOX']:
+        list_ghg.append(ghg[ghg['gas']==gas].values.flatten().tolist())
+    list_ghg = do_all_list_cp(W_a,distance,list_ghg)
+    
+    n_g = vector[1]
+    V_gburn = vector[0]*V_g
+    debt_level = vector[3]
+
+    V_cng_p = vector[4]
+    e_priceSS = vector[5]
+    # farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_priceB,e_priceS,f_used,p_bf)
+    return -farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,e_priceSS,f_used,p_bf,printt,pen)
+def cleanXoptNPV0(xopt_in):
+    xopt = xopt_in.copy()
+    if xopt[0]>1: xopt[0]=1
+    elif xopt[0]<0: xopt[0]=0
+    xopt[1] = round(xopt[1],0)
+    if xopt[3]>1: xopt[3]=1
+    elif xopt[3]<0: xopt[3]=0
+    if xopt[4]>1: xopt[4]=1
+    elif xopt[4]<0: xopt[4]=0
+    if xopt[5]<0: xopt[5]=0
+    for i in range(6,13):
+        if xopt[i]>1: xopt[i]=1
+        elif xopt[i]<1: xopt[i]=0
+    return xopt
 def NPV0goal(x):
-    return cleanBiodigestor(x)**2
+    X = cleanXoptNPV0(x)
+    return biodigestorNPV0(X)**2
+def runNPV0():
+    x0 = [1, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03, 0,0.35,
+        1.00000000e+00, 1.00000000e+00, 1.00000000e+00,1.00000000e+00,
+        0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
+    xopt = op.fmin(func=NPV0goal,x0=x0)
+    return xopt
+xNPV0 =cleanXoptNPV0(runNPV0())
+print(xNPV0)
+print(biodigestorNPV0(xNPV0))
+# biodigestorNPV0([ 1.        ,  1.        , 49.23933306,  0.        ,  0.        ,
+#        20,  1.        ,  0.        ,  0.        ,  0.        ,
+#         0.        ,  0.        ,  0.        ])
+    #[V_gBurn,ng,Tdig,debt_level,V_cng_p,e_priceS,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
+# xopt = runNPV0()
 # xopt = [ 1, 1,  2.48427792e+01,  0,
 #         1, 0, 0,  1,
 #         0,  1,  0]
