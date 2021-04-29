@@ -188,6 +188,8 @@ best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
         0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
 import scipy.optimize as op
 xopt = op.fmin(func=cleanBiodigestor,x0=best)
+def NPV0goal(x):
+    return cleanBiodigestor(x)**2
 # xopt = [ 1, 1,  2.48427792e+01,  0,
 #         1, 0, 0,  1,
 #         0,  1,  0]
