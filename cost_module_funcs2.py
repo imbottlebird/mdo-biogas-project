@@ -69,11 +69,11 @@ Created on Sun Mar 21 19:38:02 2021
 from constants import *
 #Functions
 def WACC(D,tax,kd,ke):
-    global max_debt
-    if D<0:
-        D=0
-    if D>max_debt:
-        D = max_debt
+    # global max_debt
+    # if D<0:
+    #     D=0
+    # if D>max_debt:
+    #     D = max_debt
     return D*kd*(1-tax)+(1-D)*ke
 def npv(P,n,i):
     return P/((1+i)**n)
@@ -227,17 +227,17 @@ def g3(n_g,ep):
 def farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt=False,pen=True):
     global tax, kd, ke,g_power,working_hours,g_eff, T_m3_km_cng
     k = WACC(debt_level,tax,kd,ke)
-    n_g = int(round(n_g,0))
-    if V_gburn > V_g:
-        V_gburn = V_g
-    if V_gburn < 0:
-        V_gburn = 0
-    if V_cng_p > 1:
-        V_cng_p = 1
-    if V_cng_p < 0:
-        V_cng_p = 0
-    if n_g<1:
-        n_g=1
+    # n_g = int(round(n_g,0))
+    # if V_gburn > V_g:
+    #     V_gburn = V_g
+    # if V_gburn < 0:
+    #     V_gburn = 0
+    # if V_cng_p > 1:
+    #     V_cng_p = 1
+    # if V_cng_p < 0:
+    #     V_cng_p = 0
+    # if n_g<1:
+    #     n_g=1
     V_cng = V_cng_p*V_g
     D_cng = V_cng/T_m3_km_cng
     D_diesel = D(distance_total)-D_cng

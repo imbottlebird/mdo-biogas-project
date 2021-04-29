@@ -17,6 +17,7 @@ import Transport as T
 import biogas as B
 import pickle
 from math import inf
+from test_digestor import digestor_stats
 
 # Variables we want to keep track in DOE
 farm=[]
@@ -49,7 +50,7 @@ def biodigestor(vector,printt=False,pen=True):
     #This loads the respective farms - 1 is active, 0 is inactive. Total farms must be at least 3 active (required by annealing)
     #TOTAL_SOLIDS PERCENTAGE IS NOT USED
     active_farms= vector[5:12] 
-    active_farms = [0 if num<1 or num==False  else 1 for num in active_farms ]
+    # active_farms = [0 if num<1 or num==False  else 1 for num in active_farms ]
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(1,1,1,1,1,1,1)
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
     # if sum(active_farms)>2:
@@ -67,7 +68,7 @@ def biodigestor(vector,printt=False,pen=True):
     [W_a, typ, V_d, G_in, G_comp, digOut, digOut_comp] = digester(wIn,wComp,Tdig)
     # H_needed = JtokWh(H_needed*1000)
     # print('----')
-    
+    biogas_total,V_d1 = digestor_stats(wIn,wComp)
     #biogas module
     V_g = B.biomethane(G_in, G_comp) #biomethane
     #bg = B.biomethane_validation(kilos, wComp)
@@ -102,6 +103,25 @@ def biodigestor(vector,printt=False,pen=True):
     debt_level = vector[3]
     V_cng_p = vector[4]
     return -farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt,pen)
+def cleanX(xopt_in):
+    global max_debt
+    xopt = xopt_in.copy()
+    if xopt[0]>1: xopt[0]=1
+    elif xopt[0]<0: xopt[0]=0
+    xopt[1] = round(xopt[1],0)
+    if xopt[3]>1: xopt[3]=1
+    elif xopt[3]<0: xopt[3]=0
+    if xopt[4]>max_debt: xopt[4]=max_debt
+    elif xopt[4]<0: xopt[4]=0
+    for i in range(5,12):
+        if xopt[i]>1: xopt[i]=1
+        elif xopt[i]<1: xopt[i]=0
+        elif xopt[i]==False:xopt[i]=0
+        elif xopt[i]==True:xopt[i]=1
+    return xopt
+
+def biodigestor_clean(vector,printt=False,pen=True):
+    return biodigestor(cleanX(vector),printt,pen) 
 # for vector in DOE_vector:
 #     vector.extend([0.7])
 #     system.append(biodigestor(vector))
@@ -140,50 +160,24 @@ def runGA(vector):
     stop = timeit.default_timer()
     print('Run time: '+str(stop-start)+' second')
     return model2
-def cleanXopt(xopt_in):
-    xopt = xopt_in.copy()
-    if xopt[0]>1: xopt[0]=1
-    elif xopt[0]<0: xopt[0]=0
-    xopt[1] = round(xopt[1],0)
-    if xopt[3]>1: xopt[3]=1
-    elif xopt[3]<0: xopt[3]=0
-    if xopt[4]>1: xopt[4]=1
-    elif xopt[4]<0: xopt[4]=0
-    for i in range(5,12):
-        if xopt[i]>1: xopt[i]=1
-        elif xopt[i]<1: xopt[i]=0
-    return xopt
+
 best = [0.05, 1.00000000e+00, 3.69047e+01, 
             0, 0,1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
             0, 0.00000000e+00, 1.00000000e+00,0.00000000e+00] #[V_gBurn,ng,Tdig,debt_level,V_cng_p,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
-biodigestor(best,True,True)
+biodigestor_clean(best,True,True)
 # mod = runGA(best)
 # biodigestor(mod.best_variable,True,False)
 mod_best = np.array([9.98093589e-01, 1.00000000e+00, 3.69458953e+01, 4.70171351e-03,
         2.12949571e-03, 1.00000000e+00, 0.00000000e+00, 0.00000000e+00,
         0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00])
 import scipy.optimize as op
-# xopt,fopt,ite,funccalls,warnflag,allvecs = op.fmin(func=biodigestor,x0=mod_best,full_output=1,disp=True,retall=True)
-# xopt = cleanXopt(xopt)
-xopt=np.array([1.00000000e+00, 1.00000000e+00, 3.69039048e+01, 0.00000000e+00,
-       7.24157048e-05, 1.00000000e+00, 0.00000000e+00, 0.00000000e+00,
-       0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00])
-f = biodigestor(xopt,True,True)
-
-def cleanXopt(xopt_in):
-    xopt = xopt_in.copy()
-    if xopt[0]>1: xopt[0]=1
-    elif xopt[0]<0: xopt[0]=0
-    xopt[1] = round(xopt[1],0)
-    if xopt[3]>1: xopt[3]=1
-    elif xopt[3]<0: xopt[3]=0
-    if xopt[4]>1: xopt[4]=1
-    elif xopt[4]<0: xopt[4]=0
-    for i in range(5,12):
-        if xopt[i]>1: xopt[i]=1
-        elif xopt[i]<1: xopt[i]=0
-    return xopt
-    
+xopt,fopt,ite,funccalls,warnflag,allvecs = op.fmin(func=biodigestor_clean,x0=mod_best,full_output=1,disp=True,retall=True)
+xopt = cleanX(xopt)
+# xopt=np.array([1.00000000e+00, 1.00000000e+00, 3.69039048e+01, 0.00000000e+00,
+#        7.24157048e-05, 1.00000000e+00, 0.00000000e+00, 0.00000000e+00,
+#        0.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00])
+f = biodigestor_clean(xopt,True,True)
+   
 
 # XOPT =[]
 # FOPT=[]
