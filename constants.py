@@ -31,15 +31,15 @@ man5 = exp_1["Farm 5 manure"]
 #Cost Constants
 a_d = [126.7373687,941.38836117] #R$/m^3 [1] --> upflow [0]--> covered lagoon 
 b_d = [16248.10090549,18897.67690485] #R$ [1] --> upflow [0]--> covered lagoon
-# p_f = 3.53 #R$/L
+p_f = 3.53 #R$/L
 p_g = 3.05 #R$/kg
 p_l = 3 #R$/kg
-e_priceS = 0.35 #R$/kWh
+e_priceS = 0 #R$/kWh
 p_bf = 14.5 #R$/kg
 f_used = 8000*0.01 #kg/ha assume a farm of 0.5 ha
-e_c = 121500 #kWh/year it is actually 121.5MWh but its too big for our current production
+e_c = 121.200 #kWh/year it is actually 121.5MWh but its too big for our current production
 e_priceB = 0.59 #R$/kWh
-L = 10 # years
+L = 5 # years
 ke = 0.08 #interest, expected return
 kd = 0.04 # interest on debt for clean energy, loan provided by BNDES
 tax = 0.12
@@ -69,11 +69,6 @@ h_water = 131.1 # m
 eff_pump=0.80 #%
 R = 6373.0 #earth radius factor
 vol_to_mass_conv = 400 #10m3 is equal to 400kg - wwww.epa.gov 
-T_m3_km_cng =1/2.56 # Truck consumption of CNG (m^3) per km
-T_L_km_diesel =1/2.97601 # Truck consumption of Diesel (L) per km
-P_diesel = 3.3 #R$/L of diesel
-C_upgrade_cng = 0.78 # R$/m^3 to upgrade from biogas to CNG
-C_V_gas = 0.16 #R$/m^3 to produce biogas
 
 
 
@@ -94,6 +89,7 @@ wasteData = { # moisture content, total solids, volatile solids, etc by mass
     "TS" : [0.13, 0.1, 0.26],
     "VS" : [0.11, 0.09, 0.19],
     "BOD" : [0.021, 0.034, 0.058],
+    "COD" : [0.066, 0.085, 0.29],
     "N" : [0.0047, 0.0071, 0.013]
     
     }

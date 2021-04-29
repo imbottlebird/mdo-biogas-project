@@ -69,11 +69,11 @@ Created on Sun Mar 21 19:38:02 2021
 from constants import *
 #Functions
 def WACC(D,tax,kd,ke):
-    # global max_debt
-    # if D<0:
-    #     D=0
-    # if D>max_debt:
-    #     D = max_debt
+    global max_debt
+    if D<0:
+        D=0
+    if D>max_debt:
+        D = max_debt
     return D*kd*(1-tax)+(1-D)*ke
 def npv(P,n,i):
     return P/((1+i)**n)
@@ -98,24 +98,12 @@ def V_year(V_day):
 #     return d*V_year(V_day)/V_per_truck
 def D(distance_total):
     return distance_total*working_days
-
 # def c_t(d,V_day): #total cost of travel
 #     return total_npv(3*D(d,V_day))
-def c_t(D_cng,D_diesel,k): #total cost of travel
+def c_t(distance_total,k): #total cost of travel
     global c_rskm
-    C_t_fixed, C_cng = C_cng_func()
-    return total_npv(c_rskm*D_diesel+(C_t_fixed+C_cng)*D_cng,k)
-def C_cng_func():
-    global c_rskm,P_diesel, T_L_km_diesel, T_m3_km_cng,C_upgrade_cng
-    C_t_diesel = T_L_km_diesel*P_diesel
-    C_t_fixed = c_rskm - C_t_diesel
-    C_cng = T_m3_km_cng*(C_upgrade_cng)
-    return C_t_fixed, C_cng
-def C_prod(V_g,k):
-    global C_V_gas
-    return total_npv(V_g*C_V_gas,k)
-    
-    
+    return total_npv(c_rskm*D(distance_total),k)
+
 def i(V_d,typ,n_g): #investment cost
     global a_d,b_d,g_d
     return a_d[typ]*V_d+b_d[typ]+n_g*g_d
@@ -214,53 +202,40 @@ def co2_ff(distance_total):
     return 4*CF*D(distance_total)/1000
 def g0(fused,fp):
     return fused-fp
-def g1(Vgburn,V_cng,Vg):
-    return Vgburn+V_cng-Vg
+def g1(Vgburn,Vg):
+    return Vgburn-Vg
 # def g2(ep,ec,eprocess):
 #     return ec+eprocess-ep
-# def g2(ep,ec):
-#     return ep - ec
+def g2(ep,ec):
+    return ec-ep
 def g3(n_g,ep):
     global g_power,working_hours,g_eff
     capacity = n_g*g_power*working_days*working_hours*g_eff
     return ep-capacity
-def farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt=False,pen=True):
-    global tax, kd, ke,g_power,working_hours,g_eff, T_m3_km_cng
+def farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt=False,pen=True):
+    global tax, kd, ke,g_power,working_hours,g_eff
     k = WACC(debt_level,tax,kd,ke)
-    # n_g = int(round(n_g,0))
-    # if V_gburn > V_g:
-    #     V_gburn = V_g
-    # if V_gburn < 0:
-    #     V_gburn = 0
-    # if V_cng_p > 1:
-    #     V_cng_p = 1
-    # if V_cng_p < 0:
-    #     V_cng_p = 0
-    # if n_g<1:
-    #     n_g=1
-    V_cng = V_cng_p*V_g
-    D_cng = V_cng/T_m3_km_cng
-    D_diesel = D(distance_total)-D_cng
+    n_g = int(round(n_g,0))
+    if n_g<1:
+        n_g=1
     i_r = i(V_d,typ,n_g)
-    c_t_r = c_t(D_cng,D_diesel,k)
+    c_t_r = c_t(distance_total,k)
     c_m_r = c_m(V_d,typ,n_g,k)
-    c_e_r= c_e(min(e_c,e_p(V_gburn)),e_priceB,k)
+    c_e_r= c_e(e_c,e_priceB,k)
     f_s_r = f_s(f_p,f_used,p_bf,k)
     r_r = r(V_gburn,e_c,f_p,f_used,V_g,k)
-    p_r = C_prod(V_g, k)
     penalty = 0
     if pen:
-        # p0 = max(w_l(f_p,f_used),0)**2
-        p1 = max(g1(V_gburn,V_cng,V_g),0)**2
-        # p2 = max(g2(e_p(V_gburn),e_c),0)**2
-        p3 = max(g3(n_g,e_p(V_gburn)),0)**2
-        ro = 1000
-        penalty = pen*ro*(10000*p1+100*p3)
+        p0 = max(10*g0(f_used,f_p),0)**2
+        p1 = max(1000*g1(V_gburn,V_g),0)**2
+        p2 = max(100*g2(e_p(V_gburn),e_c),0)**2
+        p3 = max(10*g3(n_g,e_p(V_gburn)),0)**2
+        ro = 10
+        penalty = pen*ro*(10*p0+100*p1+2*p2+100*p3)
     
     capacity = n_g*g_power*working_days*working_hours*g_eff
-    farmnpv= r_r-i_r-c_m_r-c_t_r-p_r+c_e_r+f_s_r
     if printt:
-        print('Farmer NPV R$ = %.2f' % (farmnpv))
+        print('Farmer NPV R$ = %.2f' % (r_r-i_r-c_m_r-c_t_r+c_e_r+f_s_r))
         print('Energy produced kWh/year = %.2f' % (e_p(V_gburn)))
         # print('Energy required to pump water kWh/year = %.2f' % (JtokWh(g*h_water*W_out/eff_pump)*working_days))
         print('System power production capacity kWh/year = %.2f' % (capacity))
@@ -280,9 +255,9 @@ def farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance_total,f_p,V_g,debt_level,e_c
     
     
     
-    return farmnpv-penalty
-def system_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,all_gas_list,printt=False,pen=True):
-    f_npv = farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt,pen)
+    return r_r-i_r-c_m_r-c_t_r+c_e_r+f_s_r-penalty
+def system_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,all_gas_list,printt=False,pen=True):
+    f_npv = farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_priceB,f_used,p_bf,printt,pen)
     global tax, kd, ke
     k = WACC(debt_level,tax,kd,ke)
     if printt:
