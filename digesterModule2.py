@@ -43,7 +43,6 @@ from constants import *
 #     "BOD" : [0.021, 0.034, 0.058],
 #     "COD" : [0.066, 0.085, 0.29],
 #     "N" : [0.0047, 0.0071, 0.013]
-    
 #     }
 # wasteData = pd.DataFrame(wasteData, index=["Cattle", "Swine", "Poultry"])
 
@@ -120,7 +119,6 @@ def digester(wFR, wComp, Tdig):
     print(digOut)
     digComp = [i/sum(digOut) for i in digOut] # fraction
     digOut = sum(digOut) # m3/day, one number
-    
     
     return [wIn,upflowFlag,rxVol,gasIn,gasComp,digOut,digComp]
 
