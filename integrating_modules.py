@@ -114,7 +114,7 @@ def biodigestor(vector,lam = 1,multiJ =False,printt=False,pen=True):
     V_cng_p = vector[4]
     farmerNPV = farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,e_priceS,f_used,p_bf,printt,pen)
     if multiJ:
-        return -farmerNPV*lam-(1-lam)*gwpS,farmerNPV,gwpS
+        return -farmerNPV*lam-(1-lam)*gwpS,-farmerNPV,-gwpS
     else: return -farmerNPV
     # return -farmerNPV*lam-(1-lam)*gwpS
 # for vector in DOE_vector:
@@ -204,8 +204,8 @@ best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,0.16,
         0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
 import scipy.optimize as op
 xopt = op.fmin(func=cleanBiodigestor,x0=best)
-xopt = cleanXopt(xopt)
-biodigestor(xopt,0.5,True)
+# xopt = cleanXopt(xopt)
+# biodigestor(xopt,0.5,True)
 
 def biodigestorNPV0(vector,printt=False,pen=True):
     active_farms= vector[6:13] 
