@@ -19,26 +19,23 @@ import pickle
 from math import inf
 
 # Variables we want to keep track in DOE
-farm=[]
-system=[]
+# farm=[]
+# system=[]
 # with open('data_transport.p', 'rb') as fp:
 #     dict_T = pickle.load(fp)
 with open('full_transp.p', 'rb') as fp:
     dict_T = pickle.load(fp)
 
-# url=r'C:\Users\Ricardo Hopker\Massachusetts Institute of Technology\EM.428 MDO Biogas spring 2021 - General\Assignment A2'
-# DOE = pd.read_csv(url+'\\DOE.csv')
-DOE = pd.read_csv('DOE.csv')
- #Variables below are which farms should be activated
 
-# vector1 = [n_g,V_gburnP] #design variables
-# DOE_vector = [vector1,vector2] #all design vectors for DOE
-DOE_vector=[]
-for i in range(0,18):
-    vector =  DOE.loc[i].values.flatten().tolist()
-    DOE_vector.append(vector[1:])
-DOE_n = 0
-def biodigestor(vector,lam = 1,multiJ =False,printt=False,pen=False):
+# DOE = pd.read_csv('DOE.csv')
+#  #Variables below are which farms should be activated
+
+# DOE_vector=[]
+# for i in range(0,18):
+#     vector =  DOE.loc[i].values.flatten().tolist()
+#     DOE_vector.append(vector[1:])
+# DOE_n = 0
+def biodigestor(vector,lam = 1,multiJ =False,printt=False,pen=True):
     #Use printt to print the text within your modules, when running the optimization it should be set to False
     #Use pen to penalize the function contraints being violated, when running the optimization it should be set to True
     # DOE_n = DOE_n+1
@@ -102,7 +99,7 @@ def biodigestor(vector,lam = 1,multiJ =False,printt=False,pen=False):
     gwpS =0
     for gas in ['CH4','CO2','NOX','SOX']:
         list_ghg.append(ghg[ghg['gas']==gas].values.flatten().tolist())
-        gwpS =+ gwp(ghg[ghg['gas']==gas]['ghg_lf'],gas)
+        gwpS = gwpS + gwp(ghg[ghg['gas']==gas]['ghg_lf'].values,gas)
     list_ghg = do_all_list_cp(W_a,distance,list_ghg)
     
     n_g = vector[1]
@@ -117,7 +114,7 @@ def biodigestor(vector,lam = 1,multiJ =False,printt=False,pen=False):
     V_cng_p = vector[4]
     farmerNPV = farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,e_priceS,f_used,p_bf,printt,pen)
     if multiJ:
-        return [-farmerNPV*lam-(1-lam)*gwpS,farmerNPV,gwpS]
+        return -farmerNPV*lam-(1-lam)*gwpS,farmerNPV,gwpS
     else: return -farmerNPV
     # return -farmerNPV*lam-(1-lam)*gwpS
 # for vector in DOE_vector:
@@ -158,7 +155,8 @@ def runGA(vector):
                     'parents_portion': .4,\
                     'crossover_type':'uniform',\
                     'max_iteration_without_improv':50}
-    varbound =np.array([[0,1],[1,2],[20,40],[0,0.8],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
+    varbound =np.array([[0,1],[1,2],[20,40],[0,0.8],[0,1],
+                        [0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
     #[V_gBurn,ng,Tdig,debt_level,V_cng_p,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
     start = timeit.default_timer()  
     var_type = np.array([['real'],['int'],['real'],['real'],['real'],
@@ -178,6 +176,7 @@ def cleanXopt(xopt_in):
     if xopt[0]>1: xopt[0]=1
     elif xopt[0]<0: xopt[0]=0
     xopt[1] = round(xopt[1],0)
+    if xopt[1]<1: xopt[1]=1
     if xopt[3]>1: xopt[3]=1
     elif xopt[3]<0: xopt[3]=0
     if xopt[4]>1: xopt[4]=1
@@ -205,7 +204,8 @@ best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,0.16,
         0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
 import scipy.optimize as op
 xopt = op.fmin(func=cleanBiodigestor,x0=best)
-
+xopt = cleanXopt(xopt)
+biodigestor(xopt,0.5,True)
 
 def biodigestorNPV0(vector,printt=False,pen=True):
     active_farms= vector[6:13] 
@@ -265,9 +265,9 @@ def runNPV0():
         0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
     xopt = op.fmin(func=NPV0goal,x0=x0)
     return xopt
-xNPV0 =cleanXoptNPV0(runNPV0())
-print(xNPV0)
-print(biodigestorNPV0(xNPV0))
+# xNPV0 =cleanXoptNPV0(runNPV0())
+# print(xNPV0)
+# print(biodigestorNPV0(xNPV0))
 # biodigestorNPV0([ 1.        ,  1.        , 49.23933306,  0.        ,  0.        ,
 #        20,  1.        ,  0.        ,  0.        ,  0.        ,
 #         0.        ,  0.        ,  0.        ])
