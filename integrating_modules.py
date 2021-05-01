@@ -193,6 +193,7 @@ def cleanBiodigestor(x,lam = 1,multiJ =False,full=False,printt=False,pen=True):
     return biodigestor(X,lam,multiJ,full,printt,pen)
 def fminClean(x0,args):
     xopt = op.fmin(func=cleanBiodigestor,x0=x0,args=args)
+    xopt = cleanXopt(xopt)
     return xopt
 # best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 
 #             1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
@@ -213,6 +214,7 @@ best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,0.16,
 # # mod = runGA(best)
 # cleanBiodigestor(best,*args)
 # xopt = fminClean(best,args)
+# xopt1 = fminClean(best_1,args)
 # # xopt = op.fmin(func=cleanBiodigestor,x0=best,args=args)
 # # # xopt = op.fmin(func=cleanBiodigestor,x0=best)
 # xopt = cleanXopt(xopt)
