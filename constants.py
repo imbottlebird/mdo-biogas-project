@@ -105,3 +105,6 @@ rxVCap = 0.3 # reactor volume capacity increase (maybe range from 10% - 50%)
 Tamb = 25 + 273 # K
 Tw = 0 # K water temperature around reactor
 Pdig =  1 # atm
+dict_total = {}
+for i in dir():
+    dict_total[i] = globals()[i]

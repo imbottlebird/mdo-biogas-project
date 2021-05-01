@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>pydeck</title>
+        <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <script src='https://cdn.jsdelivr.net/npm/@deck.gl/jupyter-widget@~8.4.*/dist/index.js'></script>
+    <style>
+    body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#deck-map-container {
+  width: 100%;
+  height: 100%;
+  background-color: black;
+}
+
+#map {
+  pointer-events: none;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+}
+
+#deckgl-overlay {
+  z-index: 2;
+  background: none;
+}
+
+#deck-map-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+#deck-container {
+  width: 100vw;
+  height: 100vh;
+}
+    </style>
+  </head>
+  <body>
+    <div id="deck-container">
+    </div>
+  </body>
+  <script>
+    const jsonInput = {"initialViewState": {"bearing": -27.36, "latitude": -24.22090314285714, "longitude": -51.00345614285714, "maxZoom": 15, "minZoom": 5, "pitch": 40.5, "zoom": 20}, "layers": [{"@@type": "HexagonLayer", "autoHighlight": true, "coverage": 1, "data": [{"lat": -24.206120000000002, "lon": -50.92712}, {"lat": -24.331751999999998, "lon": -50.996813}, {"lat": -24.24021, "lon": -51.05428}, {"lat": -24.16694, "lon": -50.99845}, {"lat": -23.9671, "lon": -51.12251}, {"lat": -24.2671, "lon": -50.98251}, {"lat": -24.3671, "lon": -50.94251}], "elevationRange": [0, 3000], "elevationScale": 50, "extruded": true, "getPosition": "@@=[lng, lat]", "id": "6da206cd-5de8-4067-9e3c-a2765cff549d", "pickable": true}], "mapProvider": "carto", "mapStyle": "mapbox://styles/mapbox/light-v9", "mapboxKey": "", "views": [{"@@type": "MapView", "controller": true}]};
+    const tooltip = {'html': '<b>Elevation Value:</b> {elevationValue}', 'style': {'color': 'white'}};
+    const customLibraries = null;
+
+    const deckInstance = createDeck({
+                  container: document.getElementById('deck-container'),
+      jsonInput,
+      tooltip,
+      customLibraries
+    });
+
+  </script>
+</html>

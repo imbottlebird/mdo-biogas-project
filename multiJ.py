@@ -33,66 +33,106 @@ class BiogasMultiJ(Problem):
         x1 =[]
         x2 =[]
         for i in range(len(X)):
-            x = biodigestor(X[i,:],1,True)
+            x = biodigestor(X[i,:],1,True,True)
             x1.append(x[1])
             x2.append(x[2])
         x1=np.array(x1)
         x2=np.array(x2)
         out["F"] = np.column_stack([x1, x2])
-
-mask = ["real","int","real","real","real",
-        "int","int","int","int","int","int","int"]
-sampling =  MixedVariableSampling(mask, {
-    "real": get_sampling("real_random"),
-    "int": get_sampling("int_random")
+def run_multiJ():
+    mask = ["real","int","real","real","real",
+            "int","int","int","int","int","int","int"]
+    sampling =  MixedVariableSampling(mask, {
+        "real": get_sampling("real_random"),
+        "int": get_sampling("int_random")
+        })
+    crossover = MixedVariableCrossover(mask, {
+        "real": get_crossover("real_sbx", prob=1.0, eta=3.0),
+        "int": get_crossover("int_sbx", prob=1.0, eta=3.0)
     })
-crossover = MixedVariableCrossover(mask, {
-    "real": get_crossover("real_sbx", prob=1.0, eta=3.0),
-    "int": get_crossover("int_sbx", prob=1.0, eta=3.0)
-})
-mutation = MixedVariableMutation(mask, {
-    "real": get_mutation("real_pm", eta=3.0),
-    "int": get_mutation("int_pm", eta=3.0)
-})
-#[V_gBurn,ng,Tdig,debt_level,V_cng_p,e_priceS,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
-problem = BiogasMultiJ()
-algorithm = NSGA2(pop_size=100,
-              sampling=sampling,
-              crossover=crossover,
-              n_offsprings=10,
-              mutation=mutation,
-              eliminate_duplicates=True,
-)
-res = minimize(problem,
-               algorithm,
-               ("n_gen", 100),
-               verbose=True,
-               seed=1,
-               save_history=True)
-df = pd.DataFrame(-res.F,columns=['NPV','gwp'])
-df = df.sort_values(by=['NPV'])
-fig,ax = plt.subplots()
-ax.scatter(df['NPV'],df['gwp'],s=7)
-ax.set_xlabel('NPV')
-ax.set_ylabel('gwp')
-ax.plot(df['NPV'],df['gwp'],c='r',lw=0.5)
-xAnnot = max(df['NPV'])
-yAnnot = max(df['gwp'])
-ax.scatter(xAnnot,yAnnot,marker='*',c='y',s=120)
+    mutation = MixedVariableMutation(mask, {
+        "real": get_mutation("real_pm", eta=3.0),
+        "int": get_mutation("int_pm", eta=3.0)
+    })
+    #[V_gBurn,ng,Tdig,debt_level,V_cng_p,e_priceS,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
+    problem = BiogasMultiJ()
+    algorithm = NSGA2(pop_size=500,
+                  sampling=sampling,
+                  crossover=crossover,
+                  n_offsprings=10,
+                  mutation=mutation,
+                  eliminate_duplicates=True,
+    )
+    res = minimize(problem,
+                   algorithm,
+                   ("n_gen", 100),
+                   verbose=True,
+                   seed=1,
+                   save_history=True)
+    return res
 
-# ps = problem.pareto_set(use_cache=False, flatten=False)
-# pf = problem.pareto_front(use_cache=False, flatten=False)
-
-# # Design Space
-# plot = Scatter(title = "Design Space", axis_labels="x")
-# plot.add(res.X, s=30, facecolors='none', edgecolors='r')
-# if ps is not None:
-#     plot.add(ps, plot_type="line", color="black", alpha=0.7)
-# plot.show()
-
-# # Objective Space
-# plot = Scatter(title = "Objective Space")
-# plot.add(res.F)
-# if pf is not None:
-#     plot.add(pf, plot_type="line", color="black", alpha=0.7)
-# plot.show()
+def biodigestorLam1(x):
+    return biodigestor(cleanXopt(x),1,True,False)
+def biodigestorLam0(x):
+    return biodigestor(cleanXopt(x),0,True,False)
+def plotRes(res,plot):
+    df = pd.DataFrame(-res.F,columns=['NPV','gwp'])
+    dfX = pd.DataFrame(res.X)
+    df = pd.concat([df,dfX],axis=1)
+    df = df.sort_values(by=['NPV'])
+    lam1X = op.fmin(func=biodigestorLam1,x0=df.tail(1).values.flatten().tolist()[2:])
+    lam1X =cleanXopt(lam1X)
+    lam1 = biodigestor(lam1X,1,True,True)
+    lam1[1]=-lam1[1]
+    lam1[2]=-lam1[2]
+    lam0X = op.fmin(func=biodigestorLam0,x0=df.head(1).values.flatten().tolist()[2:])
+    lam0X =cleanXopt(lam0X)
+    lam0 = biodigestor(lam0X,0,True,True)
+    lam0[2]=-lam0[2]
+    lam0[1]=-lam0[1]
+    lam0 = list(lam0)[1:]+list(lam0X)
+    lam1 = list(lam1)[1:]+list(lam1X)
+    lam =[]
+    lam.append(lam0)
+    lam.append(lam1)
+    df = df.append(pd.DataFrame(lam,columns=['NPV','gwp']+list(range(12))))
+    df = df.sort_values(by=['NPV'])
+    xAnnot = max(df['NPV'])
+    yAnnot = max(df['gwp'])
+    annot=[xAnnot, yAnnot]
+    if plot:
+        fig,ax = plt.subplots()
+        ax.scatter(df['NPV'],df['gwp'],s=20,c='r')
+        ax.set_xlabel('NPV')
+        ax.set_ylabel('gwp')
+        ax.plot(df['NPV'],df['gwp'],c='r',lw=1)
+        
+        ax.scatter(xAnnot,yAnnot,marker='*',c='y',s=120)
+    
+    n_evals = []    # corresponding number of function evaluations\
+    F = []          # the objective space values in each generation
+    cv = []         # constraint violation in each generation
+    
+    
+    # iterate over the deepcopies of algorithms
+    for algorithm in res.history:
+    
+        # store the number of function evaluations
+        n_evals.append(algorithm.evaluator.n_eval)
+    
+        # retrieve the optimum from the algorithm
+        opt = algorithm.opt
+        pop = algorithm.pop
+        # store the least contraint violation in this generation
+        cv.append(opt.get("CV").min())
+    
+        # filter out only the feasible and append
+        feas = np.where(opt.get("feasible"))[0]
+        _F = opt.get("F")[feas]
+        _F = pop.get("F")
+        F.extend(list(-_F))
+    F = pd.DataFrame(list(map(list, F)))
+    if plot:
+        ax.scatter(F[0],F[1],c='b',s=0.5,)
+        ax.set_xlim([-3e6,0])
+    return [df,F,annot]

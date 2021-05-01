@@ -17,6 +17,7 @@ import Transport as T
 import biogas as B
 import pickle
 from math import inf
+import scipy.optimize as op
 
 # Variables we want to keep track in DOE
 # farm=[]
@@ -35,7 +36,7 @@ with open('full_transp.p', 'rb') as fp:
 #     vector =  DOE.loc[i].values.flatten().tolist()
 #     DOE_vector.append(vector[1:])
 # DOE_n = 0
-def biodigestor(vector,lam = 1,multiJ =False,printt=False,pen=True):
+def biodigestor(vector,lam = 1,multiJ =False,full=False,printt=False,pen=True):
     #Use printt to print the text within your modules, when running the optimization it should be set to False
     #Use pen to penalize the function contraints being violated, when running the optimization it should be set to True
     # DOE_n = DOE_n+1
@@ -114,7 +115,9 @@ def biodigestor(vector,lam = 1,multiJ =False,printt=False,pen=True):
     V_cng_p = vector[4]
     farmerNPV = farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,e_priceS,f_used,p_bf,printt,pen)
     if multiJ:
-        return -farmerNPV*lam-(1-lam)*gwpS,-farmerNPV,-gwpS
+        if full:
+            return [-farmerNPV*lam-(1-lam)*gwpS,-farmerNPV,-gwpS]
+        else: return -farmerNPV*lam-(1-lam)*gwpS
     else: return -farmerNPV
     # return -farmerNPV*lam-(1-lam)*gwpS
 # for vector in DOE_vector:
@@ -185,13 +188,17 @@ def cleanXopt(xopt_in):
         if xopt[i]>1: xopt[i]=1
         elif xopt[i]<1: xopt[i]=0
     return xopt
-def cleanBiodigestor(x):
+def cleanBiodigestor(x,lam = 1,multiJ =False,full=False,printt=False,pen=True):
     X = cleanXopt(x)
-    return biodigestor(X)
+    return biodigestor(X,lam,multiJ,full,printt,pen)
+def fminClean(x0,args):
+    xopt = op.fmin(func=cleanBiodigestor,x0=best,args=args)
+    return xopt
 # best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 
 #             1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
 #             1.00000000e+00, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
 # biodigestor(best,True,False)
+# args = (0.01,True,False,False,True)
 # mod = runGA(best)
 # biodigestor(mod.best_variable,True,False)
 # mod_best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
@@ -200,11 +207,16 @@ def cleanBiodigestor(x):
 
 # fminsearch but Python
 best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,0.16,
-        1.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,
-        0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
-import scipy.optimize as op
-xopt = op.fmin(func=cleanBiodigestor,x0=best)
+        1.00000000e+00, 1.00000000e+00, 1.00000000e+00, 1.00000000e+00,
+        1.00000000e+00, 0.00000000e+00, 0.00000000e+00]
+# args = (1,True,False,False,True)
+# # mod = runGA(best)
+# cleanBiodigestor(best,*args)
+# xopt = fminClean(best,args)
+# # xopt = op.fmin(func=cleanBiodigestor,x0=best,args=args)
+# # # xopt = op.fmin(func=cleanBiodigestor,x0=best)
 # xopt = cleanXopt(xopt)
+# print(xopt)
 # biodigestor(xopt,0.5,True)
 
 def biodigestorNPV0(vector,printt=False,pen=True):
