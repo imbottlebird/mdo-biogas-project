@@ -192,7 +192,7 @@ def cleanBiodigestor(x,lam = 1,multiJ =False,full=False,printt=False,pen=True):
     X = cleanXopt(x)
     return biodigestor(X,lam,multiJ,full,printt,pen)
 def fminClean(x0,args):
-    xopt = op.fmin(func=cleanBiodigestor,x0=best,args=args)
+    xopt = op.fmin(func=cleanBiodigestor,x0=x0,args=args)
     return xopt
 # best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 
 #             1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
