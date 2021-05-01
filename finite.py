@@ -19,15 +19,20 @@ f = {}
 #run algorithm for each input vector and change to delta
 
 for s in [0, 3, 4]:
+    #git sprint(s)
     for d in range(7):
         delta = 10**(-d)
         pos_x0 = update_s(x0,delta,s)
         neg_x0 = update_s(x0,-delta,s)
+        #print(d)
+        #print(pos_x0)
+        #print(x0)
+        #print(neg_x0)
         res_pos = I.cleanBiodigestor(pos_x0,args)
         res_neg = I.cleanBiodigestor(neg_x0,args)
         f_fin = (res_pos - 2*res_mid + res_neg)/(delta**2) - d*2 
-        print('VARIABLE #'+str(s)+' ORDER-'+str(d)+': Delta is '+str(delta)+' & + finite is '+str(res_pos)+' \
-        - finite is '+str(res_neg)+' and the same is '+str(res_mid))
+        #print('VARIABLE #'+str(s)+' ORDER-'+str(d)+': Delta is '+str(delta)+' & + finite is '+str(res_pos)+' \
+        #- finite is '+str(res_neg)+' and the same is '+str(res_mid))
         f.update({(s,d):f_fin})
 
 print(f)
