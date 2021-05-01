@@ -57,7 +57,7 @@ if st.button('Optimize with X0 above and lambda'):
     args = (lam,True,False,False,True)
     # print(lam)
     # print(x)
-    # print(cleanXopt(x))
+    print(cleanXopt(x))
     # xopt = op.fmin(func=cleanBiodigestor,x0=x,args=args)
     xopt = fminClean(x,args)
     xoptSer = pd.DataFrame(pd.Series(cleanXopt(xopt),index=['V_gBurn','ng','Tdig','debt_level','V_cng_p','farm1','farm2','farm3','farm4','farm5','farm6','farm7'])).transpose()

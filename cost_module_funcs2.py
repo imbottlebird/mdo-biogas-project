@@ -86,10 +86,10 @@ def e_s(V_gburn,e_c):
     return max(e_p(V_gburn)-e_c,0)
 
 
-def r(V_gburn,e_c,f_p,f_used,V_g,k,e_priceS):
+def r(V_gburn,e_c,f_p,f_used,V_g,k,e_priceS,V_cng_p):
     global p_g,p_l
     r_e = total_npv([e_s(V_gburn,e_c)*e_priceS],k)
-    r_g = total_npv([(V_g-V_gburn)*p_g],k)
+    r_g = total_npv([(V_g-V_gburn-V_cng_p)*p_g],k)
     r_l = total_npv([w_l(f_p,f_used)*p_l],k)
     return r_e+r_g+r_l
 def polution_avoided_specific(list_in):
@@ -183,7 +183,7 @@ def farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance_total,f_p,V_g,debt_level,e_c
     c_m_r = c_m(V_d,typ,n_g,k)
     c_e_r= c_e(min(e_c,e_p(V_gburn)),e_priceB,k)
     f_s_r = f_s(f_p,f_used,p_bf,k)
-    r_r = r(V_gburn,e_c,f_p,f_used,V_g,k,e_priceS)
+    r_r = r(V_gburn,e_c,f_p,f_used,V_g,k,e_priceS,V_cng_p)
     p_r = C_prod(V_g, k)
     penalty = 0
     if pen:
