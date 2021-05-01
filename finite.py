@@ -1,28 +1,34 @@
 import integrating_modules as I
 
+args = (0.01,True,False,False,True)
+x0 = [0.0006, 1, 36.90369, 0.00010,1, 1, 0, 0, 0, 0, 0, 0]
+#[V_gBurn,ng,Tdig,debt_level,V_cng_p,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
+
 #change decision variables with detla
-def update_s(dec_v,d): 
+def update_s(dec_v,d,n): 
     x0_delta = dec_v.copy()
-    x0_delta[2] = x0_delta[2]+d
-    x0_delta[3] = x0_delta[3]+d
-    x0_delta[5] = x0_delta[5]+d
+    x0_delta[n] = x0_delta[n]+d
     return x0_delta
 
-x0 = [1, 1, 3.84795466e+01, 3.21167571e-03, 0,0.35, 1, 1, 1,1, 0, 0, 0.0]
-res_mid = I.biodigestorNPV0(x0)
+
+#x0 = I.fminClean(xt, args) 
+res_mid = I.cleanBiodigestor(x0, args)
 #Initialize function vector f
 f = {}
 
 #run algorithm for each input vector and change to delta
 
-for d in range(7):
-    delta = 10**(-d)
-    pos_x0 = update_s(x0,delta)
-    neg_x0 = update_s(x0,-delta)
-    res_pos = I.biodigestorNPV0(pos_x0)
-    res_neg = I.biodigestorNPV0(neg_x0)
-    f_fin = (res_pos - 2*res_mid + res_neg)/(delta**2) - d**2 #Order magnitude is negative
-    f.update({d:f_fin})
+for s in [0, 3, 4]:
+    for d in range(7):
+        delta = 10**(-d)
+        pos_x0 = update_s(x0,delta,s)
+        neg_x0 = update_s(x0,-delta,s)
+        res_pos = I.cleanBiodigestor(pos_x0,args)
+        res_neg = I.cleanBiodigestor(neg_x0,args)
+        f_fin = (res_pos - 2*res_mid + res_neg)/(delta**2) - d*2 
+        print('VARIABLE #'+str(s)+' ORDER-'+str(d)+': Delta is '+str(delta)+' & + finite is '+str(res_pos)+' \
+        - finite is '+str(res_neg)+' and the same is '+str(res_mid))
+        f.update({(s,d):f_fin})
 
 print(f)
 
