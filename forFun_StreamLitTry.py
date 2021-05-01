@@ -17,6 +17,7 @@ import pydeck as pdk
 from integrating_modules import biodigestor, cleanXopt,cleanBiodigestor,fminClean
 from multiJ import run_multiJ,plotRes
 import scipy.optimize as op
+from Transport import load_data
 
 
 data = pd.read_csv('location_data.csv', header=None)
@@ -28,11 +29,7 @@ def runJ():
 def plotMultiJ(res):
     var = plotRes(res,False)
     return var
-# dill.load_session('globalsave.pkl')
-# @st.cache()
-# def load_data():
-#     return dill.load_session('globalsave.pkl')
-# , columns=['lat','lon','Valume','something','Cattle','Swine','Poultry']
+
 st.title('Biodigestor 2021 EM.428 MIT')
 st.write("Ricardo Hopker, Niek, Jaqueline and Jo")
 st.write("inputs:")
@@ -84,7 +81,6 @@ if st.button('View multiobjective tradespace'):
         ax.set_xlim([-3e6,0])
     st.write(fig)
 
-# allV= load_data()
 # wasteData
 map_data = data[['lat','lon']]
 # map_data
@@ -99,6 +95,8 @@ view_state = pdk.ViewState(
 
 
 if st.button('View active farms'):
+    active_farms1= x[5:12] 
+    active_farms1 = [0 if num<1 or num==False  else 1 for num in active_farms]
     dig_id=5
     st.write('Active farms:')
     layer_active = pdk.Layer(
