@@ -14,7 +14,7 @@ from constants import dict_total
 import dill
 import matplotlib.pyplot as plt
 import pydeck as pdk
-from integrating_modules import biodigestor, cleanXopt,cleanBiodigestor,fminClean
+from integrating_modules import biodigestor, cleanXopt,cleanBiodigestor,fminClean,dict_T
 from multiJ import run_multiJ,plotRes
 import scipy.optimize as op
 from Transport import load_data
@@ -22,6 +22,7 @@ from Transport import load_data
 
 data = pd.read_csv('location_data.csv', header=None)
 data = data.rename(columns={0:'lat',1:'lon',2:'Volume',3:'something',4:'Cattle',5:'Swine',6:'Poultry'}) 
+data['id'] = list(range(len(data)))
 
 def runJ():
     return run_multiJ()
@@ -57,7 +58,7 @@ if st.button('Optimize with X0 above and lambda'):
     args = (lam,True,False,False,True)
     # print(lam)
     # print(x)
-    print(cleanXopt(x))
+    # print(cleanXopt(x))
     # xopt = op.fmin(func=cleanBiodigestor,x0=x,args=args)
     xopt = fminClean(x,args)
     xoptSer = pd.DataFrame(pd.Series(cleanXopt(xopt),index=['V_gBurn','ng','Tdig','debt_level','V_cng_p','farm1','farm2','farm3','farm4','farm5','farm6','farm7'])).transpose()
@@ -91,25 +92,23 @@ map_data = data[['lat','lon']]
 
 view_state = pdk.ViewState(
     longitude=map_data.mean()['lon'], latitude= map_data.mean()['lat'], zoom=8.5, min_zoom=5, max_zoom=15, pitch=0, bearing=-27.36)
-
-
-
-if st.button('View active farms'):
+@st.cache()
+def active_farmsfun():
     active_farms1= x[5:12] 
     active_farms1 = [0 if num<1 or num==False  else 1 for num in active_farms]
-    dig_id=5
-    st.write('Active farms:')
+    [distance, wIn, total_solids_perc, wComp,Tpath] = dict_T[tuple(active_farms1)]
+    dig_id=Tpath[0]
+    
     layer_active = pdk.Layer(
         "ScatterplotLayer",
         data[active_farms],
         get_position=['lon', 'lat'],
         auto_highlight=True,
         get_radius=1000,
-        get_fill_color=['lon==' + str(map_data['lon'].iloc[dig_id])+' ? 255 : 0', 0, 0, 255],
+        get_fill_color=['id==' + str(dig_id)+' ? 255 : 0', 0, 0, 255],
         # get_fill_color=[0, 0, 0, 255],
         # elevation_scale=50,
         pickable=True,
-        elevation_range=[0, 3000],
         get_weight = 'Volume > 0 ? Volume : 0',
         extruded=True,
         coverage=1,
@@ -121,12 +120,13 @@ if st.button('View active farms'):
         tooltip={"html": "<b>Elevation Value:</b> {elevationValue}", "style": {"color": "white"}},
 )
     
+    return r_active,Tpath
+if st.checkbox('View active farms'):
+    st.write('Active farms: in red digestor location')
+    r_active,Tpath = active_farmsfun()
+    # print(Tpath)
     st.pydeck_chart(r_active)
-    
 
-
-
-# r.to_html("test.html", open_browser=True, notebook_display=False)
 
 if st.button('Show farm locations'):
     st.write('Farms:')
@@ -154,6 +154,10 @@ if st.button('Show farm locations'):
     st.pydeck_chart(r)
 if st.button('Show farm heatmaps'):
     st.write('Manure volume heatmap:')
+    active_farms1= x[5:12] 
+    active_farms1 = [0 if num<1 or num==False  else 1 for num in active_farms]
+    [distance, wIn, total_solids_perc, wComp,Tpath] = dict_T[tuple(active_farms1)]
+    dig_id=Tpath[0]
     layer_heat = pdk.Layer(
         "HeatmapLayer",
         data,

@@ -141,7 +141,7 @@ def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,printt=False):
         print("Weighted average solids percentage of the manure supplied is "+str(total_solids_perc*100)+" %")
         print("Manure composition is CATTLE-PIGS-CHICKS is "+str(manure_comp))
 
-    return [best_distance, total_volume, total_solids_perc, manure_comp]
+    return [best_distance, total_volume, total_solids_perc, manure_comp,final_best]
 
 #fig, ax = plt.subplots(1, 2)
 #ax[0].plot(sa_tsp.best_y_history)

@@ -52,9 +52,9 @@ def biodigestor(vector,lam = 1,multiJ =False,full=False,printt=False,pen=True):
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
     # if sum(active_farms)>2:
     if printt:
-        [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
+        [distance, wIn, total_solids_perc, wComp,Tpath] = T.load_data(*active_farms,printt)
     else:
-        [distance, wIn, total_solids_perc, wComp] = dict_T[tuple(active_farms)]
+        [distance, wIn, total_solids_perc, wComp,TPath] = dict_T[tuple(active_farms)]
     # else:
     #     [distance, wIn, total_solids_perc, wComp] = [inf,0,0,[1,0,0]]
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(vector[6],vector[7],vector[8],
@@ -225,9 +225,9 @@ def biodigestorNPV0(vector,printt=False,pen=True):
     active_farms= vector[6:13] 
     active_farms = [0 if num<1 or num==False  else 1 for num in active_farms]
     if printt:
-        [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
+        [distance, wIn, total_solids_perc, wComp,Tpath] = T.load_data(*active_farms,printt)
     else:
-        [distance, wIn, total_solids_perc, wComp] = dict_T[tuple(active_farms)]
+        [distance, wIn, total_solids_perc, wComp,TPath] = dict_T[tuple(active_farms)]
 
     Tdig = vector[2]
     [W_a, typ, V_d, G_in, G_comp, digOut, digOut_comp] = digester(wIn,wComp,Tdig)
