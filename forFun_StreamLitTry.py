@@ -23,6 +23,7 @@ from Transport import load_data
 data = pd.read_csv('location_data.csv', header=None)
 data = data.rename(columns={0:'lat',1:'lon',2:'Volume',3:'something',4:'Cattle',5:'Swine',6:'Poultry'}) 
 data['id'] = list(range(len(data)))
+data['id+1'] = list(range(1,len(data)+1))
 
 def runJ():
     return run_multiJ()
@@ -95,9 +96,19 @@ view_state = pdk.ViewState(
 @st.cache()
 def active_farmsfun():
     active_farms1= x[5:12] 
-    active_farms1 = [0 if num<1 or num==False  else 1 for num in active_farms]
+    active_farms1 = [0 if num<1 or num==False  else 1 for num in active_farms1]
+    active_farms= x[5:12] 
+    active_farms = [False if num<1 or num==False  else True for num in active_farms]
     [distance, wIn, total_solids_perc, wComp,Tpath] = dict_T[tuple(active_farms1)]
-    dig_id=Tpath[0]
+    count = 0
+    count_id =0
+    for i in active_farms1:
+        if i ==1:
+            if count == Tpath[0]:
+                dig_id=count_id
+            count = count +1
+        count_id = count_id+1
+    
     
     layer_active = pdk.Layer(
         "ScatterplotLayer",
@@ -105,7 +116,7 @@ def active_farmsfun():
         get_position=['lon', 'lat'],
         auto_highlight=True,
         get_radius=1000,
-        get_fill_color=['id==' + str(dig_id)+' ? 255 : 0', 0, 0, 255],
+        get_fill_color=['id == ' + str(dig_id)+' ? 255 : 0', 0, 0, 255],
         # get_fill_color=[0, 0, 0, 255],
         # elevation_scale=50,
         pickable=True,
@@ -117,7 +128,7 @@ def active_farmsfun():
         map_style="mapbox://styles/mapbox/light-v9",
         layers=[layer_active],
         initial_view_state=view_state,
-        tooltip={"html": "<b>Elevation Value:</b> {elevationValue}", "style": {"color": "white"}},
+        tooltip={"html": "<b>Manure Volume:</b> {Volume}  <br> <b>Farm:</b> {id+1}", "style": {"color": "white"}},
 )
     
     return r_active,Tpath
@@ -133,15 +144,15 @@ if st.button('Show farm locations'):
 
     layer_farms = pdk.Layer(
     "ScatterplotLayer",
-    map_data,
+    data,
     get_position=['lon', 'lat'],
     auto_highlight=True,
     get_radius=1000,
-    # get_fill_color=['lon==' + str(map_data['lon'].iloc[dig_id])+' ? 255 : 0', 0, 0, 255],
-    get_fill_color=[0, 0, 0, 255],
+    get_fill_color=['id * 42.5', 'id * 42.5', 0, 255],
+    # get_fill_color=[0, 0, 0, 255],
     # elevation_scale=50,
     pickable=True,
-    elevation_range=[0, 3000],
+    # elevation_range=[0, 3000],
     extruded=True,
     coverage=1,
 )
@@ -149,7 +160,7 @@ if st.button('Show farm locations'):
         map_style="mapbox://styles/mapbox/light-v9",
         layers=[layer_farms],
         initial_view_state=view_state,
-        tooltip={"html": "<b>Elevation Value:</b> {elevationValue}", "style": {"color": "white"}},
+        tooltip={"html": "<b>Manure Volume:</b> {Volume}  <br> <b>Farm:</b> {id+1}", "style": {"color": "white"}},
 )
     st.pydeck_chart(r)
 if st.button('Show farm heatmaps'):
@@ -176,7 +187,7 @@ if st.button('Show farm heatmaps'):
         map_style="mapbox://styles/mapbox/light-v9",
         layers=[layer_heat],
         initial_view_state=view_state,
-        tooltip={"html": "<b>Elevation Value:</b> {elevationValue}", "style": {"color": "white"}},
+        tooltip={"html": "<b>Manure Volume:</b> {Volume}  <br> <b>Farm:</b> {id+1}", "style": {"color": "white"}},
 )
     st.pydeck_chart(r)
 # a_d[0] = st.number_input('insert number for fit line for digestor type 0',value = a_d[0])
