@@ -175,12 +175,13 @@ def runGA(vector):
     print('Run time: '+str(stop-start)+' second')
     return model2
 def cleanXopt(xopt_in):
+    global max_debt
     xopt = xopt_in.copy()
     if xopt[0]>1: xopt[0]=1
     elif xopt[0]<0: xopt[0]=0
     xopt[1] = round(xopt[1],0)
     if xopt[1]<1: xopt[1]=1
-    if xopt[3]>1: xopt[3]=1
+    if xopt[3]>max_debt: xopt[3]=max_debt
     elif xopt[3]<0: xopt[3]=0
     if xopt[4]>1: xopt[4]=1
     elif xopt[4]<0: xopt[4]=0
@@ -195,6 +196,15 @@ def fminClean(x0,args):
     xopt = op.fmin(func=cleanBiodigestor,x0=x0,args=args)
     xopt = cleanXopt(xopt)
     return xopt
+def scaleBiodigestor(x,lam = 1,multiJ =False,full=False,printt=False,pen=True):
+    X = cleanXopt(x)
+    X[3]=X[3]/((10**3)**.5)
+    return biodigestor(X,lam,multiJ,full,printt,pen)
+def fminCleanScaled(x0,args):
+    xopt = op.fmin(func=scaleBiodigestor,x0=x0,args=args)
+    xopt[3] = xopt[3]*((10**3)**.5)
+    xopt = cleanXopt(xopt)
+    return xopt    
 # best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 
 #             1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
 #             1.00000000e+00, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
@@ -257,11 +267,12 @@ def biodigestorNPV0(vector,printt=False,pen=True):
     # farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_priceB,e_priceS,f_used,p_bf)
     return -farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,e_priceSS,f_used,p_bf,printt,pen)
 def cleanXoptNPV0(xopt_in):
+    global max_debt
     xopt = xopt_in.copy()
     if xopt[0]>1: xopt[0]=1
     elif xopt[0]<0: xopt[0]=0
     xopt[1] = round(xopt[1],0)
-    if xopt[3]>1: xopt[3]=1
+    if xopt[3]>max_debt: xopt[3]=max_debt
     elif xopt[3]<0: xopt[3]=0
     if xopt[4]>1: xopt[4]=1
     elif xopt[4]<0: xopt[4]=0

@@ -54,7 +54,7 @@ st.write('objective function value:')
 st.write(-biodigestor(cleanXopt(x),lam,True,False))
 active_farms= x[5:12] 
 active_farms = [False if num<1 or num==False  else True for num in active_farms]
-if st.button('Optimize with X0 above and lambda'):
+if st.checkbox('Optimize with X0 above and lambda'):
     st.write('Best X')
     args = (lam,True,False,False,True)
     # print(lam)
@@ -68,9 +68,14 @@ if st.button('Optimize with X0 above and lambda'):
     st.write('Best Obj')
     st.write(-cleanBiodigestor(xopt,lam,True,False,False,True))
 
-if st.button('View multiobjective tradespace'):
-    st.write('multiobjective tradespace:')
+@st.cache()
+def load_tradespace_func():
     df,F,annot = plotMultiJ(runJ())
+    return df,F,annot
+
+if st.checkbox('View multiobjective tradespace'):
+    st.write('multiobjective tradespace:')
+    df,F,annot = load_tradespace_func()
     fig,ax = plt.subplots()
     ax.scatter(df['NPV'],df['gwp'],s=20,c='r')
     ax.set_xlabel('NPV')
@@ -94,7 +99,7 @@ map_data = data[['lat','lon']]
 view_state = pdk.ViewState(
     longitude=map_data.mean()['lon'], latitude= map_data.mean()['lat'], zoom=8.5, min_zoom=5, max_zoom=15, pitch=0, bearing=-27.36)
 @st.cache()
-def active_farmsfun():
+def active_farmsfun(tf,dig_id = None):
     active_farms1= x[5:12] 
     active_farms1 = [0 if num<1 or num==False  else 1 for num in active_farms1]
     active_farms= x[5:12] 
@@ -102,12 +107,13 @@ def active_farmsfun():
     [distance, wIn, total_solids_perc, wComp,Tpath] = dict_T[tuple(active_farms1)]
     count = 0
     count_id =0
-    for i in active_farms1:
-        if i ==1:
-            if count == Tpath[0]:
-                dig_id=count_id
-            count = count +1
-        count_id = count_id+1
+    if tf:
+        for i in active_farms1:
+            if i ==1:
+                if count == Tpath[0]:
+                    dig_id=count_id
+                count = count +1
+            count_id = count_id+1
     
     
     layer_active = pdk.Layer(
@@ -132,16 +138,33 @@ def active_farmsfun():
 )
     
     return r_active,Tpath
+@st.cache()
+def load_r_path(Tpath):
+    r = []
+    for i in Tpath:
+        r_new,Tpath2 = active_farmsfun(False,i)
+        r.append(r_new)
+    return r
 if st.checkbox('View active farms'):
     st.write('Active farms: in red digestor location')
-    r_active,Tpath = active_farmsfun()
+    r_active,Tpath = active_farmsfun(True)
     # print(Tpath)
     st.pydeck_chart(r_active)
-
-
-if st.button('Show farm locations'):
-    st.write('Farms:')
-
+if st.checkbox('View manure transport path for active farms'):
+    active_farms1= x[5:12] 
+    active_farms1 = [0 if num<1 or num==False  else 1 for num in active_farms1]
+    active_farms= x[5:12] 
+    active_farms = [False if num<1 or num==False  else True for num in active_farms]
+    [distance, wIn, total_solids_perc, wComp,Tpath] = dict_T[tuple(active_farms1)]
+    r = load_r_path(Tpath)
+    st.write('Active farms: current truck location in red')
+    curr_step = st.slider('Step',int(min(Tpath)),int(max(Tpath)),value =int(len(Tpath)-1), step = 1)
+    
+    # r_active,Tpath = active_farmsfun(False,Tpath[curr_step])
+    # print(Tpath)
+    st.pydeck_chart(r[curr_step])
+@st.cache()
+def show_farmsfun():
     layer_farms = pdk.Layer(
     "ScatterplotLayer",
     data,
@@ -162,9 +185,14 @@ if st.button('Show farm locations'):
         initial_view_state=view_state,
         tooltip={"html": "<b>Manure Volume:</b> {Volume}  <br> <b>Farm:</b> {id+1}", "style": {"color": "white"}},
 )
+    return r
+if st.checkbox('Show farm locations'):
+    st.write('Farms:')
+    r = show_farmsfun()
     st.pydeck_chart(r)
-if st.button('Show farm heatmaps'):
-    st.write('Manure volume heatmap:')
+
+@st.cache()   
+def farm_heatmapFunc():
     active_farms1= x[5:12] 
     active_farms1 = [0 if num<1 or num==False  else 1 for num in active_farms]
     [distance, wIn, total_solids_perc, wComp,Tpath] = dict_T[tuple(active_farms1)]
@@ -189,6 +217,11 @@ if st.button('Show farm heatmaps'):
         initial_view_state=view_state,
         tooltip={"html": "<b>Manure Volume:</b> {Volume}  <br> <b>Farm:</b> {id+1}", "style": {"color": "white"}},
 )
+    return r
+    
+if st.checkbox('Show farm heatmaps'):
+    st.write('Manure volume heatmap:')
+    r = farm_heatmapFunc()
     st.pydeck_chart(r)
 # a_d[0] = st.number_input('insert number for fit line for digestor type 0',value = a_d[0])
 # st.write(a_d[0])
