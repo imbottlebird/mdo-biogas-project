@@ -5,7 +5,9 @@ Created on Sun Mar 21 19:38:02 2021
 """
 from constants import *
 #Functions
+# def WACC(D,tax,kd,ke,dict_total):
 def WACC(D,tax,kd,ke):
+    # max_debt = dict_total['max_debt']
     global max_debt
     if D<0:
         D=0

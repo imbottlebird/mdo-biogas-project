@@ -46,7 +46,7 @@ def biodigestor(vector,lam = 1,multiJ =False,full=False,printt=False,pen=True):
 
     #This loads the respective farms - 1 is active, 0 is inactive. Total farms must be at least 3 active (required by annealing)
     #TOTAL_SOLIDS PERCENTAGE IS NOT USED
-    active_farms= vector[5:12] 
+    active_farms= vector[4:11] 
     active_farms = [0 if num<1 or num==False  else 1 for num in active_farms]
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(1,1,1,1,1,1,1)
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
@@ -67,8 +67,8 @@ def biodigestor(vector,lam = 1,multiJ =False,full=False,printt=False,pen=True):
 
     
     #output from digester -- will return 9 values & print to console
-    Tdig = vector[2]
-    [W_a, typ, V_d, G_in, G_comp, digOut, digOut_comp] = digester(wIn,wComp,Tdig)
+    # Tdig = vector[2]
+    [W_a, typ, V_d, G_in, G_comp, digOut, digOut_comp] = digester(wIn,wComp)
     # H_needed = JtokWh(H_needed*1000)
     # print('----')
     
@@ -90,7 +90,6 @@ def biodigestor(vector,lam = 1,multiJ =False,full=False,printt=False,pen=True):
     #2. G_in - is this already purified? methane's rate is already 0.9665, which meets the biomethane requirement
     #          in general composition of biogas, methane is expected around 0.6
     #3. digOut - digestate amount is 18.7. expected around 80%-90% of kilos (7963) --> how about 18.7 kg/day *330 days/year ~6200
-    
     V_g =V_g*working_days
     ghg = pd.DataFrame()
     ghg['ghg_lf']=ghg_r
@@ -105,14 +104,14 @@ def biodigestor(vector,lam = 1,multiJ =False,full=False,printt=False,pen=True):
     
     n_g = vector[1]
     V_gburn = vector[0]*V_g
-    debt_level = vector[3]
+    debt_level = vector[2]
     # print('----')
     # farm.append(farmer_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf))
     # print('----')
     # system.append(system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,list_ghg))
     # print('----')
     # return -system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,list_ghg,printt,pen)
-    V_cng_p = vector[4]
+    V_cng_p = vector[3]
     farmerNPV = farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,e_priceS,f_used,p_bf,printt,pen)
     if multiJ:
         if full:
@@ -181,11 +180,11 @@ def cleanXopt(xopt_in):
     elif xopt[0]<0: xopt[0]=0
     xopt[1] = round(xopt[1],0)
     if xopt[1]<1: xopt[1]=1
-    if xopt[3]>max_debt: xopt[3]=max_debt
+    if xopt[2]>max_debt: xopt[2]=max_debt
+    elif xopt[2]<0: xopt[2]=0
+    if xopt[3]>1: xopt[3]=1
     elif xopt[3]<0: xopt[3]=0
-    if xopt[4]>1: xopt[4]=1
-    elif xopt[4]<0: xopt[4]=0
-    for i in range(5,12):
+    for i in range(4,11):
         if xopt[i]>1: xopt[i]=1
         elif xopt[i]<1: xopt[i]=0
     return xopt
@@ -209,7 +208,7 @@ def fminCleanScaled(x0,args):
 #             1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
 #             1.00000000e+00, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
 # biodigestor(best,True,False)
-# args = (0.01,True,False,False,True)
+args = (0.01,True,False,False,True)
 # mod = runGA(best)
 # biodigestor(mod.best_variable,True,False)
 # mod_best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
@@ -217,7 +216,7 @@ def fminCleanScaled(x0,args):
 #         0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
 
 # fminsearch but Python
-best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,0.16,
+best = [1.72039083e-01, 1.00000000e+00, 3.21167571e-03,0.16,
         1.00000000e+00, 1.00000000e+00, 1.00000000e+00, 1.00000000e+00,
         1.00000000e+00, 0.00000000e+00, 0.00000000e+00]
 # args = (1,True,False,False,True)
@@ -232,15 +231,15 @@ best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,0.16,
 # biodigestor(xopt,0.5,True)
 
 def biodigestorNPV0(vector,printt=False,pen=True):
-    active_farms= vector[6:13] 
+    active_farms= vector[5:12] 
     active_farms = [0 if num<1 or num==False  else 1 for num in active_farms]
     if printt:
         [distance, wIn, total_solids_perc, wComp,Tpath] = T.load_data(*active_farms,printt)
     else:
         [distance, wIn, total_solids_perc, wComp,TPath] = dict_T[tuple(active_farms)]
 
-    Tdig = vector[2]
-    [W_a, typ, V_d, G_in, G_comp, digOut, digOut_comp] = digester(wIn,wComp,Tdig)
+    # Tdig = vector[2]
+    [W_a, typ, V_d, G_in, G_comp, digOut, digOut_comp] = digester(wIn,wComp)
 
     V_g = B.biomethane(G_in, G_comp) #biomethane
     #bg = B.biomethane_validation(kilos, wComp)
@@ -260,10 +259,10 @@ def biodigestorNPV0(vector,printt=False,pen=True):
     
     n_g = vector[1]
     V_gburn = vector[0]*V_g
-    debt_level = vector[3]
+    debt_level = vector[2]
 
-    V_cng_p = vector[4]
-    e_priceSS = vector[5]
+    V_cng_p = vector[3]
+    e_priceSS = vector[4]
     # farmer_npv(n_g,V_gburn,V_d,typ,distance_total,f_p,V_g,debt_level,e_c,e_priceB,e_priceS,f_used,p_bf)
     return -farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,e_priceSS,f_used,p_bf,printt,pen)
 def cleanXoptNPV0(xopt_in):
@@ -272,12 +271,12 @@ def cleanXoptNPV0(xopt_in):
     if xopt[0]>1: xopt[0]=1
     elif xopt[0]<0: xopt[0]=0
     xopt[1] = round(xopt[1],0)
-    if xopt[3]>max_debt: xopt[3]=max_debt
+    if xopt[2]>max_debt: xopt[2]=max_debt
+    elif xopt[2]<0: xopt[2]=0
+    if xopt[3]>1: xopt[3]=1
     elif xopt[3]<0: xopt[3]=0
-    if xopt[4]>1: xopt[4]=1
-    elif xopt[4]<0: xopt[4]=0
-    if xopt[5]<0: xopt[5]=0
-    for i in range(6,13):
+    if xopt[4]<0: xopt[4]=0
+    for i in range(5,12):
         if xopt[i]>1: xopt[i]=1
         elif xopt[i]<1: xopt[i]=0
     return xopt
@@ -285,7 +284,7 @@ def NPV0goal(x):
     X = cleanXoptNPV0(x)
     return biodigestorNPV0(X)**2
 def runNPV0():
-    x0 = [1, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03, 0,0.35,
+    x0 = [1, 1.00000000e+00, 3.21167571e-03, 0,0.35,
         1.00000000e+00, 1.00000000e+00, 1.00000000e+00,1.00000000e+00,
         0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
     xopt = op.fmin(func=NPV0goal,x0=x0)
