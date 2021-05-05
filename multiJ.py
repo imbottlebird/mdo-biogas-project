@@ -9,6 +9,7 @@ import numpy as np
 from pymoo.model.problem import Problem
 from integrating_modules import biodigestor, cleanXopt
 import matplotlib.pyplot as plt
+from constants import dict_total
 from pymoo.factory import get_sampling, get_crossover, get_mutation
 from pymoo.operators.mixed_variable_operator import MixedVariableSampling, MixedVariableMutation, MixedVariableCrossover
 from pymoo.algorithms.nsga2 import NSGA2
@@ -20,27 +21,32 @@ import scipy.optimize as op
 
 class BiogasMultiJ(Problem):
 
-    def __init__(self):
-        super().__init__(n_var=12,
+    def __init__(self,args):
+    # def __init__(self):
+        super().__init__(n_var=11,
                          n_obj=2,
                          n_constr=0,
-                         xl=np.array([0,1,30,0,0,
+                         xl=np.array([0,1,0,0,
                                       0,0,0,0,0,0,0]),
-                         xu=np.array([1,3,40,0.8,1,
+                         xu=np.array([1,6,0.8,1,
                                       1,1,1,1,1,1,1]))
+        self.args = args.copy()
 
     def _evaluate(self, X, out, *args, **kwargs):
         x1 =[]
         x2 =[]
+        dict_t = self.args
         for i in range(len(X)):
-            x = biodigestor(X[i,:],1,True,True)
+            x = biodigestor(X[i,:],dict_t,1,True,True)
+            # x = biodigestor(X[i,:],1,True,True)
             x1.append(x[1])
             x2.append(x[2])
         x1=np.array(x1)
         x2=np.array(x2)
         out["F"] = np.column_stack([x1, x2])
-def run_multiJ():
-    mask = ["real","int","real","real","real",
+def run_multiJ(dict_t):
+# def run_multiJ():
+    mask = ["real","int","real","real",
             "int","int","int","int","int","int","int"]
     sampling =  MixedVariableSampling(mask, {
         "real": get_sampling("real_random"),
@@ -55,7 +61,8 @@ def run_multiJ():
         "int": get_mutation("int_pm", eta=3.0)
     })
     #[V_gBurn,ng,Tdig,debt_level,V_cng_p,e_priceS,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
-    problem = BiogasMultiJ()
+    problem = BiogasMultiJ(dict_t)
+    # problem = BiogasMultiJ()
     algorithm = NSGA2(pop_size=500,
                   sampling=sampling,
                   crossover=crossover,
@@ -70,33 +77,34 @@ def run_multiJ():
                    seed=1,
                    save_history=True)
     return res
-
-def biodigestorLam1(x):
-    return biodigestor(cleanXopt(x),1,True,False)
-def biodigestorLam0(x):
-    return biodigestor(cleanXopt(x),0,True,False)
-def plotRes(res,plot):
+# run_multiJ()
+# run_multiJ(dict_total)
+def biodigestorLam1(x,dict_totalUser):
+    return biodigestor(cleanXopt(x),dict_totalUser,1,True,False)
+def biodigestorLam0(x,dict_totalUser):
+    return biodigestor(cleanXopt(x),dict_totalUser,0,True,False)
+def plotRes(res,plot,dict_totalUser):
     df = pd.DataFrame(-res.F,columns=['NPV','gwp'])
     dfX = pd.DataFrame(res.X)
     df = pd.concat([df,dfX],axis=1)
     df = df.sort_values(by=['NPV'])
-    lam1X = op.fmin(func=biodigestorLam1,x0=df.tail(1).values.flatten().tolist()[2:])
-    lam1X =cleanXopt(lam1X)
-    lam1 = biodigestor(lam1X,1,True,True)
-    lam1[1]=-lam1[1]
-    lam1[2]=-lam1[2]
-    lam0X = op.fmin(func=biodigestorLam0,x0=df.head(1).values.flatten().tolist()[2:])
-    lam0X =cleanXopt(lam0X)
-    lam0 = biodigestor(lam0X,0,True,True)
-    lam0[2]=-lam0[2]
-    lam0[1]=-lam0[1]
-    lam0 = list(lam0)[1:]+list(lam0X)
-    lam1 = list(lam1)[1:]+list(lam1X)
-    lam =[]
-    lam.append(lam0)
-    lam.append(lam1)
-    df = df.append(pd.DataFrame(lam,columns=['NPV','gwp']+list(range(12))))
-    df = df.sort_values(by=['NPV'])
+    # lam1X = op.fmin(func=biodigestorLam1,x0=df.tail(1).values.flatten().tolist()[2:],args = tuple([dict_total]))
+    # lam1X =cleanXopt(lam1X)
+    # lam1 = biodigestor(lam1X,dict_total,1,True,True)
+    # lam1[1]=-lam1[1]
+    # lam1[2]=-lam1[2]
+    # lam0X = op.fmin(func=biodigestorLam0,x0=df.head(1).values.flatten().tolist()[2:],args = tuple([dict_total]))
+    # lam0X =cleanXopt(lam0X)
+    # lam0 = biodigestor(lam0X,dict_total,0,True,True)
+    # lam0[2]=-lam0[2]
+    # lam0[1]=-lam0[1]
+    # lam0 = list(lam0)[1:]+list(lam0X)
+    # lam1 = list(lam1)[1:]+list(lam1X)
+    # lam =[]
+    # lam.append(lam0)
+    # lam.append(lam1)
+    # df = df.append(pd.DataFrame(lam,columns=['NPV','gwp']+list(range(12))))
+    # df = df.sort_values(by=['NPV'])
     xAnnot = max(df['NPV'])
     yAnnot = max(df['gwp'])
     annot=[xAnnot, yAnnot]
@@ -136,3 +144,4 @@ def plotRes(res,plot):
         ax.scatter(F[0],F[1],c='b',s=0.5,)
         ax.set_xlim([-3e6,0])
     return [df,F,annot]
+# [df,F,annot] = plotRes(run_multiJ(dict_total),True,dict_total)

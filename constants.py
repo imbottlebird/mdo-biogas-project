@@ -34,7 +34,7 @@ b_d = [16248.10090549,18897.67690485] #R$ [1] --> upflow [0]--> covered lagoon
 p_f = 3.53 #R$/L
 p_g = 3.05 #R$/kg
 p_l = 3 #R$/kg
-e_priceS = 2.1 #0.35 #R$/kWh
+e_priceS = 0.35 #R$/kWh
 p_bf = 14.5 #R$/kg
 f_used = 8000*0.01 #kg/ha assume a farm of 0.5 ha
 e_c = 121.500 #kWh/year it is actually 121.5MWh but its too big for our current production
@@ -107,4 +107,5 @@ Tw = 0 # K water temperature around reactor
 Pdig =  1 # atm
 dict_total = {}
 for i in dir():
-    dict_total[i] = globals()[i]
+    if i[0]!='_' and i!='dict_total' and not(callable(globals()[i])) and i!='pd':
+        dict_total[i] = globals()[i]

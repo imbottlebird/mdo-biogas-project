@@ -36,7 +36,7 @@ with open('full_transp.p', 'rb') as fp:
 #     vector =  DOE.loc[i].values.flatten().tolist()
 #     DOE_vector.append(vector[1:])
 # DOE_n = 0
-def biodigestor(vector,lam = 1,multiJ =False,full=False,printt=False,pen=True):
+def biodigestor(vector,dict_t=dict_total,lam = 1,multiJ =False,full=False,printt=False,pen=True):
     #Use printt to print the text within your modules, when running the optimization it should be set to False
     #Use pen to penalize the function contraints being violated, when running the optimization it should be set to True
     # DOE_n = DOE_n+1
@@ -90,6 +90,7 @@ def biodigestor(vector,lam = 1,multiJ =False,full=False,printt=False,pen=True):
     #2. G_in - is this already purified? methane's rate is already 0.9665, which meets the biomethane requirement
     #          in general composition of biogas, methane is expected around 0.6
     #3. digOut - digestate amount is 18.7. expected around 80%-90% of kilos (7963) --> how about 18.7 kg/day *330 days/year ~6200
+    working_days = dict_total['working_days']
     V_g =V_g*working_days
     ghg = pd.DataFrame()
     ghg['ghg_lf']=ghg_r
@@ -100,7 +101,7 @@ def biodigestor(vector,lam = 1,multiJ =False,full=False,printt=False,pen=True):
     for gas in ['CH4','CO2','NOX','SOX']:
         list_ghg.append(ghg[ghg['gas']==gas].values.flatten().tolist())
         gwpS = gwpS + gwp(ghg[ghg['gas']==gas]['ghg_lf'].values,gas)
-    list_ghg = do_all_list_cp(W_a,distance,list_ghg)
+    list_ghg = do_all_list_cp(W_a,distance,list_ghg,dict_t)
     
     n_g = vector[1]
     V_gburn = vector[0]*V_g
@@ -112,7 +113,12 @@ def biodigestor(vector,lam = 1,multiJ =False,full=False,printt=False,pen=True):
     # print('----')
     # return -system_npv(n_g,V_gburn,V_d,typ,distance,f_p,H_needed,W_out,V_g,debt_level,e_c,e_priceB,f_used,p_bf,list_ghg,printt,pen)
     V_cng_p = vector[3]
-    farmerNPV = farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,e_priceS,f_used,p_bf,printt,pen)
+    e_priceS = dict_t['e_priceS']
+    e_priceB = dict_t['e_priceB']
+    f_used = dict_t['f_used']
+    e_c = dict_t['e_c']
+    p_bf = dict_t['p_bf']
+    farmerNPV = farmer_npv(n_g,V_gburn,V_cng_p,V_d,typ,distance,f_p,V_g,debt_level,e_c,e_priceB,e_priceS,f_used,p_bf,dict_t,printt,pen)
     if multiJ:
         if full:
             return [-farmerNPV*lam-(1-lam)*gwpS,-farmerNPV,-gwpS]
@@ -188,17 +194,17 @@ def cleanXopt(xopt_in):
         if xopt[i]>1: xopt[i]=1
         elif xopt[i]<1: xopt[i]=0
     return xopt
-def cleanBiodigestor(x,lam = 1,multiJ =False,full=False,printt=False,pen=True):
+def cleanBiodigestor(x,dict_t=dict_total,lam = 1,multiJ =False,full=False,printt=False,pen=True):
     X = cleanXopt(x)
-    return biodigestor(X,lam,multiJ,full,printt,pen)
+    return biodigestor(X,dict_t,lam,multiJ,full,printt,pen)
 def fminClean(x0,args):
     xopt = op.fmin(func=cleanBiodigestor,x0=x0,args=args)
     xopt = cleanXopt(xopt)
     return xopt
-def scaleBiodigestor(x,lam = 1,multiJ =False,full=False,printt=False,pen=True):
+def scaleBiodigestor(x,dict_total=dict_total,lam = 1,multiJ =False,full=False,printt=False,pen=True):
     X = cleanXopt(x)
     X[3]=X[3]/((10**3)**.5)
-    return biodigestor(X,lam,multiJ,full,printt,pen)
+    return biodigestor(X,dict_total,lam,multiJ,full,printt,pen)
 def fminCleanScaled(x0,args):
     xopt = op.fmin(func=scaleBiodigestor,x0=x0,args=args)
     xopt[3] = xopt[3]*((10**3)**.5)
@@ -208,13 +214,13 @@ def fminCleanScaled(x0,args):
 #             1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
 #             1.00000000e+00, 0.00000000e+00, 1.00000000e+00,0.00000000e+00]
 # biodigestor(best,True,False)
-args = (0.01,True,False,False,True)
+args = (dict_total,1,True,False,False,True)
 # mod = runGA(best)
 # biodigestor(mod.best_variable,True,False)
 # mod_best = [1.72039083e-01, 1.00000000e+00, 3.84795466e+01, 3.21167571e-03,
 #         1.00000000e+00, 0.00000000e+00, 0.00000000e+00, 0.00000000e+00,
 #         0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
-
+# dict_total['e_priceS']=2.1
 # fminsearch but Python
 best = [1.72039083e-01, 1.00000000e+00, 3.21167571e-03,0.16,
         1.00000000e+00, 1.00000000e+00, 1.00000000e+00, 1.00000000e+00,
