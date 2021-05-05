@@ -163,7 +163,7 @@ view_state = pdk.ViewState(
 def active_farmsfun(tf,dig_id = None):
     active_farms1= x[4:11] 
     active_farms1 = [0 if num<1 or num==False  else 1 for num in active_farms1]
-    active_farms= x[5:12] 
+    active_farms= x[4:11] 
     active_farms = [False if num<1 or num==False  else True for num in active_farms]
     [distance, wIn, total_solids_perc, wComp,Tpath] = dict_T[tuple(active_farms1)]
     count = 0
@@ -219,7 +219,7 @@ if st.checkbox('View manure transport path for active farms'):
     [distance, wIn, total_solids_perc, wComp,Tpath] = dict_T[tuple(active_farms1)]
     r = load_r_path(Tpath)
     st.write('Active farms: current truck location in red')
-    curr_step = st.slider('Step',int(min(Tpath)),int(max(Tpath)),value =int(len(Tpath)-1), step = 1)
+    curr_step = st.slider('Step',0,int(len(Tpath)-1),value =0, step = 1)
     
     # r_active,Tpath = active_farmsfun(False,Tpath[curr_step])
     # print(Tpath)
@@ -284,31 +284,37 @@ if st.checkbox('Show farm heatmaps'):
     st.write('Manure volume heatmap:')
     r = farm_heatmapFunc()
     st.pydeck_chart(r)
-st.write('Parameters: ')
+st.header('Parameters: ')
+st.write('Electrical Energy: ')
 session_state.e_priceS = st.number_input('Price of electrical energy sold (R$/kWh): ',value = dict_totalUser['e_priceS'])
 session_state.e_c = st.number_input('Electrical energy consumed in the farms (kWh/year): ',value = dict_totalUser['e_c'])
 session_state.e_priceB = st.number_input('Price of electrical energy bought (R$/kWh): ',value = dict_totalUser['e_priceB'])
-
+st.write('Fertilizer: ')
 session_state.f_used = st.number_input('Quantity of fertilizer used in the farms (kg/year): ',value = dict_totalUser['f_used'])
 session_state.p_bf = st.number_input('Price of buying fertilizer used in the farms (R$/kg): ',value = dict_totalUser['p_bf'])
 session_state.p_l = st.number_input('Selling price of fertilizer surplus (R$/kg): ',value = dict_totalUser['p_l'])
+st.write('Transportation: ')
 session_state.c_rskm = st.number_input('Cost to transport manure (R$/km): ',value = dict_totalUser['c_rskm'])
 session_state.c_km = session_state.c_rskm
+session_state.T_m3_km_cng = st.number_input('Truck average CNG consumption (m^3/km): ',value = dict_totalUser['T_m3_km_cng'])
+session_state.T_L_km_diesel = st.number_input('Truck average diesel consumption (L/km): ',value = dict_totalUser['T_L_km_diesel'])
+session_state.V_per_truck = st.number_input('Truck maximum capacity (m^3): ',value = dict_totalUser['V_per_truck'])
+st.write('Biogas: ')
 session_state.C_V_gas = st.number_input('Cost to produce biogas (R$/m^3): ',value = dict_totalUser['C_V_gas'])
 session_state.p_g = st.number_input('Selling price of biogas (R$/m^3): ',value = dict_totalUser['p_g'])
 session_state.C_upgrade_cng = st.number_input('Cost to upgrade biogas to CNG (R$/m^3): ',value = dict_totalUser['C_upgrade_cng'])
+st.write('Generator: ')
 session_state.g_d = st.number_input('Cost purchase eletricity generator (R$/unit): ',value = dict_totalUser['g_d'])
 session_state.g_eff = st.number_input('Eletricity generator efficiency with biogas (%): ',value = dict_totalUser['g_eff'])
 session_state.g_power = st.number_input('Eletricity generator power capacity (kW): ',value = dict_totalUser['g_power'])
 session_state.g_m = st.number_input('Yealy cost of maintenance of eletricity generator (R$/(unit*year)): ',value = dict_totalUser['g_m'])
+st.write('Biodigestor: ')
 session_state.i_main_cost = st.number_input('Yealy cost of maintenance of biodigestor (% of investment/year): ',value = dict_totalUser['i_main_cost'])
+session_state.L = st.number_input('Biodigestor life (years): ',value = dict_totalUser['L'])
+st.write('Financial: ')
 session_state.kd = st.number_input('Cost of debt (%): ',value = dict_totalUser['kd'])
 session_state.max_debt = st.number_input('Maximum debt allowed (%): ',value = dict_totalUser['max_debt'])
 session_state.ke = st.number_input('Cost of equity (%): ',value = dict_totalUser['ke'])
-session_state.L = st.number_input('Biodigestor life (years): ',value = dict_totalUser['L'])
-session_state.T_m3_km_cng = st.number_input('Truck average CNG consumption (m^3/km): ',value = dict_totalUser['T_m3_km_cng'])
-session_state.T_L_km_diesel = st.number_input('Truck average diesel consumption (L/km): ',value = dict_totalUser['T_L_km_diesel'])
-session_state.V_per_truck = st.number_input('Truck maximum capacity (m^3): ',value = dict_totalUser['V_per_truck'])
 session_state.tax = st.number_input('Tax on profits (%): ',value = dict_totalUser['tax'])
 session_state.USS_to_RS = st.number_input('Corversion of US$ to R$ (R$/US$): ',value = dict_totalUser['USS_to_RS'])
 session_state.working_days = st.number_input('Working days per year (days/year): ',value = dict_totalUser['working_days'])

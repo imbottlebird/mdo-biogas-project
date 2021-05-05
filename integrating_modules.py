@@ -68,7 +68,7 @@ def biodigestor(vector,dict_t=dict_total,lam = 1,multiJ =False,full=False,printt
     
     #output from digester -- will return 9 values & print to console
     # Tdig = vector[2]
-    [W_a, typ, V_d, G_in, G_comp, digOut, digOut_comp] = digester(wIn,wComp)
+    [W_a, typ, V_d, G_in, G_comp, digOut, digOut_comp] = digester(wIn,wComp,dict_t)
     # H_needed = JtokWh(H_needed*1000)
     # print('----')
     
@@ -90,7 +90,7 @@ def biodigestor(vector,dict_t=dict_total,lam = 1,multiJ =False,full=False,printt
     #2. G_in - is this already purified? methane's rate is already 0.9665, which meets the biomethane requirement
     #          in general composition of biogas, methane is expected around 0.6
     #3. digOut - digestate amount is 18.7. expected around 80%-90% of kilos (7963) --> how about 18.7 kg/day *330 days/year ~6200
-    working_days = dict_total['working_days']
+    working_days = dict_t['working_days']
     V_g =V_g*working_days
     ghg = pd.DataFrame()
     ghg['ghg_lf']=ghg_r
