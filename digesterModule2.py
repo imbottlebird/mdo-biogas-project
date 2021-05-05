@@ -52,7 +52,12 @@ from constants import *
 # Tw = 0 # K water coming into reactor
 # Pdig =  1 # atm
 
-def digester(wFR, wComp):
+def digester(wFR, wComp, dict_total):
+    # initialize constants
+    wasteData = dict_total['wasteData']
+    rxVCap = dict_total['rxVCap']
+    hrtRx = dict_total['hrtRx']
+    
     # calculate waste in kg
     wIn = wasteData['Density'].dot(wComp) * wFR # kg/day waste
     

@@ -163,9 +163,9 @@ def runGA(vector):
                     'parents_portion': .4,\
                     'crossover_type':'uniform',\
                     'max_iteration_without_improv':50}
-    varbound =np.array([[0,1],[1,2],[0,0.8],[0,1],
+    varbound =np.array([[0,1],[1,4],[0,0.8],[0,1],
                         [0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
-    #[V_gBurn,ng,Tdig,debt_level,V_cng_p,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
+    #[V_gBurn,ng,debt_level,V_cng_p,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
     start = timeit.default_timer()  
     var_type = np.array([['real'],['int'],['real'],['real'],['real'],
                           ['int'],['int'],['int'],['int'],['int'],['int'],['int']])   
