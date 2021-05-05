@@ -7,7 +7,7 @@ Digester Module for Spring 2021 MDO Project
 
 inputs: waste flow rate (m3/day)
         waste composition (%) by animal type (cattle, swine, chicken)
-        operating temperature (degC)
+        dictionary of constants
         
 outputs: waste flow rate (kg/day) into reactor in kg
          reactor type (binary 0 - covered lagoon, 1 - upflow system)
@@ -25,7 +25,7 @@ from scipy.integrate import odeint
 import numpy as np
 import matplotlib.pyplot as plt
 
-from constants import *
+# from constants import *
 
 
 # # TEST inputs
@@ -52,7 +52,12 @@ from constants import *
 # Tw = 0 # K water coming into reactor
 # Pdig =  1 # atm
 
-def digester(wFR, wComp, Tdig):
+def digester(wFR, wComp, dict_total):
+    # initialize constants
+    wasteData = dict_total['wasteData']
+    rxVCap = dict_total['rxVCap']
+    hrtRx = dict_total['hrtRx']
+    
     # calculate waste in kg
     wIn = wasteData['Density'].dot(wComp) * wFR # kg/day waste
     
@@ -64,10 +69,9 @@ def digester(wFR, wComp, Tdig):
     rxVUp = 1 + rxVCap
     rxVol = hrtRx['Lagoon'] * wFR * rxVUp
     vol = rxVol / rxVUp # volume of reaction medium, not scaled up
-    t = np.linspace(0,hrtRx['Lagoon'])
+    t = np.linspace(0, hrtRx['Lagoon'])
     
     # run reactor, get methane & unreactored particulate matter
-    Tdig = Tdig + 273 # temp in Kelvin
     mixCOD = wasteData['COD'].dot(wComp) # wt% weighted avg, to be kg COD / day
     mixVS = wasteData['VS'].dot(wComp) # wt% weighted avg, to be kg VS / day
     

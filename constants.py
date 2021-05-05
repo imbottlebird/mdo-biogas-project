@@ -86,7 +86,7 @@ e_densitygas = e_densitygas*3.6
 
 
 # Reactor constants
-wasteData = { # moisture content, total solids, volatile solids, etc by mass
+wasteData = { # moisture content, total solids, volatile solids, etc by mass %
     
     "Density" : [989.32, 996.89, 992.63], # kg/m3
     "MC": [0.86, 0.9, 0.74], # cattle, swine, poultry
@@ -98,13 +98,12 @@ wasteData = { # moisture content, total solids, volatile solids, etc by mass
     
     }
 wasteData = pd.DataFrame(wasteData, index=["Cattle", "Swine", "Poultry"])
-
 hrtRx = pd.Series([5, 60], index=['Upflow', 'Lagoon'], name='HRT')
 rxVCap = 0.3 # reactor volume capacity increase (maybe range from 10% - 50%)
+# Tamb = 25 + 273 # K
+# Tw = 0 # K water temperature around reactor
+# Pdig =  1 # atm
 
-Tamb = 25 + 273 # K
-Tw = 0 # K water temperature around reactor
-Pdig =  1 # atm
 dict_total = {}
 for i in dir():
     dict_total[i] = globals()[i]

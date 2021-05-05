@@ -157,7 +157,7 @@ def runGA(vector):
                     'parents_portion': .4,\
                     'crossover_type':'uniform',\
                     'max_iteration_without_improv':50}
-    varbound =np.array([[0,1],[1,2],[20,40],[0,0.8],[0,1],
+    varbound =np.array([[0,1],[1,2],[0,0.8],[0,1],
                         [0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]])
     #[V_gBurn,ng,Tdig,debt_level,V_cng_p,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
     start = timeit.default_timer()  
@@ -216,7 +216,7 @@ args = (0.01,True,False,False,True)
 #         0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
 
 # fminsearch but Python
-best = [1.72039083e-01, 1.00000000e+00, 3.21167571e-03,0.16,
+best = [1.72039083e-01, 1.00000000e+00, 3.21167571e-03, 0.16,
         1.00000000e+00, 1.00000000e+00, 1.00000000e+00, 1.00000000e+00,
         1.00000000e+00, 0.00000000e+00, 0.00000000e+00]
 # args = (1,True,False,False,True)
@@ -284,7 +284,7 @@ def NPV0goal(x):
     X = cleanXoptNPV0(x)
     return biodigestorNPV0(X)**2
 def runNPV0():
-    x0 = [1, 1.00000000e+00, 3.21167571e-03, 0,0.35,
+    x0 = [1, 1.00000000e+00, 3.21167571e-03, 0, 0.35,
         1.00000000e+00, 1.00000000e+00, 1.00000000e+00,1.00000000e+00,
         0.00000000e+00, 0.00000000e+00, 0.00000000e+00]
     xopt = op.fmin(func=NPV0goal,x0=x0)
