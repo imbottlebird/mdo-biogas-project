@@ -56,13 +56,12 @@ def load_session():
                                      )
     return session_state
 def main():
-    pages ={"main":page1,"parameters":page2}
+    pages ={"Main":page1,"Parameters":page2}
     page = st.sidebar.selectbox("Select your page", tuple(pages.keys()))
     # session_state = load_session()
     pages[page]()
 def page1():
     session_state = load_session()
-    st.title("Main")
     data = pd.read_csv('location_data.csv', header=None)
     data = data.rename(columns={0:'lat',1:'lon',2:'Volume',3:'something',4:'Cattle',5:'Swine',6:'Poultry'}) 
     data['id'] = list(range(len(data)))
@@ -129,7 +128,7 @@ def page1():
     dict_totalUser['g_power'] = session_state.g_power
 
     st.title('Biodigestor 2021 EM.428 MIT')
-    st.write("Ricardo Hopker, Niek, Jaqueline and Jo")
+    st.header("Ricardo Hopker, Nicholas Rensburg, Jacqueline Baidoo and ByeongJo Kong")
     st.write("inputs:")
     #[V_gBurn,ng,Tdig,debt_level,V_cng_p,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
     session_state.V_gBurn = st.number_input('Volume of Gas burn as % of biogas produced',value = session_state.V_gBurn)
