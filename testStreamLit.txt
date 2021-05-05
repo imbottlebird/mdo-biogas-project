@@ -1,0 +1,826 @@
+<html>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><b><span style='font-size:18.0pt;font-family:Roboto-Bold'>Assignment 4</span></b></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><b><span style='font-size:18.0pt;font-family:Roboto-Bold'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><b><span style='font-size:14.0pt;font-family:Roboto-Bold'>Q1. Scaling (30
+points)</span></b></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>Consider the
+following optimization problem:</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+line-height:normal;text-autospace:none'><img width=356 height=78 id="Picture 1"
+src="testStreamLit_files/image001.jpg"
+alt="Diagram&#10;&#10;Description automatically generated"></p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;text-autospace:none'><span style='font-size:12.0pt;
+font-family:Roboto-Regular'>(a)<span style='font:7.0pt "Times New Roman"'>&nbsp;
+</span></span><span style='font-size:12.0pt;font-family:Roboto-Regular'>Find
+the optimal solution to the problem.</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>First
+we find the jacobian of the lagragian of the problem and set it equal to zero:</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><img
+width=388 height=80 src="testStreamLit_files/image002.png"></span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>By
+observing the first three equations, and setting the inside of the parenthesis equal
+to zero it will lead to 3 different local minimum as shown below:</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><img
+width=426 height=58 src="testStreamLit_files/image003.png"></span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>Clearly
+the optimal solution is <b>X*</b> = [0,1,0], J(<b>X*</b>) =  -0.001</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>The
+hessian is shown below:</span></p>
+
+<p class=MsoListParagraphCxSpMiddle align=center style='margin-bottom:0in;
+text-align:center;line-height:normal;text-autospace:none'><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><img
+width=360 height=77 src="testStreamLit_files/image004.png"></span></p>
+
+<p class=MsoListParagraphCxSpMiddle align=center style='margin-bottom:0in;
+text-align:center;line-height:normal;text-autospace:none'><span
+style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>The
+eigenvalues at X* are [2, -2, 2.002, 2000.002]</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>Solving
+this using newton’s method the result (<b>X*</b>) was achieved in 7 iterations
+however the X* had slightly errors built in:</span></p>
+
+<p class=MsoListParagraphCxSpLast style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>X1
+=1.38619e-26, X2 = 1, X3 = 4.44748e-47, </span><span style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif;position:relative;
+top:4.0pt'><img width=9 height=20 src="testStreamLit_files/image005.png"></span><span
+style='font-size:12.0pt;font-family:Roboto-Regular'>  = 0.001, J = -0.001</span></p>
+
+<span style='font-size:12.0pt;line-height:107%;font-family:Roboto-Regular'><br
+clear=all style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;text-autospace:none'><span style='font-size:12.0pt;
+font-family:Roboto-Regular'>(b)<span style='font:7.0pt "Times New Roman"'>&nbsp;
+</span></span><span style='font-size:12.0pt;font-family:Roboto-Regular'>Find a
+non-singular transformation x=Ly such that the condition number of the Hessian
+matrix of f is close to unity.</span></p>
+
+<p class=MsoListParagraphCxSpLast style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>First
+lets define X as:</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><img
+width=73 height=53 src="testStreamLit_files/image006.png"></span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>Transforming
+the minimizer and the constraints we have:</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><img
+width=265 height=21 src="testStreamLit_files/image007.png"></span><br>
+<span style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><img
+width=222 height=21 src="testStreamLit_files/image008.png"></span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>Solving for the
+Jacobian and Hessian:</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><img
+width=243 height=85 src="testStreamLit_files/image009.png"></span><br>
+<span style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><img
+width=466 height=85 src="testStreamLit_files/image010.png"></span><span
+style='font-size:12.0pt;font-family:Roboto-Regular'>clearly ‘a’ should be set
+to 1/sqrt(2), ‘b’ and ‘c’ are a little more complicated to define. Since the magnitude
+within the parenthesis in the diagonal will not change independently of ‘b’ or
+‘c’, what it was done was to have both components with in the parenthesis to be
+the same distance away from one. Since the units are separated in the 1
+thousand, it was taken sqrt(1000) and since b is squared it was taken yet
+another square root, finally it was divided by sqrt(2) to offset the 2 in front.
+In summary:</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><img
+width=243 height=68 src="testStreamLit_files/image011.png"></span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>The hessian
+becomes:</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><img
+width=489 height=77 src="testStreamLit_files/image012.png"></span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<span style='font-size:12.0pt;line-height:107%;font-family:Roboto-Regular'><br
+clear=all style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;text-autospace:none'><span style='font-size:12.0pt;
+font-family:Roboto-Regular'>(c)<span style='font:7.0pt "Times New Roman"'>&nbsp;
+</span></span><span style='font-size:12.0pt;font-family:Roboto-Regular'>Quantify
+the effect of rescaling the problem, either on the number of iterations or function
+evaluations required to find the solution (convergence), or the quality of the
+optimal solution itself, or a combination of the two.</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>Counter
+to my intuition, rescaling the system did not alter the number of iteration
+needed to converge. The yield result was the exact same J(X) = -0.001, and the
+quality of the result remained unchanged and the values of X are remarkably near
+to those before scaling.</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpLast style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><img
+width=366 height=52 src="testStreamLit_files/image013.png"></span><span
+style='font-size:12.0pt;font-family:Roboto-Bold'><br>
+<br clear=all style='page-break-before:always'>
+</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><b><span style='font-size:14.0pt;font-family:Roboto-Bold'>Q2.
+Isoperformance (30 points)</span></b></p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>The
+Jacobian matrix at a point x</span><span style='font-size:7.0pt;font-family:
+Roboto-Regular'>0 </span><span style='font-size:12.0pt;font-family:Roboto-Regular'>is
+given as:</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><img width=624 height=186 id="Picture 10"
+src="testStreamLit_files/image014.jpg"
+alt="Chart, scatter chart&#10;&#10;Description automatically generated"></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;text-autospace:none'><span style='font-size:12.0pt;
+font-family:Roboto-Regular'>(a)<span style='font:7.0pt "Times New Roman"'>&nbsp;
+</span></span><span style='font-size:12.0pt;font-family:Roboto-Regular'>What
+are the performance invariant directions that we can step to from x</span><span
+style='font-size:7.0pt;font-family:Roboto-Regular'>o</span><span
+style='font-size:12.0pt;font-family:Roboto-Regular'>?</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>By
+calculating the null space of the Jacobian of J we have the 2 orthonormal
+vectors of isoperformance. In python it was used the scipy.linalg.null_space
+library to calculate the null space and it can be seen below. As we have 6 variables
+and 4 equations, therefore we have 2 DOF, so it is expected two vectors.</span></p>
+
+<p class=MsoListParagraphCxSpLast style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<div align=center>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width=192
+ style='width:2.0in;border-collapse:collapse'>
+ <tr style='height:15.0pt'>
+  <td width=64 nowrap style='width:48.0pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>&nbsp;</span></p>
+  </td>
+  <td width=64 nowrap style='width:48.0pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>t1</span></p>
+  </td>
+  <td width=64 nowrap style='width:48.0pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>t2</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.0pt'>
+  <td width=64 nowrap style='width:48.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>X1</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>-0.58988</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>-0.27646</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.0pt'>
+  <td width=64 nowrap style='width:48.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>X2</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>-0.24959</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>0.910574</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.0pt'>
+  <td width=64 nowrap style='width:48.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>X3</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>0.015811</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>-0.06546</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.0pt'>
+  <td width=64 nowrap style='width:48.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>X4</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>0.607658</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>0.193909</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.0pt'>
+  <td width=64 nowrap style='width:48.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>X5</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>0.294589</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>-0.226</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.0pt'>
+  <td width=64 nowrap style='width:48.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>X6</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>-0.36534</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>-0.03823</span></p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p class=MsoListParagraph style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<span style='font-size:12.0pt;line-height:107%;font-family:Roboto-Regular'><br
+clear=all style='page-break-before:always'>
+</span>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;font-family:
+Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;text-autospace:none'><span style='font-size:12.0pt;
+font-family:Roboto-Regular'>(b)<span style='font:7.0pt "Times New Roman"'>&nbsp;
+</span></span><span style='font-size:12.0pt;font-family:Roboto-Regular'>Show an
+example of a step direction (vector), &#916;x, such that J</span><span
+style='font-size:12.0pt;font-family:MS-PGothic'>(x+</span><span
+style='font-size:12.0pt;font-family:Roboto-Regular'>&#916;x) &#8776; 10</span><span
+style='font-size:7.0pt;font-family:Roboto-Regular'>-4</span><span
+style='font-size:12.0pt;font-family:Roboto-Regular'>.</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>To
+calculate &#916;x, we can use the equation below:</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><img
+width=148 height=20 src="testStreamLit_files/image015.png"></span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>Where
+</span><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif;
+position:relative;top:4.0pt'><img width=15 height=21
+src="testStreamLit_files/image016.png"></span><span style='font-size:12.0pt;
+font-family:Roboto-Regular'> is the direction in which we are moving and </span><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif;
+position:relative;top:4.0pt'><img width=18 height=21
+src="testStreamLit_files/image017.png"></span><span style='font-size:12.0pt;
+font-family:Roboto-Regular'> is the step size, the direction, </span><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif;
+position:relative;top:4.0pt'><img width=15 height=21
+src="testStreamLit_files/image016.png"></span><span style='font-size:12.0pt;
+font-family:Roboto-Regular'>, was defined in the previous question using the null
+space.</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>It
+is possible to re-arrange the equation below:</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpLast style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><img
+width=274 height=37 src="testStreamLit_files/image018.png"></span><span
+lang=PT-BR style='font-size:12.0pt;font-family:Roboto-Regular'><br>
+Assuming:</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><span lang=PT-BR style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpFirst align=center style='margin-bottom:0in;
+text-align:center;line-height:normal;text-autospace:none'><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><img
+width=79 height=20 src="testStreamLit_files/image019.png"></span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>Then:</span><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><img
+width=285 height=37 src="testStreamLit_files/image020.png"></span></p>
+
+<p class=MsoListParagraphCxSpLast style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>Assuming
+the Hessian is properly scaled and approximating it as the identity matrix. It
+is possible to identify many step sizes </span><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif;
+position:relative;top:4.0pt'><img width=18 height=21
+src="testStreamLit_files/image017.png"></span><span style='font-size:12.0pt;
+font-family:Roboto-Regular'> such that </span><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif;
+position:relative;top:7.0pt'><img width=57 height=28
+src="testStreamLit_files/image021.png"></span><span style='font-size:12.0pt;
+font-family:Roboto-Regular'> &#8776; 10</span><span style='font-size:7.0pt;
+font-family:Roboto-Regular'>-4</span><span style='font-size:12.0pt;font-family:
+Roboto-Regular'>. 2 of those can be seen in the table below:</span></p>
+
+<div align=center>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width=199
+ style='width:149.0pt;border-collapse:collapse'>
+ <tr style='height:15.0pt'>
+  <td width=71 nowrap valign=bottom style='width:53.0pt;padding:0in 5.4pt 0in 5.4pt;
+  height:15.0pt'></td>
+  <td width=64 nowrap style='width:48.0pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>t1</span></p>
+  </td>
+  <td width=64 nowrap style='width:48.0pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>t2</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.0pt'>
+  <td width=71 nowrap style='width:53.0pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>&#916;X1</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>-0.0059</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>-0.00276</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.0pt'>
+  <td width=71 nowrap style='width:53.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>&#916;X2</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>-0.0025</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>0.009106</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.0pt'>
+  <td width=71 nowrap style='width:53.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>&#916;X3</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>0.000158</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>-0.00065</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.0pt'>
+  <td width=71 nowrap style='width:53.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>&#916;X4</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>0.006077</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>0.001939</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.0pt'>
+  <td width=71 nowrap style='width:53.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>&#916;X5</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>0.002946</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>-0.00226</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.0pt'>
+  <td width=71 nowrap style='width:53.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>&#916;X6</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>-0.00365</span></p>
+  </td>
+  <td width=64 nowrap valign=bottom style='width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=right style='margin-bottom:0in;text-align:right;
+  line-height:normal'><span style='color:black'>-0.00038</span></p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpLast style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>To
+verify the assumption </span><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif;
+position:relative;top:4.0pt'><img width=79 height=20
+src="testStreamLit_files/image019.png"></span><span style='font-size:12.0pt;
+font-family:Roboto-Regular'> these were calculated, and shown in the table
+below. The values are either zero or below machine precision. </span></p>
+
+<div align=center>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width=253
+ style='width:189.85pt;border-collapse:collapse'>
+ <tr style='height:15.0pt'>
+  <td width=96 nowrap valign=bottom style='width:71.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:15.0pt'></td>
+  <td width=79 nowrap style='width:59.05pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>t1</span></p>
+  </td>
+  <td width=79 nowrap style='width:59.05pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>t2</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.75pt'>
+  <td width=96 nowrap valign=bottom style='width:71.75pt;border:solid windowtext 1.0pt;
+  border-right:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+  style='font-size:12.0pt;font-family:MS-PGothic;color:black'>&#8711;</span><span
+  style='font-size:12.0pt;font-family:Roboto-Regular;color:black'>J1</span><span
+  style='font-size:12.0pt;font-family:MS-PGothic;color:black'>&#12539;</span><span
+  style='font-size:12.0pt;font-family:Roboto-Regular;color:black'>&#916;x </span></p>
+  </td>
+  <td width=79 nowrap style='width:59.05pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>0.00E+00</span></p>
+  </td>
+  <td width=79 nowrap style='width:59.05pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>8.67E-19</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.75pt'>
+  <td width=96 nowrap valign=bottom style='width:71.75pt;border-top:none;
+  border-left:solid windowtext 1.0pt;border-bottom:solid windowtext 1.0pt;
+  border-right:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+  style='font-size:12.0pt;font-family:MS-PGothic;color:black'>&#8711;</span><span
+  style='font-size:12.0pt;font-family:Roboto-Regular;color:black'>J2</span><span
+  style='font-size:12.0pt;font-family:MS-PGothic;color:black'>&#12539;</span><span
+  style='font-size:12.0pt;font-family:Roboto-Regular;color:black'>&#916;x </span></p>
+  </td>
+  <td width=79 nowrap style='width:59.05pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>0</span></p>
+  </td>
+  <td width=79 nowrap style='width:59.05pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>-2.04E-17</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.75pt'>
+  <td width=96 nowrap valign=bottom style='width:71.75pt;border-top:none;
+  border-left:solid windowtext 1.0pt;border-bottom:solid windowtext 1.0pt;
+  border-right:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+  style='font-size:12.0pt;font-family:MS-PGothic;color:black'>&#8711;</span><span
+  style='font-size:12.0pt;font-family:Roboto-Regular;color:black'>J3</span><span
+  style='font-size:12.0pt;font-family:MS-PGothic;color:black'>&#12539;</span><span
+  style='font-size:12.0pt;font-family:Roboto-Regular;color:black'>&#916;x </span></p>
+  </td>
+  <td width=79 nowrap style='width:59.05pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>1.39E-17</span></p>
+  </td>
+  <td width=79 nowrap style='width:59.05pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>-1.52E-17</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.75pt'>
+  <td width=96 nowrap valign=bottom style='width:71.75pt;border-top:none;
+  border-left:solid windowtext 1.0pt;border-bottom:solid windowtext 1.0pt;
+  border-right:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+  style='font-size:12.0pt;font-family:MS-PGothic;color:black'>&#8711;</span><span
+  style='font-size:12.0pt;font-family:Roboto-Regular;color:black'>J4</span><span
+  style='font-size:12.0pt;font-family:MS-PGothic;color:black'>&#12539;</span><span
+  style='font-size:12.0pt;font-family:Roboto-Regular;color:black'>&#916;x </span></p>
+  </td>
+  <td width=79 nowrap style='width:59.05pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>-6.51E-18</span></p>
+  </td>
+  <td width=79 nowrap style='width:59.05pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>-8.08E-18</span></p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'>For
+each of these vectors a different step size, </span><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif;
+position:relative;top:4.0pt'><img width=18 height=21
+src="testStreamLit_files/image017.png"></span><span style='font-size:12.0pt;
+font-family:Roboto-Regular'>, was determined starting at 1 and dividing by 10
+each iteration until </span><span
+style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif;
+position:relative;top:7.0pt'><img width=57 height=28
+src="testStreamLit_files/image021.png"></span><span style='font-size:12.0pt;
+font-family:Roboto-Regular'>term was smaller than 10e-4.</span></p>
+
+<p class=MsoListParagraphCxSpLast style='margin-bottom:0in;line-height:normal;
+text-autospace:none'><span style='font-size:12.0pt;font-family:Roboto-Regular'><br>
+<br>
+</span></p>
+
+<div align=center>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width=208
+ style='width:155.9pt;border-collapse:collapse'>
+ <tr style='height:15.0pt'>
+  <td width=56 nowrap style='width:42.1pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>&nbsp;</span></p>
+  </td>
+  <td width=74 nowrap style='width:55.7pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>t1</span></p>
+  </td>
+  <td width=77 nowrap style='width:58.1pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>t2</span></p>
+  </td>
+ </tr>
+ <tr style='height:15.75pt'>
+  <td width=56 nowrap valign=bottom style='width:42.1pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+  style='font-size:11.0pt;line-height:107%;font-family:"Calibri",sans-serif'><img
+  width=18 height=21 src="testStreamLit_files/image017.png"></span></p>
+  </td>
+  <td width=74 nowrap valign=bottom style='width:55.7pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>0.01</span></p>
+  </td>
+  <td width=77 nowrap valign=bottom style='width:58.1pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>0.01</span></p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;text-autospace:
+none'><b><span style='font-size:18.0pt;font-family:Roboto-Bold'>&nbsp;</span></b></p>
+
+</div>
+
+</body>
+
+</html>

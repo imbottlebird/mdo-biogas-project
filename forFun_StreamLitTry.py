@@ -6,6 +6,8 @@ Created on Fri Apr 30 14:54:35 2021
 """
 
 import streamlit as st
+import streamlit.components.v1 as components
+import base64
 # To make things easier later, we're also importing numpy and pandas for
 # working with sample data.
 # import numpy as np
@@ -56,7 +58,7 @@ def load_session():
                                      )
     return session_state
 def main():
-    pages ={"Main":page1,"Parameters":page2}
+    pages ={"Main":page1,"Parameters":page2,"Model Explanation":page3}
     page = st.sidebar.selectbox("Select your page", tuple(pages.keys()))
     # session_state = load_session()
     pages[page]()
@@ -129,7 +131,8 @@ def page1():
 
     st.title('Biodigestor 2021 EM.428 MIT')
     st.header("Ricardo Hopker, Nicholas Rensburg, Jacqueline Baidoo and ByeongJo Kong")
-    st.write("inputs:")
+    st.write("")
+    st.subheader("Inputs:")
     #[V_gBurn,ng,Tdig,debt_level,V_cng_p,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
     session_state.V_gBurn = st.number_input('Volume of Gas burn as % of biogas produced',0.0,1.0,value = session_state.V_gBurn)
     session_state.ng = st.number_input('Number of Eletricity Generators',1,value = session_state.ng)
@@ -364,4 +367,17 @@ def page2():
     session_state.USS_to_RS = st.number_input('Corversion of US$ to R$ (R$/US$): ',0.0,value = session_state.USS_to_RS)
     session_state.working_days = st.number_input('Working days per year (days/year): ',0,365,value = session_state.working_days)
     session_state.working_hours = st.number_input('Working hours per day (hours/day): ',0,24,value = session_state.working_hours)
+
+def page3():
+    st.title('Model explanation and final report: ')
+    st.header('This is an optimization model for biodigestors created for the MIT EM.428 class of Spring 2021')
+    st.subheader('By: Ricardo Hopker, Nicholas Rensburg, Jacqueline Baidoo and ByeongJo Kong')
+    st.subheader('')
+    pdf = 'Pset 4 Ricardo Hopker.pdf'
+    pdf_file = open(pdf, 'rb')
+    base64_pdf = base64.b64encode(pdf_file.read()).decode('Latin-1')
+    pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="700" height="800" type="application/pdf">' 
+    st.markdown(pdf_display, unsafe_allow_html=True)
+
+
 main()

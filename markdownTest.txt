@@ -1,0 +1,799 @@
+**<span style="font-size:18.0pt;font-family:Roboto-Bold">Assignment 4</span>**
+
+**<span style="font-size:18.0pt;font-family:Roboto-Bold"> </span>**
+
+**<span style="font-size:14.0pt;font-family:Roboto-Bold">Q1\. Scaling (30 points)</span>**
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">Consider the following optimization problem:</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+![Diagram
+
+Description automatically generated](testStreamLit_files/image001.jpg)
+
+<span style="font-size:12.0pt;
+font-family:Roboto-Regular">(a)<span style="font:7.0pt &quot;Times New Roman&quot;"></span> </span><span style="font-size:12.0pt;font-family:Roboto-Regular">Find the optimal solution to the problem.</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">First we find the jacobian of the lagragian of the problem and set it equal to zero:</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif">![](testStreamLit_files/image002.png)</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">By observing the first three equations, and setting the inside of the parenthesis equal to zero it will lead to 3 different local minimum as shown below:</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif">![](testStreamLit_files/image003.png)</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">Clearly the optimal solution is **X*** = [0,1,0], J(**X***) =  -0.001</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">The hessian is shown below:</span>
+
+<span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif">![](testStreamLit_files/image004.png)</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">The eigenvalues at X* are [2, -2, 2.002, 2000.002]</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">Solving this using newton’s method the result (**X***) was achieved in 7 iterations however the X* had slightly errors built in:</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">X1 =1.38619e-26, X2 = 1, X3 = 4.44748e-47,</span> <span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif;position:relative;
+top:4.0pt">![](testStreamLit_files/image005.png)</span><span style="font-size:12.0pt;font-family:Roboto-Regular">  = 0.001, J = -0.001</span>
+
+<span style="font-size:12.0pt;line-height:107%;font-family:Roboto-Regular">  
+</span>
+
+<span style="font-size:12.0pt;line-height:107%;font-family:
+Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;
+font-family:Roboto-Regular">(b)<span style="font:7.0pt &quot;Times New Roman&quot;"></span> </span><span style="font-size:12.0pt;font-family:Roboto-Regular">Find a non-singular transformation x=Ly such that the condition number of the Hessian matrix of f is close to unity.</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">First lets define X as:</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif">![](testStreamLit_files/image006.png)</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">Transforming the minimizer and the constraints we have:</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif">![](testStreamLit_files/image007.png)</span>  
+<span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif">![](testStreamLit_files/image008.png)</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">Solving for the Jacobian and Hessian:</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif">![](testStreamLit_files/image009.png)</span>  
+<span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif">![](testStreamLit_files/image010.png)</span><span style="font-size:12.0pt;font-family:Roboto-Regular">clearly ‘a’ should be set to 1/sqrt(2), ‘b’ and ‘c’ are a little more complicated to define. Since the magnitude within the parenthesis in the diagonal will not change independently of ‘b’ or ‘c’, what it was done was to have both components with in the parenthesis to be the same distance away from one. Since the units are separated in the 1 thousand, it was taken sqrt(1000) and since b is squared it was taken yet another square root, finally it was divided by sqrt(2) to offset the 2 in front. In summary:</span>
+
+<span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif">![](testStreamLit_files/image011.png)</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">The hessian becomes:</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif">![](testStreamLit_files/image012.png)</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;line-height:107%;font-family:Roboto-Regular">  
+</span>
+
+<span style="font-size:12.0pt;line-height:107%;font-family:
+Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;
+font-family:Roboto-Regular">(c)<span style="font:7.0pt &quot;Times New Roman&quot;"></span> </span><span style="font-size:12.0pt;font-family:Roboto-Regular">Quantify the effect of rescaling the problem, either on the number of iterations or function evaluations required to find the solution (convergence), or the quality of the optimal solution itself, or a combination of the two.</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">Counter to my intuition, rescaling the system did not alter the number of iteration needed to converge. The yield result was the exact same J(X) = -0.001, and the quality of the result remained unchanged and the values of X are remarkably near to those before scaling.</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif">![](testStreamLit_files/image013.png)</span><span style="font-size:12.0pt;font-family:Roboto-Bold">  
+
+</span>
+
+**<span style="font-size:14.0pt;font-family:Roboto-Bold">Q2. Isoperformance (30 points)</span>**
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">The Jacobian matrix at a point x</span><span style="font-size:7.0pt;font-family:
+Roboto-Regular">0</span> <span style="font-size:12.0pt;font-family:Roboto-Regular">is given as:</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+![Chart, scatter chart
+
+Description automatically generated](testStreamLit_files/image014.jpg)
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;
+font-family:Roboto-Regular">(a)<span style="font:7.0pt &quot;Times New Roman&quot;"></span> </span><span style="font-size:12.0pt;font-family:Roboto-Regular">What are the performance invariant directions that we can step to from x</span><span style="font-size:7.0pt;font-family:Roboto-Regular">o</span><span style="font-size:12.0pt;font-family:Roboto-Regular">?</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">By calculating the null space of the Jacobian of J we have the 2 orthonormal vectors of isoperformance. In python it was used the scipy.linalg.null_space library to calculate the null space and it can be seen below. As we have 6 variables and 4 equations, therefore we have 2 DOF, so it is expected two vectors.</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<div align="center">
+
+<table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" width="192" style="width:2.0in;border-collapse:collapse">
+
+<tbody>
+
+<tr style="height:15.0pt">
+
+<td width="64" nowrap="" style="width:48.0pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black"> </span>
+
+</td>
+
+<td width="64" nowrap="" style="width:48.0pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">t1</span>
+
+</td>
+
+<td width="64" nowrap="" style="width:48.0pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">t2</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.0pt">
+
+<td width="64" nowrap="" style="width:48.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">X1</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">-0.58988</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">-0.27646</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.0pt">
+
+<td width="64" nowrap="" style="width:48.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">X2</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">-0.24959</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">0.910574</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.0pt">
+
+<td width="64" nowrap="" style="width:48.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">X3</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">0.015811</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">-0.06546</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.0pt">
+
+<td width="64" nowrap="" style="width:48.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">X4</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">0.607658</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">0.193909</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.0pt">
+
+<td width="64" nowrap="" style="width:48.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">X5</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">0.294589</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">-0.226</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.0pt">
+
+<td width="64" nowrap="" style="width:48.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">X6</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">-0.36534</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">-0.03823</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;line-height:107%;font-family:Roboto-Regular">  
+</span>
+
+<span style="font-size:12.0pt;line-height:107%;font-family:
+Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;
+font-family:Roboto-Regular">(b)<span style="font:7.0pt &quot;Times New Roman&quot;"></span> </span><span style="font-size:12.0pt;font-family:Roboto-Regular">Show an example of a step direction (vector), Δx, such that J</span><span style="font-size:12.0pt;font-family:MS-PGothic">(x+</span><span style="font-size:12.0pt;font-family:Roboto-Regular">Δx) ≈ 10</span><span style="font-size:7.0pt;font-family:Roboto-Regular">-4</span><span style="font-size:12.0pt;font-family:Roboto-Regular">.</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">To calculate Δx, we can use the equation below:</span>
+
+<span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif">![](testStreamLit_files/image015.png)</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">Where</span> <span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif;
+position:relative;top:4.0pt">![](testStreamLit_files/image016.png)</span><span style="font-size:12.0pt;
+font-family:Roboto-Regular">is the direction in which we are moving and</span> <span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif;
+position:relative;top:4.0pt">![](testStreamLit_files/image017.png)</span><span style="font-size:12.0pt;
+font-family:Roboto-Regular">is the step size, the direction,</span> <span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif;
+position:relative;top:4.0pt">![](testStreamLit_files/image016.png)</span><span style="font-size:12.0pt;
+font-family:Roboto-Regular">, was defined in the previous question using the null space.</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">It is possible to re-arrange the equation below:</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif">![](testStreamLit_files/image018.png)</span><span lang="PT-BR" style="font-size:12.0pt;font-family:Roboto-Regular">  
+Assuming:</span>
+
+<span lang="PT-BR" style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif">![](testStreamLit_files/image019.png)</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">Then:</span><span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif">![](testStreamLit_files/image020.png)</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">Assuming the Hessian is properly scaled and approximating it as the identity matrix. It is possible to identify many step sizes</span> <span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif;
+position:relative;top:4.0pt">![](testStreamLit_files/image017.png)</span><span style="font-size:12.0pt;
+font-family:Roboto-Regular">such that</span> <span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif;
+position:relative;top:7.0pt">![](testStreamLit_files/image021.png)</span><span style="font-size:12.0pt;
+font-family:Roboto-Regular"> ≈ 10</span><span style="font-size:7.0pt;
+font-family:Roboto-Regular">-4</span><span style="font-size:12.0pt;font-family:
+Roboto-Regular">. 2 of those can be seen in the table below:</span>
+
+<div align="center">
+
+<table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" width="199" style="width:149.0pt;border-collapse:collapse">
+
+<tbody>
+
+<tr style="height:15.0pt">
+
+<td width="71" nowrap="" valign="bottom" style="width:53.0pt;padding:0in 5.4pt 0in 5.4pt;
+  height:15.0pt"></td>
+
+<td width="64" nowrap="" style="width:48.0pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">t1</span>
+
+</td>
+
+<td width="64" nowrap="" style="width:48.0pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">t2</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.0pt">
+
+<td width="71" nowrap="" style="width:53.0pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">ΔX1</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">-0.0059</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">-0.00276</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.0pt">
+
+<td width="71" nowrap="" style="width:53.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">ΔX2</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">-0.0025</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">0.009106</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.0pt">
+
+<td width="71" nowrap="" style="width:53.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">ΔX3</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">0.000158</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">-0.00065</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.0pt">
+
+<td width="71" nowrap="" style="width:53.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">ΔX4</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">0.006077</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">0.001939</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.0pt">
+
+<td width="71" nowrap="" style="width:53.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">ΔX5</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">0.002946</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">-0.00226</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.0pt">
+
+<td width="71" nowrap="" style="width:53.0pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">ΔX6</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">-0.00365</span>
+
+</td>
+
+<td width="64" nowrap="" valign="bottom" style="width:48.0pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">-0.00038</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">To verify the assumption</span> <span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif;
+position:relative;top:4.0pt">![](testStreamLit_files/image019.png)</span><span style="font-size:12.0pt;
+font-family:Roboto-Regular"> these were calculated, and shown in the table below. The values are either zero or below machine precision.</span>
+
+<div align="center">
+
+<table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" width="253" style="width:189.85pt;border-collapse:collapse">
+
+<tbody>
+
+<tr style="height:15.0pt">
+
+<td width="96" nowrap="" valign="bottom" style="width:71.75pt;padding:0in 5.4pt 0in 5.4pt;
+  height:15.0pt"></td>
+
+<td width="79" nowrap="" style="width:59.05pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">t1</span>
+
+</td>
+
+<td width="79" nowrap="" style="width:59.05pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">t2</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.75pt">
+
+<td width="96" nowrap="" valign="bottom" style="width:71.75pt;border:solid windowtext 1.0pt;
+  border-right:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt">
+
+<span style="font-size:12.0pt;font-family:MS-PGothic;color:black">∇</span><span style="font-size:12.0pt;font-family:Roboto-Regular;color:black">J1</span><span style="font-size:12.0pt;font-family:MS-PGothic;color:black">・</span><span style="font-size:12.0pt;font-family:Roboto-Regular;color:black">Δx</span>
+
+</td>
+
+<td width="79" nowrap="" style="width:59.05pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt">
+
+<span style="color:black">0.00E+00</span>
+
+</td>
+
+<td width="79" nowrap="" style="width:59.05pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.75pt">
+
+<span style="color:black">8.67E-19</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.75pt">
+
+<td width="96" nowrap="" valign="bottom" style="width:71.75pt;border-top:none;
+  border-left:solid windowtext 1.0pt;border-bottom:solid windowtext 1.0pt;
+  border-right:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt">
+
+<span style="font-size:12.0pt;font-family:MS-PGothic;color:black">∇</span><span style="font-size:12.0pt;font-family:Roboto-Regular;color:black">J2</span><span style="font-size:12.0pt;font-family:MS-PGothic;color:black">・</span><span style="font-size:12.0pt;font-family:Roboto-Regular;color:black">Δx</span>
+
+</td>
+
+<td width="79" nowrap="" style="width:59.05pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt">
+
+<span style="color:black">0</span>
+
+</td>
+
+<td width="79" nowrap="" style="width:59.05pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.75pt">
+
+<span style="color:black">-2.04E-17</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.75pt">
+
+<td width="96" nowrap="" valign="bottom" style="width:71.75pt;border-top:none;
+  border-left:solid windowtext 1.0pt;border-bottom:solid windowtext 1.0pt;
+  border-right:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt">
+
+<span style="font-size:12.0pt;font-family:MS-PGothic;color:black">∇</span><span style="font-size:12.0pt;font-family:Roboto-Regular;color:black">J3</span><span style="font-size:12.0pt;font-family:MS-PGothic;color:black">・</span><span style="font-size:12.0pt;font-family:Roboto-Regular;color:black">Δx</span>
+
+</td>
+
+<td width="79" nowrap="" style="width:59.05pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt">
+
+<span style="color:black">1.39E-17</span>
+
+</td>
+
+<td width="79" nowrap="" style="width:59.05pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.75pt">
+
+<span style="color:black">-1.52E-17</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.75pt">
+
+<td width="96" nowrap="" valign="bottom" style="width:71.75pt;border-top:none;
+  border-left:solid windowtext 1.0pt;border-bottom:solid windowtext 1.0pt;
+  border-right:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt">
+
+<span style="font-size:12.0pt;font-family:MS-PGothic;color:black">∇</span><span style="font-size:12.0pt;font-family:Roboto-Regular;color:black">J4</span><span style="font-size:12.0pt;font-family:MS-PGothic;color:black">・</span><span style="font-size:12.0pt;font-family:Roboto-Regular;color:black">Δx</span>
+
+</td>
+
+<td width="79" nowrap="" style="width:59.05pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt">
+
+<span style="color:black">-6.51E-18</span>
+
+</td>
+
+<td width="79" nowrap="" style="width:59.05pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.75pt">
+
+<span style="color:black">-8.08E-18</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular"> </span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">For each of these vectors a different step size,</span> <span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif;
+position:relative;top:4.0pt">![](testStreamLit_files/image017.png)</span><span style="font-size:12.0pt;
+font-family:Roboto-Regular">, was determined starting at 1 and dividing by 10 each iteration until</span> <span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif;
+position:relative;top:7.0pt">![](testStreamLit_files/image021.png)</span><span style="font-size:12.0pt;
+font-family:Roboto-Regular">term was smaller than 10e-4.</span>
+
+<span style="font-size:12.0pt;font-family:Roboto-Regular">  
+
+</span>
+
+<div align="center">
+
+<table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" width="208" style="width:155.9pt;border-collapse:collapse">
+
+<tbody>
+
+<tr style="height:15.0pt">
+
+<td width="56" nowrap="" style="width:42.1pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black"> </span>
+
+</td>
+
+<td width="74" nowrap="" style="width:55.7pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">t1</span>
+
+</td>
+
+<td width="77" nowrap="" style="width:58.1pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt;height:15.0pt">
+
+<span style="color:black">t2</span>
+
+</td>
+
+</tr>
+
+<tr style="height:15.75pt">
+
+<td width="56" nowrap="" valign="bottom" style="width:42.1pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt;height:15.75pt">
+
+<span style="font-size:11.0pt;line-height:107%;font-family:&quot;Calibri&quot;,sans-serif">![](testStreamLit_files/image017.png)</span>
+
+</td>
+
+<td width="74" nowrap="" valign="bottom" style="width:55.7pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.75pt">
+
+<span style="color:black">0.01</span>
+
+</td>
+
+<td width="77" nowrap="" valign="bottom" style="width:58.1pt;border-top:none;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt;height:15.75pt">
+
+<span style="color:black">0.01</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+**<span style="font-size:18.0pt;font-family:Roboto-Bold"> </span>**
