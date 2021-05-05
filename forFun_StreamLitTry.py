@@ -48,11 +48,11 @@ def load_session():
             working_days = dict_total['working_days'],
             working_hours = dict_total['working_hours'],
             g_power = dict_total['g_power'],
-            V_gBurn = 1.00,
+            V_gBurn = 0.7,
             ng = 1,
-            debt_level = 1.00,
-            V_cng_p =0.00,
-            farm1 = 1,farm2 = 1,farm3 = 1,farm4 = 1,farm5 = 1,farm6 = 1,farm7 = 1,lam=1.0,
+            debt_level = 0.8,
+            V_cng_p =0.20,
+            farm1 = 1,farm2 = 0,farm3 =0,farm4 = 0,farm5 = 0,farm6 = 0,farm7 = 0,lam=1.0,
                                      )
     return session_state
 def main():
