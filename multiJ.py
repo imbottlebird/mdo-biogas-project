@@ -28,7 +28,7 @@ class BiogasMultiJ(Problem):
                          n_constr=0,
                          xl=np.array([0,1,0,0,
                                       0,0,0,0,0,0,0]),
-                         xu=np.array([1,6,0.8,1,
+                         xu=np.array([1,args['ng_max'],args['max_debt'],1,
                                       1,1,1,1,1,1,1]))
         self.args = args.copy()
 
@@ -63,16 +63,16 @@ def run_multiJ(dict_t):
     #[V_gBurn,ng,Tdig,debt_level,V_cng_p,e_priceS,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
     problem = BiogasMultiJ(dict_t)
     # problem = BiogasMultiJ()
-    algorithm = NSGA2(pop_size=500,
+    algorithm = NSGA2(pop_size=dict_t['NSGA_pop'],
                   sampling=sampling,
                   crossover=crossover,
-                  n_offsprings=10,
+                  n_offsprings=dict_t['NSGA_off'],
                   mutation=mutation,
                   eliminate_duplicates=True,
     )
     res = minimize(problem,
                    algorithm,
-                   ("n_gen", 100),
+                   ("n_gen", dict_t['NSGA_gen']),
                    verbose=True,
                    seed=1,
                    save_history=True)

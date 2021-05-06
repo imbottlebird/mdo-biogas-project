@@ -34,6 +34,7 @@ kd = 0.04 # interest on debt for clean energy, loan provided by BNDES
 tax = 0.12
 g_d = 25000.0 # R$/Generator (36kVa)
 g_m = g_d*0.1 #R$/year (10% of maintenance cost)
+ng_max = 20
 # CF = 4.17 #kWh/km
 max_debt = 0.8
 p_nox = 4369 # $/ton (mean) [min, max] -> [345,14915]
@@ -63,6 +64,9 @@ T_L_km_diesel =1/2.97601 # Truck consumption of Diesel (L) per km
 P_diesel = 3.3 #R$/L of diesel
 C_upgrade_cng = 0.78 # R$/m^3 to upgrade from biogas to CNG
 C_V_gas = 0.16 #R$/m^3 to produce biogas
+NSGA_pop = 100
+NSGA_gen = 500
+NSGA_off = 10
 
 
 #Fixing units
@@ -92,6 +96,13 @@ rxVCap = 0.3 # reactor volume capacity increase (maybe range from 10% - 50%)
 # Tamb = 25 + 273 # K
 # Tw = 0 # K water temperature around reactor
 # Pdig =  1 # atm
+
+
+#Biogas/fertilizer upgrading constants
+ch4_pur = 0.965 #methane purity rate
+fer_conv_r = 0.9 #bio-fertilizer conversion rate
+
+
 
 dict_total = {}
 for i in dir():
