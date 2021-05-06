@@ -10,8 +10,8 @@ from sko.SA import SA_TSP
 
 
 def optimal_loc(locations, vol, m):
-    if len(locations)==1:
-        return [locations[m]]
+    if len(locations)<=1:
+        return [locations[m]], m
     else: 
         l = locations.copy()
         perc_vol = vol/sum(vol)
@@ -65,9 +65,7 @@ def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,printt=False):
 
     max_vol = np.argmax(volume, axis=0)
 
-    digestor_loc, farm_digestor = optimal_loc(points_coordinate,volume,max_vol)
-    #print("LOCATION OF FARM DIGESTOR IS "+str(farm_digestor))
-    #print(type(digestor_loc))
+    digestor_loc, farm_digestor = optimal_loc(points_coordinate,volume, max_vol)
     
     num_points = points_coordinate.shape[0]
 
@@ -163,18 +161,18 @@ def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,printt=False):
         print("Weighted average solids percentage of the manure supplied is "+str(total_solids_perc*100)+" %")
         print("Manure composition is CATTLE-PIGS-CHICKS is "+str(manure_comp))
    
-        fig, ax = plt.subplots(1, 2)
-        ax[0].plot(sa_tsp.best_y_history)
-        ax[0].set_xlabel("Iteration")
-        ax[0].set_ylabel("Distance")
-        ax[1].plot(best_points_coordinate[:, 0], best_points_coordinate[:, 1],
-          marker='o', markerfacecolor='b', color='c', linestyle='-')
-        ax[1].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
-        ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
-        ax[1].set_xlabel("Longitude")
-        ax[1].set_ylabel("Latitude")
-        plt.show()
+        #fig, ax = plt.subplots(1, 2)
+        #ax[0].plot(sa_tsp.best_y_history)
+        #ax[0].set_xlabel("Iteration")
+        #ax[0].set_ylabel("Distance")
+        #ax[1].plot(best_points_coordinate[:, 0], best_points_coordinate[:, 1],
+        #  marker='o', markerfacecolor='b', color='c', linestyle='-')
+        #ax[1].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+        #ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+        #ax[1].set_xlabel("Longitude")
+        #ax[1].set_ylabel("Latitude")
+        #plt.show()
 
-    return [best_distance, total_volume, total_solids_perc, manure_comp,final_best]
+    return [best_distance, total_volume, total_solids_perc, manure_comp]
 
-[distance, wIn, total_solids_perc, wComp] = load_data(1,1,1,1,1,1,1,True)
+[distance, wIn, total_solids_perc, wComp] = load_data(0,0,0,0,0,1,0,False)
