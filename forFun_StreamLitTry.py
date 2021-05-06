@@ -205,7 +205,7 @@ def page1():
     view_state = pdk.ViewState(
         longitude=map_data.mean()['lon'], latitude= map_data.mean()['lat'], zoom=8.5, min_zoom=5, max_zoom=15, pitch=0, bearing=-27.36)
     @st.cache()
-    def active_farmsfun(tf,dig_id = None):
+    def active_farmsfun(tf,compare = None):
         active_farms1= x[4:11] 
         active_farms1 = [0 if num<1 or num==False  else 1 for num in active_farms1]
         active_farms= x[4:11] 
@@ -214,12 +214,13 @@ def page1():
         count = 0
         count_id =0
         if tf:
-            for i in active_farms1:
-                if i ==1:
-                    if count == Tpath[0]:
-                        dig_id=count_id
-                    count = count +1
-                count_id = count_id+1
+            compare = Tpath[0]
+        for i in active_farms1:
+            if i ==1:
+                if count == compare:
+                    dig_id=count_id
+                count = count +1
+            count_id = count_id+1
         
         
         layer_active = pdk.Layer(
