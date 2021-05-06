@@ -28,7 +28,7 @@ def total_vol(v):
 def vol_breakdown(volume, per):
     return sum(volume*per)/sum(volume)
 
-def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,printt=False):
+def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,dict_total=dict_total, printt=False):
     #file_name = 'location_data.csv'
     #data = np.loadtxt(file_name, delimiter=',')
     Farm_data = dict_total["Farm_data"]

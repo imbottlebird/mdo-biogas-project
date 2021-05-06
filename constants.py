@@ -5,7 +5,7 @@ Created on Mon Mar 22 11:35:01 2021
 @author: Ricardo Hopker
 """
 import pandas as pd
-
+import pickle
 from math import sin, cos, sqrt, atan2, radians, pi
 #Farm_name = [Longitude, Latitudem Volume_per_day, Solid_percentage, cattle_percentage, pig_percentage, poultry_percentrage]
 Farm_data = {
@@ -68,6 +68,8 @@ NSGA_pop = 100
 NSGA_gen = 500
 NSGA_off = 10
 
+with open('full_transp.p', 'rb') as fp:
+    dict_T = pickle.load(fp)
 
 #Fixing units
 p_nox = p_nox*USS_to_RS
@@ -106,5 +108,5 @@ fer_conv_r = 0.9 #bio-fertilizer conversion rate
 
 dict_total = {}
 for i in dir():
-    if i[0]!='_' and i!='dict_total' and not(callable(globals()[i])) and i!='pd':
+    if i[0]!='_' and i!='dict_total' and not(callable(globals()[i])) and i!='pd' and i!='fp' and i!='pickle':
         dict_total[i] = globals()[i]

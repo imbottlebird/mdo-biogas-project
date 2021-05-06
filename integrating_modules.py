@@ -5,13 +5,13 @@ Created on Mon Mar 22 11:34:16 2021
 @author: Ricardo Hopker, Niek Jansen van Rensburg
 """
 import pandas as pd
-from scipy.integrate import odeint
+# from scipy.integrate import odeint
 import numpy as np
 import matplotlib.pyplot as plt
 from sko.GA import GA
 
-from constants import *
-from cost_module_funcs2 import do_all_list_cp,system_npv,JtokWh ,farmer_npv
+from constants import dict_total
+from cost_module_funcs2 import do_all_list_cp ,farmer_npv
 from digesterModule2 import digester
 import Transport as T
 import biogas as B
@@ -24,8 +24,8 @@ import scipy.optimize as op
 # system=[]
 # with open('data_transport.p', 'rb') as fp:
 #     dict_T = pickle.load(fp)
-with open('full_transp.p', 'rb') as fp:
-    dict_T = pickle.load(fp)
+# with open('full_transp.p', 'rb') as fp:
+#     dict_T = pickle.load(fp)
 
 
 # DOE = pd.read_csv('DOE.csv')
@@ -51,8 +51,9 @@ def biodigestor(vector,dict_t=dict_total,lam = 1,multiJ =False,full=False,printt
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(1,1,1,1,1,1,1)
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
     # if sum(active_farms)>2:
+    dict_T= dict_total['dict_T']
     if printt:
-        [distance, wIn, total_solids_perc, wComp,Tpath] = T.load_data(*active_farms,printt)
+        [distance, wIn, total_solids_perc, wComp,Tpath] = T.load_data(*active_farms,dict_total,printt)
     else:
         [distance, wIn, total_solids_perc, wComp,TPath] = dict_T[tuple(active_farms)]
     # else:
@@ -73,9 +74,9 @@ def biodigestor(vector,dict_t=dict_total,lam = 1,multiJ =False,full=False,printt
     # print('----')
     
     #biogas module
-    V_g = B.biomethane(G_in, G_comp) #biomethane
+    V_g = B.biomethane(G_in, G_comp, dict_total) #biomethane
     #bg = B.biomethane_validation(kilos, wComp)
-    f_p = B.biofertilizer(digOut) 
+    f_p = B.biofertilizer(digOut, dict_total) 
     ghg_r, ghg_c = B.ghg(W_a, wComp, G_in, G_comp) #ghg_r: released gas, ghg_c: captured gas
     bgm_total = B.bgm_cost(G_comp, G_in, digOut)
     
@@ -236,7 +237,7 @@ best = [1.72039083e-01, 1.00000000e+00, 3.21167571e-03, 0.16,
 # print(xopt)
 # biodigestor(xopt,0.5,True)
 
-def biodigestorNPV0(vector,printt=False,pen=True):
+def biodigestorNPV0(vector,dict_t=dict_total,lam = 1,multiJ =False,full=False,printt=False,pen=True):
     active_farms= vector[5:12] 
     active_farms = [0 if num<1 or num==False  else 1 for num in active_farms]
     if printt:
@@ -252,7 +253,7 @@ def biodigestorNPV0(vector,printt=False,pen=True):
     f_p = B.biofertilizer(digOut) 
     ghg_r, ghg_c = B.ghg(W_a, wComp, G_in, G_comp) #ghg_r: released gas, ghg_c: captured gas
     bgm_total = B.bgm_cost(G_comp, G_in, digOut)
-    
+    working_days = dict_t['working_days']
     V_g =V_g*working_days
     ghg = pd.DataFrame()
     ghg['ghg_lf']=ghg_r
