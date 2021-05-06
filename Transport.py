@@ -174,6 +174,6 @@ def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,dict_total=dict_total, printt=F
         #ax[1].set_ylabel("Latitude")
         #plt.show()
 
-    return [best_distance, total_volume, total_solids_perc, manure_comp]
+    return [best_distance, total_volume, total_solids_perc, manure_comp,final_best]
 
 #[distance, wIn, total_solids_perc, wComp] = load_data(1,1,1,1,1,1,1,True)

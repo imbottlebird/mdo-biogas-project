@@ -28,7 +28,7 @@ def biofertilizer(digOut, dict_total):
     
     return pdy
     
-def ghg(kilos, wComp, G_in, G_comp):
+def ghg(kilos, wComp, G_in, G_comp, dict_total):
     #GHG release by manure type (unit: g/head/yr) -> g/tonne  (kilos kg/day)
     #CH4: cattle 39.5; swine 18; poultry 0.157
     #CO2: cattle 12; swine 5.47; poultry 0.048
@@ -50,7 +50,7 @@ def ghg(kilos, wComp, G_in, G_comp):
     
     #GHG captured during the biogas post-treatment process
     #tentatively measured based on the result from biomethane & biogas composition rate
-    ch4_c = 0.001 * biomethane(G_in, G_comp)
+    ch4_c = 0.001 * biomethane(G_in, G_comp, dict_total)
     co2_c = 0.001 * G_in * G_comp[1] * 0.9 #CO2 recovery rate 90%
     nox_c = 0.001 * G_in * G_comp[2]
     sox_c = 0.001 * G_in * G_comp[3]

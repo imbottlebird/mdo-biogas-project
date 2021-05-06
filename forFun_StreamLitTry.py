@@ -16,7 +16,7 @@ from constants import dict_total
 # import dill
 import matplotlib.pyplot as plt
 import pydeck as pdk
-from integrating_modules import biodigestor, cleanXopt,cleanBiodigestor,fminClean,dict_T
+from integrating_modules import biodigestor, cleanXopt,cleanBiodigestor,fminClean
 from multiJ import run_multiJ,plotRes
 from all_best_paths_transport import createTransportSurrogateModel
 # import scipy.optimize as op
@@ -60,52 +60,13 @@ def load_session():
             NSGA_pop = dict_total['NSGA_pop'],
             NSGA_gen = dict_total['NSGA_gen'],
             NSGA_off = dict_total['NSGA_off'],
+            dict_T = dict_total['dict_T'],
+            Farm_data = dict_total['Farm_data']
                                      )
     return session_state
-def main():
-    pages ={"Main":page1,"Parameters":page2,"Model Explanation":page3}
-    page = st.sidebar.selectbox("Select your page", tuple(pages.keys()))
-    # session_state = load_session()
-    pages[page]()
-def page1():
-    session_state = load_session()
-    data = pd.read_csv('location_data.csv', header=None)
-    data = data.rename(columns={0:'lat',1:'lon',2:'Volume',3:'something',4:'Cattle',5:'Swine',6:'Poultry'}) 
-    data['id'] = list(range(len(data)))
-    data['id+1'] = list(range(1,len(data)+1))
-    # session_state = SessionState.get(e_priceS=dict_total['e_priceS'],
-    #         e_c=dict_total['e_c'],
-    #         e_priceB=dict_total['e_priceB'],
-    #         f_used=dict_total['f_used'],
-    #         p_bf = dict_total['p_bf'],
-    #         p_l = dict_total['p_l'],
-    #         c_rskm = dict_total['c_rskm'],
-    #         C_V_gas = dict_total['C_V_gas'],
-    #         p_g = dict_total['p_g'],
-    #         C_upgrade_cng = dict_total['C_upgrade_cng'],
-    #         g_d = dict_total['g_d'],
-    #         g_eff = dict_total['g_eff'],
-    #         g_m = dict_total['g_m'],
-    #         i_main_cost = dict_total['i_main_cost'],
-    #         kd = dict_total['kd'],
-    #         max_debt = dict_total['max_debt'],
-    #         ke = dict_total['ke'],
-    #         L = dict_total['L'],
-    #         T_m3_km_cng = dict_total['T_m3_km_cng'],
-    #         T_L_km_diesel = dict_total['T_L_km_diesel'],
-    #         V_per_truck = dict_total['V_per_truck'],
-    #         tax = dict_total['tax'],
-    #         USS_to_RS = dict_total['USS_to_RS'],
-    #         working_days = dict_total['working_days'],
-    #         working_hours = dict_total['working_hours'],
-    #         g_power = dict_total['g_power']
-    #                                )
-
-    def plotMultiJ(res,dict_totalUser):
-        var = plotRes(res,False,dict_totalUser)
-        return var
-    
+def update_user_dict():
     dict_totalUser = copy.deepcopy(dict_total)
+    session_state = load_session()
     dict_totalUser['e_priceS'] = session_state.e_priceS
     dict_totalUser['e_c'] = session_state.e_c
     dict_totalUser['e_priceB'] = session_state.e_priceB
@@ -137,7 +98,35 @@ def page1():
     dict_totalUser['NSGA_pop'] = session_state.NSGA_pop
     dict_totalUser['NSGA_gen'] = session_state.NSGA_gen
     dict_totalUser['NSGA_off'] = session_state.NSGA_off
+    dict_totalUser['dict_T'] = session_state.dict_T
+    dict_totalUser['Farm_data'] = session_state.Farm_data
+    return dict_totalUser
+    
+def main():
+    pages ={"Main":page1,"Parameters":page2,'Transportation':pageTransport,"Model Explanation":page3}
+    page = st.sidebar.selectbox("Select your page", tuple(pages.keys()))
+    # session_state = load_session()
+    pages[page]()
+def page1():
+    session_state = load_session()
+    # data = pd.read_csv('location_data.csv', header=None)
+    # data = data.rename(columns={0:'lat',1:'lon',2:'Volume',3:'Solid Percentage',4:'Cattle',5:'Swine',6:'Poultry'}) 
+    # data['id'] = list(range(len(data)))
+    # data['id+1'] = list(range(1,len(data)+1))
 
+    def plotMultiJ(res,dict_totalUser):
+        var = plotRes(res,False,dict_totalUser)
+        return var
+    
+    
+    dict_totalUser = update_user_dict()
+    dict_T = dict_totalUser['dict_T']
+    Farm_data = dict_totalUser['Farm_data']
+    data = pd.DataFrame(Farm_data)
+    data = data.transpose()
+    data = data.rename(columns={0:'lat',1:'lon',2:'Volume',3:'Solid Percentage',4:'Cattle',5:'Swine',6:'Poultry'})
+    data['id'] = list(range(len(data)))
+    data['id+1'] = list(range(1,len(data)+1))
     st.title('Biodigestor 2021 EM.428 MIT')
     st.header("Ricardo Hopker, Nicholas Rensburg, Jacqueline Baidoo and ByeongJo Kong")
     st.write("")
@@ -161,12 +150,13 @@ def page1():
          session_state.farm3,session_state.farm4,session_state.farm5,
          session_state.farm6,session_state.farm7]
     st.write('objective function value:')
-    st.write(-biodigestor(cleanXopt(x),dict_totalUser,session_state.lam,True,False))
+    st.write(-biodigestor(cleanXopt(x,dict_totalUser),dict_totalUser,session_state.lam,True,False))
     active_farms= x[4:11] 
     active_farms = [False if num<1 or num==False  else True for num in active_farms]
     if st.checkbox('Optimize with X0 above and lambda'):
         
         # print(dict_totalUser['e_priceS'])
+        
         args = (dict_totalUser,session_state.lam,True,False,False,True)
         xopt = fminClean(x,args)
         xoptSer = pd.DataFrame(pd.Series(cleanXopt(xopt),index=['V_gBurn','ng','debt_level','V_cng_p','farm1','farm2','farm3','farm4','farm5','farm6','farm7'])).transpose()
@@ -382,8 +372,80 @@ def page2():
     session_state.NSGA_gen = st.number_input('GA number of generations (#): ',0,value = session_state.NSGA_gen)
     session_state.NSGA_off = st.number_input('GA population offsprings (#/iteration): ',0,value = session_state.NSGA_off)
 
-
-
+def pageTransport():
+    session_state = load_session()
+    st.title('Transportation Module: ')
+    st.subheader('Do not forget to save your changes in the end of the page')
+    # dict_T = session_state.dict_T
+    Farm_data = copy.deepcopy(session_state.Farm_data)
+    st.write('Farm 1: ')
+    Farm_data['Farm_1'][0] = st.number_input('Farm 1 Latitude : ',-90.0,90.0,value = Farm_data['Farm_1'][0],format='%f')
+    Farm_data['Farm_1'][1] = st.number_input('Farm 1 Longitude : ',-180.0,180.0,value = Farm_data['Farm_1'][1],format='%f')
+    Farm_data['Farm_1'][2] = st.number_input('Farm 1 Manure volume (m^3): ',-180.0,180.0,value = Farm_data['Farm_1'][2])
+    Farm_data['Farm_1'][3] = st.number_input('Farm 1 Manure Solid percentage (%): ',0.0,1.0,value = Farm_data['Farm_1'][3])
+    Farm_data['Farm_1'][4] = st.number_input('Farm 1 Cattle Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_1'][4])
+    Farm_data['Farm_1'][5] = st.number_input('Farm 1 Swine Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_1'][5])
+    Farm_data['Farm_1'][6] = st.number_input('Farm 1 Poultry Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_1'][6])
+    
+    st.write('Farm 2: ')
+    Farm_data['Farm_2'][0] = st.number_input('Farm 2 Latitude : ',-90.0,90.0,value = Farm_data['Farm_2'][0],format='%f')
+    Farm_data['Farm_2'][1] = st.number_input('Farm 2 Longitude : ',-180.0,180.0,value = Farm_data['Farm_2'][1],format='%f')
+    Farm_data['Farm_2'][2] = st.number_input('Farm 2 Manure volume (m^3): ',-180.0,180.0,value = Farm_data['Farm_2'][2])
+    Farm_data['Farm_2'][3] = st.number_input('Farm 2 Manure Solid percentage (%): ',0.0,1.0,value = Farm_data['Farm_2'][3])
+    Farm_data['Farm_2'][4] = st.number_input('Farm 2 Cattle Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_2'][4])
+    Farm_data['Farm_2'][5] = st.number_input('Farm 2 Swine Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_2'][5])
+    Farm_data['Farm_2'][6] = st.number_input('Farm 2 Poultry Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_2'][6])
+    
+    st.write('Farm 3: ')
+    Farm_data['Farm_3'][0] = st.number_input('Farm 3 Latitude : ',-90.0,90.0,value = Farm_data['Farm_3'][0],format='%f')
+    Farm_data['Farm_3'][1] = st.number_input('Farm 3 Longitude : ',-180.0,180.0,value = Farm_data['Farm_3'][1],format='%f')
+    Farm_data['Farm_3'][2] = st.number_input('Farm 3 Manure volume (m^3): ',-180.0,180.0,value = Farm_data['Farm_3'][2])
+    Farm_data['Farm_3'][3] = st.number_input('Farm 3 Manure Solid percentage (%): ',0.0,1.0,value = Farm_data['Farm_3'][3])
+    Farm_data['Farm_3'][4] = st.number_input('Farm 3 Cattle Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_3'][4])
+    Farm_data['Farm_3'][5] = st.number_input('Farm 3 Swine Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_3'][5])
+    Farm_data['Farm_3'][6] = st.number_input('Farm 3 Poultry Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_3'][6])
+    
+    st.write('Farm 4: ')
+    Farm_data['Farm_4'][0] = st.number_input('Farm 4 Latitude : ',-90.0,90.0,value = Farm_data['Farm_4'][0],format='%f')
+    Farm_data['Farm_4'][1] = st.number_input('Farm 4 Longitude : ',-180.0,180.0,value = Farm_data['Farm_4'][1],format='%f')
+    Farm_data['Farm_4'][2] = st.number_input('Farm 4 Manure volume (m^3): ',-180.0,180.0,value = Farm_data['Farm_4'][2])
+    Farm_data['Farm_4'][3] = st.number_input('Farm 4 Manure Solid percentage (%): ',0.0,1.0,value = Farm_data['Farm_4'][3])
+    Farm_data['Farm_4'][4] = st.number_input('Farm 4 Cattle Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_4'][4])
+    Farm_data['Farm_4'][5] = st.number_input('Farm 4 Swine Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_4'][5])
+    Farm_data['Farm_4'][6] = st.number_input('Farm 4 Poultry Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_4'][6])
+    
+    st.write('Farm 5: ')
+    Farm_data['Farm_5'][0] = st.number_input('Farm 5 Latitude : ',-90.0,90.0,value = Farm_data['Farm_5'][0],format='%f')
+    Farm_data['Farm_5'][1] = st.number_input('Farm 5 Longitude : ',-180.0,180.0,value = Farm_data['Farm_5'][1],format='%f')
+    Farm_data['Farm_5'][2] = st.number_input('Farm 5 Manure volume (m^3): ',-180.0,180.0,value = Farm_data['Farm_5'][2])
+    Farm_data['Farm_5'][3] = st.number_input('Farm 5 Manure Solid percentage (%): ',0.0,1.0,value = Farm_data['Farm_5'][3])
+    Farm_data['Farm_5'][4] = st.number_input('Farm 5 Cattle Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_5'][4])
+    Farm_data['Farm_5'][5] = st.number_input('Farm 5 Swine Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_5'][5])
+    Farm_data['Farm_5'][3] = st.number_input('Farm 5 Poultry Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_5'][6])
+    
+    st.write('Farm 6: ')
+    Farm_data['Farm_6'][0] = st.number_input('Farm 6 Latitude : ',-90.0,90.0,value = Farm_data['Farm_6'][0],format='%f')
+    Farm_data['Farm_6'][1] = st.number_input('Farm 6 Longitude : ',-180.0,180.0,value = Farm_data['Farm_6'][1],format='%f')
+    Farm_data['Farm_6'][2] = st.number_input('Farm 6 Manure volume (m^3): ',-180.0,180.0,value = Farm_data['Farm_6'][2])
+    Farm_data['Farm_6'][3] = st.number_input('Farm 6 Manure Solid percentage (%): ',0.0,1.0,value = Farm_data['Farm_6'][3])
+    Farm_data['Farm_6'][4] = st.number_input('Farm 6 Cattle Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_6'][4])
+    Farm_data['Farm_6'][5] = st.number_input('Farm 6 Swine Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_6'][5])
+    Farm_data['Farm_6'][6] = st.number_input('Farm 6 Poultry Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_6'][6])
+    
+    st.write('Farm 7: ')
+    Farm_data['Farm_7'][0] = st.number_input('Farm 7 Latitude : ',-90.0,90.0,value = Farm_data['Farm_7'][0],format='%f')
+    Farm_data['Farm_7'][1] = st.number_input('Farm 7 Longitude : ',-180.0,180.0,value = Farm_data['Farm_7'][1],format='%f')
+    Farm_data['Farm_7'][2] = st.number_input('Farm 7 Manure volume (m^3): ',-180.0,180.0,value = Farm_data['Farm_7'][2])
+    Farm_data['Farm_7'][3] = st.number_input('Farm 7 Manure Solid percentage (%): ',0.0,1.0,value = Farm_data['Farm_7'][3])
+    Farm_data['Farm_7'][4] = st.number_input('Farm 7 Cattle Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_7'][4])
+    Farm_data['Farm_7'][5] = st.number_input('Farm 7 Swine Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_7'][5])
+    Farm_data['Farm_7'][6] = st.number_input('Farm 7 Poultry Manure percentage (%): ',0.0,1.0,value = Farm_data['Farm_7'][6])
+    
+    if st.button('Update Transportation model with new farm information'):
+        st.write('Please wait a little while we update the model')
+        session_state.Farm_data = copy.deepcopy(Farm_data)
+        session_state.dict_T = createTransportSurrogateModel(update_user_dict())
+        st.write('Done')
 def page3():
     st.title('Model explanation and final report: ')
     st.header('This is an optimization model for biodigestors created for the MIT EM.428 class of Spring 2021')

@@ -77,8 +77,8 @@ def biodigestor(vector,dict_t=dict_total,lam = 1,multiJ =False,full=False,printt
     V_g = B.biomethane(G_in, G_comp, dict_total) #biomethane
     #bg = B.biomethane_validation(kilos, wComp)
     f_p = B.biofertilizer(digOut, dict_total) 
-    ghg_r, ghg_c = B.ghg(W_a, wComp, G_in, G_comp) #ghg_r: released gas, ghg_c: captured gas
-    bgm_total = B.bgm_cost(G_comp, G_in, digOut)
+    ghg_r, ghg_c = B.ghg(W_a, wComp, G_in, G_comp, dict_total) #ghg_r: released gas, ghg_c: captured gas
+    # bgm_total = B.bgm_cost(G_comp, G_in, digOut)
     
     #print('Module biogas: ', G_in, 'Expected biogas: ', bg)
     # print("Produced biomethane: ", V_g)
@@ -180,8 +180,8 @@ def runGA(vector):
     stop = timeit.default_timer()
     print('Run time: '+str(stop-start)+' second')
     return model2
-def cleanXopt(xopt_in):
-    global max_debt
+def cleanXopt(xopt_in,dict_t):
+    max_debt = dict_t['max_debt']
     xopt = xopt_in.copy()
     if xopt[0]>1: xopt[0]=1
     elif xopt[0]<0: xopt[0]=0
@@ -196,20 +196,20 @@ def cleanXopt(xopt_in):
         elif xopt[i]<1: xopt[i]=0
     return xopt
 def cleanBiodigestor(x,dict_t=dict_total,lam = 1,multiJ =False,full=False,printt=False,pen=True):
-    X = cleanXopt(x)
+    X = cleanXopt(x,dict_t)
     return biodigestor(X,dict_t,lam,multiJ,full,printt,pen)
 def fminClean(x0,args):
     xopt = op.fmin(func=cleanBiodigestor,x0=x0,args=args)
-    xopt = cleanXopt(xopt)
+    xopt = cleanXopt(xopt,args[0])
     return xopt
 def scaleBiodigestor(x,dict_total=dict_total,lam = 1,multiJ =False,full=False,printt=False,pen=True):
-    X = cleanXopt(x)
+    X = cleanXopt(x,dict_total)
     X[3]=X[3]/((10**3)**.5)
     return biodigestor(X,dict_total,lam,multiJ,full,printt,pen)
 def fminCleanScaled(x0,args):
     xopt = op.fmin(func=scaleBiodigestor,x0=x0,args=args)
     xopt[3] = xopt[3]*((10**3)**.5)
-    xopt = cleanXopt(xopt)
+    xopt = cleanXopt(xopt,args[0])
     return xopt    
 # best = [4.83662871e-01, 1.00000000e+00, 2.62359775e+01, 
 #             1.11820675e-03, 1.00000000e+00, 0.00000000e+00,0.00000000e+00, 
