@@ -33,7 +33,7 @@ a_d = [126.7373687,941.38836117] #R$/m^3 [1] --> upflow [0]--> covered lagoon
 b_d = [16248.10090549,18897.67690485] #R$ [1] --> upflow [0]--> covered lagoon
 p_f = 3.53 #R$/L
 p_g = 3.05 #R$/kg
-p_l = 3 #R$/kg
+p_l = 3.0 #R$/kg
 e_priceS = 0.35 #R$/kWh
 p_bf = 14.5 #R$/kg
 f_used = 8000*0.01 #kg/ha assume a farm of 0.5 ha
@@ -43,7 +43,7 @@ L = 10 # years
 ke = 0.08 #interest, expected return
 kd = 0.04 # interest on debt for clean energy, loan provided by BNDES
 tax = 0.12
-g_d = 25000 # R$/Generator (36kVa)
+g_d = 25000.0 # R$/Generator (36kVa)
 g_m = g_d*0.1 #R$/year (10% of maintenance cost)
 # CF = 4.17 #kWh/km
 max_debt = 0.8
@@ -53,16 +53,16 @@ p_pm = 6751 # $/ton (mean) [min, max] -> [1491,25434]
 p_ch4 = 810 # $/ton (mean) [min, max] -> [370,1100]
 p_co2 = 43  # $/ton (mean) [min, max] -> [12,64]
 USS_to_RS = 5.49 # R$ to 1 US$ 21st march 2021
-V_per_truck = 18 #m^3/truck
+V_per_truck = 18.0 #m^3/truck
 c_km = 3 #R$/km
 i_main_cost = 0.15
 n_start = 1
 CF = 38*39.5/360 #kWh/km
-c_rskm = 3 #R$/km
+c_rskm = 3.0 #R$/km
 working_days = 365 #days/year
 working_hours =8 #h/day
 g_eff = .42 #% generator efficiency
-g_power = 36 #kW
+g_power = 36.0 #kW
 e_densitygas = 20 #MJ/m^3 
 g= 9.81 # m/s^2
 h_water = 131.1 # m
@@ -86,7 +86,7 @@ e_densitygas = e_densitygas*3.6
 
 
 # Reactor constants
-wasteData = { # moisture content, total solids, volatile solids, etc by mass
+wasteData = { # moisture content, total solids, volatile solids, etc by mass %
     
     "Density" : [989.32, 996.89, 992.63], # kg/m3
     "MC": [0.86, 0.9, 0.74], # cattle, swine, poultry
@@ -98,13 +98,13 @@ wasteData = { # moisture content, total solids, volatile solids, etc by mass
     
     }
 wasteData = pd.DataFrame(wasteData, index=["Cattle", "Swine", "Poultry"])
-
 hrtRx = pd.Series([5, 60], index=['Upflow', 'Lagoon'], name='HRT')
 rxVCap = 0.3 # reactor volume capacity increase (maybe range from 10% - 50%)
+# Tamb = 25 + 273 # K
+# Tw = 0 # K water temperature around reactor
+# Pdig =  1 # atm
 
-Tamb = 25 + 273 # K
-Tw = 0 # K water temperature around reactor
-Pdig =  1 # atm
 dict_total = {}
 for i in dir():
-    dict_total[i] = globals()[i]
+    if i[0]!='_' and i!='dict_total' and not(callable(globals()[i])) and i!='pd':
+        dict_total[i] = globals()[i]

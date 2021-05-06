@@ -52,7 +52,12 @@ from constants import *
 # Tw = 0 # K water coming into reactor
 # Pdig =  1 # atm
 
-def digester(wFR, wComp, Tdig):
+def digester(wFR, wComp, dict_total):
+    # initialize constants
+    wasteData = dict_total['wasteData']
+    rxVCap = dict_total['rxVCap']
+    hrtRx = dict_total['hrtRx']
+    
     # calculate waste in kg
     wIn = wasteData['Density'].dot(wComp) * wFR # kg/day waste
     
@@ -67,7 +72,7 @@ def digester(wFR, wComp, Tdig):
     t = np.linspace(0,hrtRx['Lagoon'])
     
     # run reactor, get methane & unreactored particulate matter
-    Tdig = Tdig + 273 # temp in Kelvin
+    # Tdig = Tdig + 273 # temp in Kelvin
     mixCOD = wasteData['COD'].dot(wComp) # wt% weighted avg, to be kg COD / day
     mixVS = wasteData['VS'].dot(wComp) # wt% weighted avg, to be kg VS / day
     

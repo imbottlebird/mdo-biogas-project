@@ -20,7 +20,7 @@ for x in allx:
     if sum(x)>0:
         dict_T[x] = T.load_data(x[0],x[1],x[2],x[3],x[4],x[5],x[6])
     else:
-        dict_T[x] = [inf,0,0,[1,0,0]]
+        dict_T[x] = [inf,0,0,[1,0,0],0]
     count = count +1
 with open('full_transp.p', 'wb') as file:
-     file.write(pickle.dumps(dict_T))
+      file.write(pickle.dumps(dict_T))
