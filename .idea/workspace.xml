@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="6b9ded03-2204-4dbd-b064-bfb34353fc06" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/integrating_modules.py" beforeDir="false" afterPath="$PROJECT_DIR$/integrating_modules.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sensitivity.py" beforeDir="false" afterPath="$PROJECT_DIR$/sensitivity.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sensitivity_analysis.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/sensitivity_analysis.ipynb" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1r9T7rUaCSAeW8CyTzh29hQvnTQ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RunManager">
+    <configuration name="sensitivity" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="code" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/sensitivity.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.sensitivity" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6b9ded03-2204-4dbd-b064-bfb34353fc06" name="Default Changelist" comment="" />
+      <created>1618387142179</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1618387142179</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="526" y="221" key="FileChooserDialogImpl" timestamp="1618387464535">
+      <screen x="0" y="25" width="1440" height="875" />
+    </state>
+    <state x="526" y="221" key="FileChooserDialogImpl/0.25.1440.875@0.25.1440.875" timestamp="1618387464535" />
+    <state width="1189" height="228" key="GridCell.Tab.0.bottom" timestamp="1618387946331">
+      <screen x="0" y="25" width="1440" height="875" />
+    </state>
+    <state width="1189" height="228" key="GridCell.Tab.0.bottom/0.25.1440.875@0.25.1440.875" timestamp="1618387946331" />
+    <state width="1189" height="228" key="GridCell.Tab.0.center" timestamp="1618387946330">
+      <screen x="0" y="25" width="1440" height="875" />
+    </state>
+    <state width="1189" height="228" key="GridCell.Tab.0.center/0.25.1440.875@0.25.1440.875" timestamp="1618387946330" />
+    <state width="1189" height="228" key="GridCell.Tab.0.left" timestamp="1618387946329">
+      <screen x="0" y="25" width="1440" height="875" />
+    </state>
+    <state width="1189" height="228" key="GridCell.Tab.0.left/0.25.1440.875@0.25.1440.875" timestamp="1618387946329" />
+    <state width="1189" height="228" key="GridCell.Tab.0.right" timestamp="1618387946330">
+      <screen x="0" y="25" width="1440" height="875" />
+    </state>
+    <state width="1189" height="228" key="GridCell.Tab.0.right/0.25.1440.875@0.25.1440.875" timestamp="1618387946330" />
+    <state x="247" y="98" key="SettingsEditor" timestamp="1618387247226">
+      <screen x="0" y="25" width="1440" height="875" />
+    </state>
+    <state x="247" y="98" key="SettingsEditor/0.25.1440.875@0.25.1440.875" timestamp="1618387247226" />
+    <state x="270" y="214" width="670" height="676" key="search.everywhere.popup" timestamp="1618387882336">
+      <screen x="0" y="25" width="1440" height="875" />
+    </state>
+    <state x="270" y="214" width="670" height="676" key="search.everywhere.popup/0.25.1440.875@0.25.1440.875" timestamp="1618387882336" />
+  </component>
+</project>

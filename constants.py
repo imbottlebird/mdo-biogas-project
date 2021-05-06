@@ -104,6 +104,12 @@ rxVCap = 0.3 # reactor volume capacity increase (maybe range from 10% - 50%)
 # Tw = 0 # K water temperature around reactor
 # Pdig =  1 # atm
 
+
+#Biogas/fertilizer upgrading constants
+ch4_pur = 0.965 #methane purity rate
+fer_conv_r = 0.9 #bio-fertilizer conversion rate
+
+
 dict_total = {}
 for i in dir():
     if i[0]!='_' and i!='dict_total' and not(callable(globals()[i])) and i!='pd':
