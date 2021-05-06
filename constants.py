@@ -8,34 +8,15 @@ import pandas as pd
 
 from math import sin, cos, sqrt, atan2, radians, pi
 #Farm_name = [Longitude, Latitudem Volume_per_day, Solid_percentage, cattle_percentage, pig_percentage, poultry_percentrage]
-Farm_1 = [-24.20612,-50.92712, 2.18, 0.03, 1, 0, 0]
-Farm_2 = [-24.331752,-50.996813, 4.128, 0.05, 0, 1, 0]
-Farm_3 = [-24.24021,-51.05428, 11.04, 0.03, 0, 1, 0]  
-Farm_4 = [-24.16694,-50.99845, 3.576, 0.03, 0, 1, 0]
-Farm_5 = [-23.9671,-51.12251, 15.99, 0.03, 0, 1, 0]
-Farm_6 = [-24.2671,-50.98251, 8.04, 0.03, 0, 1, 0]
-Farm_7 = [-24.3671,-50.94251, 15.09, 0.03, 0, 1, 0]
-
-dec_mat = pd.read_excel("Decision_variables.xlsx") #Load Decision matrix
-exp_1 = dec_mat.iloc[0] #Load first experiment from Decision matrix
-
-Farm1_lat = radians(exp_1["Farm 1 Lat"])
-Farm1_lon = radians(exp_1["Farm 1 Long"])
-Farm2_lat = radians(exp_1["Farm 2 Lat"])
-Farm2_lon = radians(exp_1["Farm 2 Long"])
-Farm3_lat = radians(exp_1["Farm 3 Lat"])
-Farm3_lon = radians(exp_1["Farm 3 Long"])
-Farm4_lat = radians(exp_1["Farm 4 Lat"])
-Farm4_lon = radians(exp_1["Farm 4 Long"])
-Farm5_lat = radians(exp_1["Farm 5 Lat"])
-Farm5_lon = radians(exp_1["Farm 5 Long"])
-
-man1 = exp_1["Farm 1 manure"]
-man2 = exp_1["Farm 2 manure"]
-man3 = exp_1["Farm 3 manure"]
-man4 = exp_1["Farm 4 manure"]
-man5 = exp_1["Farm 5 manure"]
-
+Farm_data = {
+    "Farm_1": [-24.20612,-50.92712, 2.18, 0.03, 1, 0, 0],
+    "Farm_2": [-24.331752,-50.996813, 4.128, 0.05, 0, 1, 0],
+    "Farm_3": [-24.24021,-51.05428, 11.04, 0.03, 0, 1, 0],  
+    "Farm_4": [-24.16694,-50.99845, 3.576, 0.03, 0, 1, 0],
+    "Farm_5": [-23.9671,-51.12251, 15.99, 0.03, 0, 1, 0],
+    "Farm_6": [-24.2671,-50.98251, 8.04, 0.03, 0, 1, 0],
+    "Farm_7": [-24.3671,-50.94251, 15.09, 0.03, 0, 1, 0]}
+    
 #Cost Constants
 a_d = [126.7373687,941.38836117] #R$/m^3 [1] --> upflow [0]--> covered lagoon 
 b_d = [16248.10090549,18897.67690485] #R$ [1] --> upflow [0]--> covered lagoon
