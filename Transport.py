@@ -55,7 +55,7 @@ def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,dict_total=dict_total, printt=F
     cattle = np.zeros((len(transport_data)))
     pigs = np.zeros((len(transport_data)))
     chicken = np.zeros((len(transport_data)))
-    truck_vol = 18 #truck has capacity of 18m3 
+    truck_vol = dict_total['V_per_truck'] #truck has capacity of 18m3 
 
     for n in range(0,len(transport_data)):
         points_coordinate[n][0:2]=transport_data[n][0:2]
@@ -99,7 +99,10 @@ def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,dict_total=dict_total, printt=F
         sa_tsp = SA_TSP(func=cal_total_distance, x0=range(num_points), T_max=100, T_min=1, L=10 * num_points) 
         best_points, best_distance = sa_tsp.run()
     elif f1+f2+f3+f4+f5+f6+f7 ==2:
-        best_points = np.array([0,1])
+        if volume[1]>volume[0]:
+            best_points = np.array([1,0])
+        else:
+            best_points = np.array([0,1])
         best_distance = cal_total_distance(best_points)
     elif f1+f2+f3+f4+f5+f6+f7 ==1:
         best_points = np.array([0])
