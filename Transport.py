@@ -33,6 +33,7 @@ def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,dict_total=dict_total, printt=F
     #data = np.loadtxt(file_name, delimiter=',')
     Farm_data = dict_total["Farm_data"]
     transport_data = []
+    #Farm_name = [Longitude, Latitudem Volume_per_day, Solid_percentage, cattle_percentage, pig_percentage, poultry_percentrage]
     if f1==1:
         transport_data.append(np.array(Farm_data["Farm_1"]))
     if f2==1:
