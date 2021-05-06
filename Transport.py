@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import cvxpy as cp
 from math import sin, cos, sqrt, atan2, radians, pi
-from constants import *
+from constants import Farm_1, Farm_2, Farm_3, Farm_4, Farm_5, Farm_6, Farm_7
 #Run "pip install scikit-opt" to get the Simulated Annealing program @ https://scikit-opt.github.io/scikit-opt/#/en/README?id=install
 from sko.SA import SA_TSP
 
@@ -29,23 +29,23 @@ def vol_breakdown(volume, per):
     return sum(volume*per)/sum(volume)
 
 def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,printt=False):
-    file_name = 'location_data.csv'
-    data = np.loadtxt(file_name, delimiter=',')
+    #file_name = 'location_data.csv'
+    #data = np.loadtxt(file_name, delimiter=',')
     transport_data = []
     if f1==1:
-        transport_data.append(data[0])
+        transport_data.append(Farm_1)
     if f2==1:
-        transport_data.append(data[1])
+        transport_data.append(Farm_2)
     if f3==1:
-        transport_data.append(data[2])
+        transport_data.append(Farm_3)
     if f4==1:
-        transport_data.append(data[3])
+        transport_data.append(Farm_4)
     if f5==1:
-        transport_data.append(data[4])
+        transport_data.append(Farm_5)
     if f6==1:
-        transport_data.append(data[5])
+        transport_data.append(Farm_6)
     if f7==1:
-        transport_data.append(data[6])
+        transport_data.append(Farm_7)
 
     points_coordinate = np.zeros((len(transport_data),2))
     volume = np.zeros((len(transport_data)))
@@ -161,18 +161,18 @@ def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,printt=False):
         print("Weighted average solids percentage of the manure supplied is "+str(total_solids_perc*100)+" %")
         print("Manure composition is CATTLE-PIGS-CHICKS is "+str(manure_comp))
    
-        #fig, ax = plt.subplots(1, 2)
-        #ax[0].plot(sa_tsp.best_y_history)
-        #ax[0].set_xlabel("Iteration")
-        #ax[0].set_ylabel("Distance")
-        #ax[1].plot(best_points_coordinate[:, 0], best_points_coordinate[:, 1],
-        #  marker='o', markerfacecolor='b', color='c', linestyle='-')
-        #ax[1].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
-        #ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
-        #ax[1].set_xlabel("Longitude")
-        #ax[1].set_ylabel("Latitude")
-        #plt.show()
+        fig, ax = plt.subplots(1, 2)
+        ax[0].plot(sa_tsp.best_y_history)
+        ax[0].set_xlabel("Iteration")
+        ax[0].set_ylabel("Distance")
+        ax[1].plot(best_points_coordinate[:, 0], best_points_coordinate[:, 1],
+          marker='o', markerfacecolor='b', color='c', linestyle='-')
+        ax[1].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+        ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+        ax[1].set_xlabel("Longitude")
+        ax[1].set_ylabel("Latitude")
+        plt.show()
 
     return [best_distance, total_volume, total_solids_perc, manure_comp]
 
-[distance, wIn, total_solids_perc, wComp] = load_data(0,0,0,0,0,1,0,False)
+#[distance, wIn, total_solids_perc, wComp] = load_data(1,1,1,1,1,1,1,True)
