@@ -55,6 +55,10 @@ def load_session():
             debt_level = 0.8,
             V_cng_p =0.20,
             farm1 = 1,farm2 = 0,farm3 =0,farm4 = 0,farm5 = 0,farm6 = 0,farm7 = 0,lam=1.0,
+            ng_max = dict_total['ng_max'],
+            NSGA_pop = dict_total['NSGA_pop'],
+            NSGA_gen = dict_total['NSGA_gen'],
+            NSGA_off = dict_total['NSGA_off'],
                                      )
     return session_state
 def main():
@@ -128,6 +132,10 @@ def page1():
     dict_totalUser['working_days'] = session_state.working_days
     dict_totalUser['working_hours'] = session_state.working_hours
     dict_totalUser['g_power'] = session_state.g_power
+    dict_totalUser['ng_max'] = session_state.ng_max
+    dict_totalUser['NSGA_pop'] = session_state.NSGA_pop
+    dict_totalUser['NSGA_gen'] = session_state.NSGA_gen
+    dict_totalUser['NSGA_off'] = session_state.NSGA_off
 
     st.title('Biodigestor 2021 EM.428 MIT')
     st.header("Ricardo Hopker, Nicholas Rensburg, Jacqueline Baidoo and ByeongJo Kong")
@@ -356,6 +364,7 @@ def page2():
     session_state.g_eff = st.number_input('Eletricity generator efficiency with biogas (%): ',0.0,1.0,value = session_state.g_eff)
     session_state.g_power = st.number_input('Eletricity generator power capacity (kW): ',0.0,value = session_state.g_power)
     session_state.g_m = st.number_input('Yealy cost of maintenance of eletricity generator (R$/(unit*year)): ',0.0,value = session_state.g_m)
+    session_state.ng_max = st.number_input('Maximum number of generators (units): ',0,value = session_state.ng_max)
     st.write('Biodigestor: ')
     session_state.i_main_cost = st.number_input('Yealy cost of maintenance of biodigestor (% of investment/year): ',0.0,1.0,value = session_state.i_main_cost)
     session_state.L = st.number_input('Biodigestor life (years): ',0,value = session_state.L)
@@ -367,6 +376,12 @@ def page2():
     session_state.USS_to_RS = st.number_input('Corversion of US$ to R$ (R$/US$): ',0.0,value = session_state.USS_to_RS)
     session_state.working_days = st.number_input('Working days per year (days/year): ',0,365,value = session_state.working_days)
     session_state.working_hours = st.number_input('Working hours per day (hours/day): ',0,24,value = session_state.working_hours)
+    st.write('Tradespace GA settings: ')
+    session_state.NSGA_pop = st.number_input('GA population size (#): ',0,value = session_state.NSGA_pop)
+    session_state.NSGA_gen = st.number_input('GA number of generations (#): ',0,value = session_state.NSGA_gen)
+    session_state.NSGA_off = st.number_input('GA population offsprings (#/iteration): ',0,value = session_state.NSGA_off)
+
+
 
 def page3():
     st.title('Model explanation and final report: ')
