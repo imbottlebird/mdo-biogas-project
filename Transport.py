@@ -14,22 +14,13 @@ def optimal_loc(locations, vol, m):
         return [locations[m]]
     else: 
         l = locations.copy()
-        #print(l)
         perc_vol = vol/sum(vol)
-        #print(perc_vol)
         for s in range(len(l)):
             l[s]=l[s]*perc_vol[s]
-        #print(locations)
         new_loc = [np.sum(l,axis=0)]
-        #print(type(new_loc))
-        #print(new_loc)
         distances = spatial.distance.cdist(locations, new_loc,  metric='euclidean')*111
-        #print(distances)
-        #print("++++++++++++++++++++")
         min_digest_dist = np.argmin(distances, axis=0)
-        #print(min_digest_dist[0])
-        #print([locations[min_dist]])
-        return [locations[min_digest_dist[0]]]
+        return [locations[min_digest_dist[0]]], min_digest_dist[0]
 
 def total_vol(v):
     return (sum(v))
@@ -74,7 +65,8 @@ def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,printt=False):
 
     max_vol = np.argmax(volume, axis=0)
 
-    digestor_loc = optimal_loc(points_coordinate,volume,max_vol)
+    digestor_loc, farm_digestor = optimal_loc(points_coordinate,volume,max_vol)
+    #print("LOCATION OF FARM DIGESTOR IS "+str(farm_digestor))
     #print(type(digestor_loc))
     
     num_points = points_coordinate.shape[0]
@@ -127,20 +119,24 @@ def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,printt=False):
             trips = 0
             dist_home = 0
             new_route.append(best_points[i])
-            if best_points[i % num_points]==max_vol:
+            if best_points[i % num_points]==farm_digestor:
                 trips = 0
                 trip_vol = 0
-            if (trip_vol>truck_vol) & (best_points[i % num_points]!=max_vol):
+            if (trip_vol>truck_vol) & (best_points[i % num_points]!=farm_digestor):
                 trips = trip_vol // truck_vol
                 trip_vol = trip_vol % truck_vol
                 dist_home = dist_home + int(distance_home[best_points[i % num_points]])
-                new_route.append(max_vol)
+                new_route.append(farm_digestor)
                 new_route.append(best_points[i % num_points])
                 trips = 0
             dist = dist + distance_matrix[best_points[i % num_points], best_points[(i + 1) % num_points]] + 2*dist_home
         return new_route
 
-    final_best = best_points_route(best_points, max_vol)
+    #print("BEST POINTS")
+    best_points = np.delete(best_points,np.where(best_points==farm_digestor))
+    #print(best_points)
+    #print(type(best_points))
+    final_best = best_points_route(best_points, farm_digestor)
 
     #Total volumes (m3) are the daily volumes of all the farms per day
     total_volume = total_vol(volume)
@@ -152,13 +148,16 @@ def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,printt=False):
 
     from matplotlib.ticker import FormatStrFormatter
 
-    if (final_best[-1])!=max_vol:
-        final_best.append(max_vol)
+    if (final_best[-1])!=farm_digestor:
+        final_best.append(farm_digestor)
     best_points_ = np.array(final_best)
     best_points_coordinate = points_coordinate[best_points_, :]
+    #print(volume)
     if printt:
         print("The best route is: "+str(final_best)+" and the distance on this route is "+str(best_distance))
-        print("Optimal location is area # "+str(max_vol)+" in radians for DIGESTOR is latitude: "+str(digestor_loc[0][0])+" and longitude: "+str(digestor_loc[0][1]))
+        print("The route is as follow:")
+        print(best_points_coordinate)
+        print("Optimal location is area # "+str(farm_digestor)+" in radians for DIGESTOR is latitude: "+str(digestor_loc[0][0])+" and longitude: "+str(digestor_loc[0][1]))
         print("Total daily distance from farms to digestor travelled is "+str(best_distance)+" km")
         print("Total VOLUME manure supplied per day is "+str(total_volume)+" m3")
         print("Weighted average solids percentage of the manure supplied is "+str(total_solids_perc*100)+" %")
@@ -178,4 +177,4 @@ def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,printt=False):
 
     return [best_distance, total_volume, total_solids_perc, manure_comp]
 
-[distance, wIn, total_solids_perc, wComp] = load_data(1,1,1,1,1,1,1, False)
+[distance, wIn, total_solids_perc, wComp] = load_data(1,1,1,1,1,1,1,True)
