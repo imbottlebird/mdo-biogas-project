@@ -3,7 +3,7 @@ def biomethane(G_in, G_comp, dict_total):
     #constants
     ch4_pur = dict_total['ch4_pur']  #ch4 density of biomethane in Brazil
     v_bm = G_in * (G_comp[0] / ch4_pur)  #biomethane produced
-    
+
     return v_bm
 
 
@@ -15,6 +15,7 @@ def scm_to_m3(scm):
     T1 = 15 #scm temp
     T2 = 50 #biomethane temp
     m3 = scm * (P1/P2) * ((T2+K)/(T1+K))
+    
     return m3
 
 def biofertilizer(digOut, dict_total):
