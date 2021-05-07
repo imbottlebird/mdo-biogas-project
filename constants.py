@@ -67,6 +67,10 @@ C_V_gas = 0.16 #R$/m^3 to produce biogas
 NSGA_pop = 100
 NSGA_gen = 500
 NSGA_off = 10
+GA_pop = 100
+GA_gen = 100
+GA_off = 10
+lam = 1
 
 with open('full_transp.p', 'rb') as fp:
     dict_T = pickle.load(fp)

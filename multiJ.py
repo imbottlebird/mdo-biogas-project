@@ -18,6 +18,7 @@ from pymoo.optimize import minimize
 import pandas as pd
 # from pymoo.util.misc import stack
 import scipy.optimize as op
+from pymoo.algorithms.so_genetic_algorithm import GA
 
 class BiogasMultiJ(Problem):
 
@@ -145,3 +146,63 @@ def plotRes(res,plot,dict_totalUser):
         ax.set_xlim([-3e6,0])
     return [df,F,annot]
 # [df,F,annot] = plotRes(run_multiJ(dict_total),True,dict_total)
+class BiogasSingleJ(Problem):
+
+    def __init__(self,args):
+    # def __init__(self):
+        super().__init__(n_var=11,
+                         n_obj=1,
+                         n_constr=0,
+                         xl=np.array([0,1,0,0,
+                                      0,0,0,0,0,0,0]),
+                         xu=np.array([1,args['ng_max'],args['max_debt'],1,
+                                      1,1,1,1,1,1,1]))
+        self.args = args.copy()
+
+    def _evaluate(self, X, out, *args, **kwargs):
+        x1 =[]
+        # x2 =[]
+        dict_t = self.args
+        lam = dict_t['lam']
+        for i in range(len(X)):
+            x = biodigestor(X[i,:],dict_t,lam,True,True)
+            # x = biodigestor(X[i,:],1,True,True)
+            x1.append(x[0])
+            # x2.append(x[2])
+        x1=np.array(x1)
+        # x2=np.array(x2)
+        out["F"] = np.column_stack([x1])
+def run_singleJ(dict_t):
+# def run_multiJ():
+    mask = ["real","int","real","real",
+            "int","int","int","int","int","int","int"]
+    sampling =  MixedVariableSampling(mask, {
+        "real": get_sampling("real_random"),
+        "int": get_sampling("int_random")
+        })
+    crossover = MixedVariableCrossover(mask, {
+        "real": get_crossover("real_sbx", prob=1.0, eta=3.0),
+        "int": get_crossover("int_sbx", prob=1.0, eta=3.0)
+    })
+    mutation = MixedVariableMutation(mask, {
+        "real": get_mutation("real_pm", eta=3.0),
+        "int": get_mutation("int_pm", eta=3.0)
+    })
+    #[V_gBurn,ng,Tdig,debt_level,V_cng_p,e_priceS,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
+    problem = BiogasSingleJ(dict_t)
+    # problem = BiogasMultiJ()
+    algorithm = GA(pop_size=dict_t['GA_pop'],
+                  sampling=sampling,
+                  crossover=crossover,
+                  n_offsprings=dict_t['GA_off'],
+                  mutation=mutation,
+                  eliminate_duplicates=True,
+    )
+    res = minimize(problem,
+                   algorithm,
+                   ("n_gen", dict_t['GA_gen']),
+                   verbose=True,
+                   seed=1,
+                   save_history=True)
+    return res
+# res = run_singleJ(dict_total)

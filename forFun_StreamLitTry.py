@@ -17,7 +17,7 @@ from constants import dict_total
 import matplotlib.pyplot as plt
 import pydeck as pdk
 from integrating_modules import biodigestor, cleanXopt,cleanBiodigestor,fminClean
-from multiJ import run_multiJ,plotRes
+from multiJ import run_multiJ,plotRes,run_singleJ
 from all_best_paths_transport import createTransportSurrogateModel
 # import scipy.optimize as op
 # from Transport import load_data
@@ -53,15 +53,19 @@ def load_session():
             g_power = dict_total['g_power'],
             V_gBurn = 0.7,
             ng = 1,
-            debt_level = 0.8,
+            debt_level = 0.5,
             V_cng_p =0.20,
-            farm1 = 1,farm2 = 0,farm3 =0,farm4 = 0,farm5 = 0,farm6 = 0,farm7 = 0,lam=1.0,
+            farm1 = 1,farm2 = 0,farm3 =0,farm4 = 0,farm5 = 0,farm6 = 0,farm7 = 0,
             ng_max = dict_total['ng_max'],
             NSGA_pop = dict_total['NSGA_pop'],
             NSGA_gen = dict_total['NSGA_gen'],
             NSGA_off = dict_total['NSGA_off'],
             dict_T = dict_total['dict_T'],
-            Farm_data = dict_total['Farm_data']
+            Farm_data = dict_total['Farm_data'],
+            GA_pop = dict_total['GA_pop'],
+            GA_gen = dict_total['GA_gen'],
+            GA_off = dict_total['GA_off'],
+            lam = float(dict_total['lam'])
                                      )
     return session_state
 def update_user_dict():
@@ -100,6 +104,10 @@ def update_user_dict():
     dict_totalUser['NSGA_off'] = session_state.NSGA_off
     dict_totalUser['dict_T'] = session_state.dict_T
     dict_totalUser['Farm_data'] = session_state.Farm_data
+    dict_totalUser['GA_pop'] = session_state.GA_pop
+    dict_totalUser['GA_gen'] = session_state.GA_gen
+    dict_totalUser['GA_off'] = session_state.GA_off
+    dict_totalUser['lam'] = session_state.lam
     return dict_totalUser
     
 def main():
@@ -144,7 +152,8 @@ def page1():
     session_state.farm5 = st.number_input('is farm 5 active: ',0,1,value = session_state.farm5)
     session_state.farm6 = st.number_input('is farm 6 active: ',0,1,value = session_state.farm6)
     session_state.farm7 = st.number_input('is farm 7 active: ',0,1,value = session_state.farm7)
-    session_state.lam = st.number_input('Multi-objective (1 full NPV, 0 full emissions): ',0.0,1.0,value = session_state.lam)
+    session_state.lam = st.number_input('Multi-objective (1 full NPV, 0 full emissions): ',0.0,1.0,value = float(session_state.lam))
+    dict_totalUser['lam'] = session_state.lam
     x = [session_state.V_gBurn,session_state.ng,session_state.debt_level,
          session_state.V_cng_p,session_state.farm1,session_state.farm2,
          session_state.farm3,session_state.farm4,session_state.farm5,
@@ -153,15 +162,17 @@ def page1():
     st.write(-biodigestor(cleanXopt(x,dict_totalUser),dict_totalUser,session_state.lam,True,False))
     active_farms= x[4:11] 
     active_farms = [False if num<1 or num==False  else True for num in active_farms]
-    if st.checkbox('Optimize with X0 above and lambda'):
+    if st.checkbox('Optimize with lamda above'):
         
         # print(dict_totalUser['e_priceS'])
         
         args = (dict_totalUser,session_state.lam,True,False,False,True)
-        xopt = fminClean(x,args)
-        xoptSer = pd.DataFrame(pd.Series(cleanXopt(xopt),index=['V_gBurn','ng','debt_level','V_cng_p','farm1','farm2','farm3','farm4','farm5','farm6','farm7'])).transpose()
+        # xopt = fminClean(x,args)
+        res = run_singleJ(dict_totalUser)
+        xopt = res.X
+        xoptSer = pd.DataFrame(pd.Series(cleanXopt(xopt,dict_totalUser),index=['V_gBurn','ng','debt_level','V_cng_p','farm1','farm2','farm3','farm4','farm5','farm6','farm7'])).transpose()
         st.write('Best X')
-        st.write(xoptSer)
+        st.write(xoptSer.style.format({'V_gBurn':"{:.2}",'debt_level':"{:.2}",'V_cng_p':"{:.2}"}))
         # print(cleanXopt(xopt))
         st.write('Best Obj')
         st.write(-cleanBiodigestor(xopt,dict_totalUser,session_state.lam,True,False,False,True))
@@ -372,6 +383,11 @@ def page2():
     session_state.NSGA_pop = st.number_input('GA population size (#): ',0,value = session_state.NSGA_pop)
     session_state.NSGA_gen = st.number_input('GA number of generations (#): ',0,value = session_state.NSGA_gen)
     session_state.NSGA_off = st.number_input('GA population offsprings (#/iteration): ',0,value = session_state.NSGA_off)
+    st.write('Optimizer GA settings: ')
+    session_state.GA_pop = st.number_input('Single objective GA population size (#): ',0,value = session_state.GA_pop)
+    session_state.GA_gen = st.number_input('Single objective GA number of generations (#): ',0,value = session_state.GA_gen)
+    session_state.GA_off = st.number_input('Single objective GA population offsprings (#/iteration): ',0,value = session_state.GA_off)
+
 
 def pageTransport():
     session_state = load_session()
