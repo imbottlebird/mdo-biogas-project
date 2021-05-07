@@ -3,11 +3,11 @@ from scipy import spatial
 import matplotlib.pyplot as plt
 import pandas as pd
 import cvxpy as cp
-from math import sin, cos, sqrt, atan2, radians, pi
+from math import sin, cos, sqrt, atan2, radians, pi,inf
 from constants import dict_total
 #Run "pip install scikit-opt" to get the Simulated Annealing program @ https://scikit-opt.github.io/scikit-opt/#/en/README?id=install
 from sko.SA import SA_TSP
-
+import time
 
 def optimal_loc(locations, vol, m):
     if len(locations)<=1:
@@ -181,3 +181,123 @@ def load_data(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,dict_total=dict_total, printt=F
     return [best_distance, total_volume, total_solids_perc, manure_comp,final_best]
 
 #[distance, wIn, total_solids_perc, wComp] = load_data(1,1,1,1,1,1,1,True)
+def transportDFS(f1=1,f2=1,f3=1,f4=1,f5=1,f6=1,f7=1,dict_total=dict_total, printt=False):
+    #file_name = 'location_data.csv'
+    #data = np.loadtxt(file_name, delimiter=',')
+    Farm_data = dict_total["Farm_data"]
+    transport_data = []
+    #Farm_name = [Longitude, Latitudem Volume_per_day, Solid_percentage, cattle_percentage, pig_percentage, poultry_percentrage]
+    if f1==1:
+        transport_data.append(np.array(Farm_data["Farm_1"]))
+    if f2==1:
+        transport_data.append(np.array(Farm_data["Farm_2"]))
+    if f3==1:
+        transport_data.append(np.array(Farm_data["Farm_3"]))
+    if f4==1:
+        transport_data.append(np.array(Farm_data["Farm_4"]))
+    if f5==1:
+        transport_data.append(np.array(Farm_data["Farm_5"]))
+    if f6==1:
+        transport_data.append(np.array(Farm_data["Farm_6"]))
+    if f7==1:
+        transport_data.append(np.array(Farm_data["Farm_7"]))
+
+    points_coordinate = np.zeros((len(transport_data),2))
+    v = np.zeros((len(transport_data)))
+    solids = np.zeros((len(transport_data)))
+    cattle = np.zeros((len(transport_data)))
+    pigs = np.zeros((len(transport_data)))
+    chicken = np.zeros((len(transport_data)))
+    max_truck = dict_total['V_per_truck'] #truck has capacity of 18m3 
+
+    for n in range(0,len(transport_data)):
+        points_coordinate[n][0:2]=transport_data[n][0:2]
+        v[n]     = transport_data[n][2]
+        solids[n]     = transport_data[n][3]
+        cattle[n]     = transport_data[n][4]
+        pigs[n]       = transport_data[n][5]
+        chicken[n]    = transport_data[n][6]
+
+    max_vol = np.argmax(v, axis=0)
+
+    digestor_loc, farm_digestor = optimal_loc(points_coordinate,v, max_vol)
+    
+    num_points = points_coordinate.shape[0]
+
+    distance_matrix = spatial.distance.cdist(points_coordinate, points_coordinate, metric='euclidean')
+    distance_matrix = distance_matrix * 111 # 1 degree of lat/lon ~ = 111km
+    d= distance_matrix
+    #print(distance_matrix)
+
+    distance_home = spatial.distance.cdist(points_coordinate, digestor_loc,  metric='euclidean')*111
+    v = list(v)
+    idF = list(range(len(v)))
+    bestD = inf
+    bestPath=[]
+    path=[4,3,2,1,4,5,0,4,0,4]
+    
+    def calcDist(d,path):
+        distance = 0
+        for i in range(len(path)-1):
+            distance += d[path[i],path[i+1]]
+        return distance
+    def searchNextStep(v,idF,path,cur_truck):
+        if cur_truck ==max_truck:
+            return [path[0]]
+        last_i = path[-1]
+        v1 = v.copy()
+        x = list(zip(v1,idF))
+        v1 = [j for i,j in x if (i!=0 and j!= last_i)]
+        return v1
+
+    def calc_volume(init_v,path):
+        v = init_v.copy()
+        v_av = sum(v)-v[path[0]]
+        cur_truck = 0
+        for i in path:
+            if i ==path[0]:
+                v[i] += cur_truck
+                cur_truck=0
+            else:
+                v_av_truck = max_truck-cur_truck
+                cur_truck = min(cur_truck+v[i],max_truck) 
+                v[i] = max(v[i]-v_av_truck,0)
+        return v,cur_truck
+    currentD=0
+    # x = calcDist(d,path)
+    for i in range(len(v)):
+        # start = time.time()
+        agenda = [[i]]
+        while agenda!=[]:
+            path = agenda.pop(0)
+            currentD = calcDist(d,path)
+            if currentD<bestD:
+                v_new,cur_truck = calc_volume(v,path)
+                av_nextstep = searchNextStep(v_new,idF,path,cur_truck)
+                count = 0
+                for j in av_nextstep:
+                    agenda.insert(count,path+[j])
+                    count +=1
+                if av_nextstep==[] or v_new[path[0]]==sum(v):   
+                    if currentD<bestD:
+                        bestD=currentD
+                        bestPath = path
+        # end = time.time()
+        # print('digestor at '+str(i))
+        # print(end - start)
+    total_volume = total_vol(v)
+    total_solids_perc = vol_breakdown(v, solids)
+    total_cattle_perc = vol_breakdown(v, cattle)
+    total_pig_perc = vol_breakdown(v, pigs)
+    total_chicken_perc = vol_breakdown(v, chicken)
+    manure_comp = [total_cattle_perc, total_pig_perc, total_chicken_perc]
+    # return [bestD, bestPath]
+    return [bestD, total_volume, total_solids_perc, manure_comp,bestPath]
+                    
+                
+        
+    
+    
+    
+    
+# bestD, total_volume, total_solids_perc, manure_comp,bestPath = transportDFS(1,1,1,1,0,1,1)
