@@ -5,6 +5,8 @@ Last updated on Wed Apr 28 2021
 
 Digester Module for Spring 2021 MDO Project
 
+Reaction setup from Pavlostathis, S.G. 2011 (https://doi.org/10.1016/B978-0-08-088504-9.00385-8)
+
 inputs: waste flow rate (m3/day)
         waste composition (%) by animal type (cattle, swine, chicken)
         operating temperature (degC)
