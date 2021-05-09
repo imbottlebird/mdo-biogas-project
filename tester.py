@@ -89,7 +89,7 @@ f_p =20
 h_needed=30
 W_out = 100
 V_g = 30
-all_tests.append([farmer_npv,[n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,e_c,e_priceB,f_used,p_bf],-197933])
+# all_tests.append([farmer_npv,[n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,e_c,e_priceB,f_used,p_bf],-197933])
 n_g =2
 V_gburn = 10
 V_d = 15
@@ -99,7 +99,7 @@ f_p =500
 h_needed=100
 W_out = 100
 V_g = 30
-all_tests.append([farmer_npv,[n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,e_c,e_priceB,f_used,p_bf],-200005])
+# all_tests.append([farmer_npv,[n_g,V_gburn,V_d,typ,distance_total,f_p,h_needed,W_out,V_g,e_c,e_priceB,f_used,p_bf],-200005])
 
 
 result =[]

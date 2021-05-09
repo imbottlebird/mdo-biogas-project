@@ -89,23 +89,6 @@ def plotRes(res,plot,dict_totalUser):
     dfX = pd.DataFrame(res.X)
     df = pd.concat([df,dfX],axis=1)
     df = df.sort_values(by=['NPV'])
-    # lam1X = op.fmin(func=biodigestorLam1,x0=df.tail(1).values.flatten().tolist()[2:],args = tuple([dict_total]))
-    # lam1X =cleanXopt(lam1X)
-    # lam1 = biodigestor(lam1X,dict_total,1,True,True)
-    # lam1[1]=-lam1[1]
-    # lam1[2]=-lam1[2]
-    # lam0X = op.fmin(func=biodigestorLam0,x0=df.head(1).values.flatten().tolist()[2:],args = tuple([dict_total]))
-    # lam0X =cleanXopt(lam0X)
-    # lam0 = biodigestor(lam0X,dict_total,0,True,True)
-    # lam0[2]=-lam0[2]
-    # lam0[1]=-lam0[1]
-    # lam0 = list(lam0)[1:]+list(lam0X)
-    # lam1 = list(lam1)[1:]+list(lam1X)
-    # lam =[]
-    # lam.append(lam0)
-    # lam.append(lam1)
-    # df = df.append(pd.DataFrame(lam,columns=['NPV','gwp']+list(range(12))))
-    # df = df.sort_values(by=['NPV'])
     xAnnot = max(df['NPV'])
     yAnnot = max(df['gwp'])
     annot=[xAnnot, yAnnot]
@@ -181,12 +164,12 @@ def run_singleJ(dict_t):
         "int": get_sampling("int_random")
         })
     crossover = MixedVariableCrossover(mask, {
-        "real": get_crossover("real_sbx", prob=1.0, eta=3.0),
-        "int": get_crossover("int_sbx", prob=1.0, eta=3.0)
+        "real": get_crossover("real_sbx", prob=0.2, eta=3.0),
+        "int": get_crossover("int_sbx", prob=0.2, eta=3.0)
     })
     mutation = MixedVariableMutation(mask, {
-        "real": get_mutation("real_pm", eta=3.0),
-        "int": get_mutation("int_pm", eta=3.0)
+        "real": get_mutation("real_pm", eta=3.0,prob=0.02),
+        "int": get_mutation("int_pm", eta=3.0,prob=0.02)
     })
     #[V_gBurn,ng,Tdig,debt_level,V_cng_p,e_priceS,farm1,farm2,farm3,farm4,farm5,farm6,farm7]
     problem = BiogasSingleJ(dict_t)
@@ -205,4 +188,53 @@ def run_singleJ(dict_t):
                    seed=1,
                    save_history=True)
     return res
+def plotsingle(res):
+    n_evals = []    # corresponding number of function evaluations\
+    F = []          # the objective space values in each generation
+    cv = []         # constraint violation in each generation
+    optT=[]
+    fig,ax = plt.subplots()
+    Fx = []
+    # iterate over the deepcopies of algorithms
+    it = 0
+    for algorithm in res.history:
+    
+        # store the number of function evaluations
+        n_evals.append(algorithm.evaluator.n_eval)
+    
+        # retrieve the optimum from the algorithm
+        opt = algorithm.opt
+        pop = algorithm.pop
+        # store the least contraint violation in this generation
+        cv.append(opt.get("CV").min())
+    
+        # filter out only the feasible and append
+        feas = np.where(opt.get("feasible"))[0]
+        feasP = np.where(pop.get("feasible"))[0]
+        _opt = opt.get("F")[feas]
+        _F = pop.get("F")[feasP]
+        F.extend(list(-_F))
+        optT.extend(list(-_opt))
+        Fx.extend(list(np.ones(len(_F))*it))
+        it += 1
+        
+    # F = pd.DataFrame(list(map(list, F)))
+    ax.scatter(Fx,F,c='g',s=0.5,label='Population')
+    ax.plot(range(len(optT)),optT,c='r',label='Pareto')
+    # ax.set_ylim([-2.5e6,0])
+    ax.set_xlabel('Iteration')
+    ax.set_ylabel('NPV (R$)')
+    ax.legend()
+    # fig,ax = plt.subplots()
+    # ax.scatter(Fx[0:10000],F[0:10000],c='g',s=0.5,label='Population')
+    # ax.plot(range(100),optT[0:100],c='r',label='Pareto')
+    # ax.set_ylim([-1e6,0])
+    # ax.set_xlabel('Iteration')
+    # ax.set_ylabel('NPV (R$)')
+    # ax.legend()
+    
+    
+# dict_total['GA_gen'] = 500
+# dict_total['GA_pop'] = 100
 # res = run_singleJ(dict_total)
+# plotsingle(res)
