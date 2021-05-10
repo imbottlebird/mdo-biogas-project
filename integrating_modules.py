@@ -141,7 +141,7 @@ def gwp(x,gas): # https://www.epa.gov/ghgemissions/understanding-global-warming-
     else:
         raise NotImplementedError
 def truckGWP(distance,dict_t):
-    return dict_t['truck_gwp_emmited']*distance/1.8
+    return dict_t['truck_gwp_emmited']*distance*dict_t['working_days']/1.8
 # GA from scikit-optimize
 
 # constraint_eq = []
