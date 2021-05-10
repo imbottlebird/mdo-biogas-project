@@ -52,10 +52,19 @@ def biodigestor(vector,dict_t=dict_total,lam = 1,multiJ =False,full=False,printt
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(*active_farms,printt)
     # if sum(active_farms)>2:
     dict_T= dict_total['dict_T']
+    # if printt:
+    #     [distance, wIn, total_solids_perc, wComp,Tpath] = T.load_data(*active_farms,dict_total,printt)
+    # else:
+    [distance, wIn, total_solids_perc, wComp,TPath] = dict_T[tuple(active_farms)]
     if printt:
-        [distance, wIn, total_solids_perc, wComp,Tpath] = T.load_data(*active_farms,dict_total,printt)
-    else:
-        [distance, wIn, total_solids_perc, wComp,TPath] = dict_T[tuple(active_farms)]
+        print("The best route is: "+str(TPath)+" and the distance on this route is "+str(distance))
+        print("The route is as follow:")
+        print(TPath)
+        # print("Optimal location is area # "+str(farm_digestor)+" in radians for DIGESTOR is latitude: "+str(digestor_loc[0][0])+" and longitude: "+str(digestor_loc[0][1]))
+        print("Total daily distance from farms to digestor travelled is "+str(distance)+" km")
+        print("Total VOLUME manure supplied per day is "+str(wIn)+" m3")
+        print("Weighted average solids percentage of the manure supplied is "+str(total_solids_perc*100)+" %")
+        print("Manure composition is CATTLE-PIGS-CHICKS is "+str(wComp))
     # else:
     #     [distance, wIn, total_solids_perc, wComp] = [inf,0,0,[1,0,0]]
     # [distance, wIn, total_solids_perc, wComp] = T.load_data(vector[6],vector[7],vector[8],
