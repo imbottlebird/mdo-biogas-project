@@ -204,7 +204,7 @@ def page1():
             colDict[j]=colnames[j]
         df = df.rename(columns=colDict)
         st.write(fig)
-        st.write('Pareto front vectors: ',df)
+        st.write('Pareto front vectors: ',df.style.format({'V_gBurn':"{:.2}",'debt_level':"{:.2}",'V_cng_p':"{:.2}"}))
          
     
     # wasteData
