@@ -103,7 +103,7 @@ def biodigestor(vector,dict_t=dict_total,lam = 1,multiJ =False,full=False,printt
         list_ghg.append(ghg[ghg['gas']==gas].values.flatten().tolist())
         gwpS = gwpS + gwp(ghg[ghg['gas']==gas]['ghg_lf'].values,gas)
     list_ghg = do_all_list_cp(W_a,distance,list_ghg,dict_t)
-    
+    gwpS = gwpS - truckGWP(distance,dict_t)
     n_g = vector[1]
     V_gburn = vector[0]*V_g
     debt_level = vector[2]
@@ -140,6 +140,8 @@ def gwp(x,gas): # https://www.epa.gov/ghgemissions/understanding-global-warming-
         return x*281.5
     else:
         raise NotImplementedError
+def truckGWP(distance,dict_t):
+    return dict_t['truck_gwp_emmited']*distance/1.8
 # GA from scikit-optimize
 
 # constraint_eq = []

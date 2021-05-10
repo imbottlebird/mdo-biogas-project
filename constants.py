@@ -71,6 +71,7 @@ GA_pop = 100
 GA_gen = 100
 GA_off = 10
 lam = 1
+truck_gwp_emmited = 0.884 #https://theicct.org/sites/default/files/publications/LNG%20in%20trucks_final_20200512.pdf
 
 with open('full_transp.p', 'rb') as fp:
     dict_T = pickle.load(fp)
